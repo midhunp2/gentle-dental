@@ -93,6 +93,64 @@ export default function Home() {
             </div>
           </div>
         </section>
+        <section className={styles.DifferenceSection}>
+          <div className={styles.DifferenceContainer}>
+            <div className={styles.DifferenceImage}>
+              <Image
+                src="/assets/images/gentle-dental-patients-come-first.jpg"
+                alt="Smiling patient"
+                width={400}
+                height={600}
+                className={styles.PatientImage}
+              />
+            </div>
+            <div className={styles.DifferenceContent}>
+              <h2 className={styles.DifferenceTitle}>Patients Come First</h2>
+              <div className={styles.DifferenceText}>
+                <p>
+                  Healthy, confident smiles for life is our mission at Gentle
+                  Dental. Since 1971, we have been leading the way in dental
+                  care. Our founding dentists believed that taking care of your
+                  health should fit your busy schedule. That’s why they built
+                  dental practices in convenient locations with convenient
+                  hours. We’re here when you need us.</p>
+                  
+                  <p> Patients receive
+                  award-winning dental care from dentists who are graduates from
+                  top dental schools. Along with general dentistry, each
+                  location has specialty services which allows for high quality,
+                  coordinated care.</p>
+                  
+                  <p> All Gentle Dentals are newly built or
+                  renovated and outfitted with the latest in dental technology
+                  including <span className={styles.HighlightText}>digital low radiation x-rays,</span> 3D scanning, intraoral
+                  cameras, and even CERC same-day crowns at select locations.
+                </p>
+              </div>
+              <div className={styles.StatisticsContainer}>
+                <div className={styles.Statistic}>
+                  <div className={styles.StatisticNumber}>49</div>
+                  <div className={styles.StatisticLabel}>
+                    Convenient Locations
+                  </div>
+                </div>
+                <div className={styles.Statistic}>
+                  <div className={styles.StatisticNumber}>49</div>
+                  <div className={styles.StatisticLabel}>
+                    Years of Trusted Dental Care
+                  </div>
+                </div>
+                <div className={styles.Statistic}>
+                  <div className={styles.StatisticNumber}>200+</div>
+                  <div className={styles.StatisticLabel}>
+                    Dentists and Specialists
+                  </div>
+                </div>
+              </div>
+              <button className={styles.LearnMoreButton}>LEARN MORE</button>
+            </div>
+          </div>
+        </section>
       </main>
       <Footer />
     </>

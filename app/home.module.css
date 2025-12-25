@@ -154,11 +154,410 @@
   margin: 0;
 }
 
-@media (max-width: 968px) {
+/* Responsive Design - Mobile and Tablet */
+
+/* Extra small devices (portrait phones, less than 576px) */
+@media (max-width: 575.98px) {
+  .BannerWrapper {
+    height: 400px;
+  }
+
+  .BannerContent {
+    margin: 40px 1rem 0;
+    padding: 0 1rem;
+  }
+
+  .BannerTitle {
+    font-size: 18px;
+  }
+
+  .BannerSubtitle {
+    font-size: 32px;
+  }
+
+  .SearchBar {
+    flex-direction: column;
+    height: auto;
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .SearchInputWrapper {
+    width: 100%;
+    margin: 0;
+  }
+
+  .LocationIcon {
+    width: 24px;
+    height: 32px;
+    left: 12px;
+    margin-left: 12px;
+  }
+
+  .SearchInput {
+    padding-left: 50px;
+    margin: 0;
+    font-size: 14px;
+  }
+
+  .SearchButton {
+    width: 100%;
+    padding: 14px 20px;
+    margin-right: 0;
+  }
+
+  .FeaturesSection {
+    height: auto;
+    padding: 40px 1rem;
+  }
+
   .FeaturesContainer {
     grid-template-columns: 1fr;
-    gap: 60px;
+    gap: 40px;
   }
+
+  .FeatureCard {
+    min-height: auto;
+    padding: 20px;
+  }
+
+  .FeatureTitle {
+    font-size: 20px;
+  }
+
+  .IconImage {
+    width: 100px;
+    height: 100px;
+  }
+
+  .DifferenceSection {
+    padding: 40px 0;
+  }
+
+  .DifferenceContainer {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    padding: 0 1rem;
+  }
+
+  .PatientImage {
+    width: 100%;
+    height: auto;
+    max-height: 400px;
+  }
+
+  .DifferenceContent {
+    padding: 0 1rem;
+  }
+
+  .DifferenceTitle {
+    font-size: 24px;
+  }
+
+  .StatisticsContainer {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .StatisticNumber {
+    font-size: 40px;
+  }
+
+  .ServicesSection {
+    padding: 40px 1rem;
+  }
+
+  .ServicesContainer {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .ServicesTitle {
+    font-size: 28px;
+  }
+
+  .ServicesGrid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .ServiceImage {
+    height: 250px;
+  }
+
+  .NewPatientSection {
+    margin: 20px 1rem;
+    padding: 40px 1rem;
+    height: auto;
+  }
+
+  .NewPatientBanner {
+    grid-template-columns: 1fr;
+  }
+
+  .NewPatientLeft,
+  .NewPatientRight {
+    padding: 30px 20px;
+  }
+
+  .NewPatientTitle {
+    font-size: 24px;
+  }
+
+  .OfferPrice {
+    font-size: 48px;
+  }
+
+  .OfferPriceContainer {
+    flex-direction: column;
+    gap: 15px;
+  }
+}
+
+/* Portrait and Landscape - Mobile */
+@media (min-width: 0) and (max-width: 767.98px) {
+  .BannerWrapper {
+    height: 450px;
+  }
+
+  .BannerContent {
+    margin: 50px 1rem 0;
+    padding: 0 1rem;
+  }
+
+  .BannerTitle {
+    font-size: 20px;
+  }
+
+  .BannerSubtitle {
+    font-size: 40px;
+  }
+
+  .SearchBar {
+    flex-direction: column;
+    height: auto;
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .SearchInputWrapper {
+    width: 100%;
+    margin: 0;
+  }
+
+  .SearchInput {
+    margin: 0;
+  }
+
+  .SearchButton {
+    width: 100%;
+    padding: 14px 20px;
+    margin-right: 0;
+  }
+
+  .FeaturesSection {
+    height: auto;
+    padding: 50px 1rem;
+  }
+
+  .FeaturesContainer {
+    grid-template-columns: 1fr;
+    gap: 50px;
+  }
+
+  .FeatureCard {
+    min-height: auto;
+    padding: 25px;
+  }
+
+  .DifferenceSection {
+    padding: 50px 0;
+  }
+
+  .DifferenceContainer {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    padding: 0 1rem;
+  }
+
+  .PatientImage {
+    width: 100%;
+    height: auto;
+    max-height: 450px;
+  }
+
+  .DifferenceContent {
+    padding: 0 1rem;
+  }
+
+  .StatisticsContainer {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .ServicesSection {
+    padding: 50px 1rem;
+  }
+
+  .ServicesContainer {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .ServicesGrid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .NewPatientSection {
+    margin: 30px 1rem;
+    padding: 50px 1rem;
+    height: auto;
+  }
+
+  .NewPatientBanner {
+    grid-template-columns: 1fr;
+  }
+
+  .NewPatientLeft,
+  .NewPatientRight {
+    padding: 40px 30px;
+  }
+
+  .OfferPrice {
+    font-size: 56px;
+  }
+}
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .BannerContent {
+    margin: 50px 1.5rem 0;
+  }
+
+  .BannerTitle {
+    font-size: 22px;
+  }
+
+  .BannerSubtitle {
+    font-size: 44px;
+  }
+
+  .SearchBar {
+    flex-direction: row;
+    height: 70px;
+  }
+
+  .SearchButton {
+    width: auto;
+    padding: 14px 40px;
+  }
+
+  .FeaturesContainer {
+    gap: 50px;
+  }
+
+  .NewPatientLeft,
+  .NewPatientRight {
+    padding: 40px 35px;
+  }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .BannerContent {
+    margin: 50px 2rem 0;
+    padding: 0 1rem;
+  }
+
+  .BannerTitle {
+    font-size: 22px;
+  }
+
+  .BannerSubtitle {
+    font-size: 48px;
+  }
+
+  .SearchBar {
+    height: 75px;
+    padding: 14px 18px;
+  }
+
+  .SearchButton {
+    padding: 15px 45px;
+  }
+
+  .FeaturesSection {
+    padding: 60px 2rem;
+  }
+
+  .FeaturesContainer {
+    grid-template-columns: 1fr;
+    gap: 50px;
+  }
+
+  .FeatureCard {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .DifferenceSection {
+    padding: 60px 0;
+  }
+
+  .DifferenceContainer {
+    padding: 0 2rem;
+    gap: 40px;
+  }
+
+  .PatientImage {
+    width: 100%;
+    height: auto;
+    max-height: 500px;
+  }
+
+  .StatisticsContainer {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+  }
+
+  .ServicesSection {
+    padding: 60px 2rem;
+  }
+
+  .ServicesContainer {
+    grid-template-columns: 1fr;
+    gap: 50px;
+  }
+
+  .ServicesGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .NewPatientSection {
+    margin: 40px 2rem;
+    padding: 60px 2rem;
+    height: auto;
+  }
+
+  .NewPatientBanner {
+    grid-template-columns: 1fr;
+  }
+
+  .NewPatientLeft,
+  .NewPatientRight {
+    padding: 50px 40px;
+  }
+
+  .OfferPrice {
+    font-size: 64px;
+  }
+}
+
+/* Large devices (desktops, 992px and up) - Keep desktop layout unchanged */
+@media (min-width: 992px) {
+  /* Desktop styles remain unchanged */
 }
 
 .DifferenceSection {
@@ -263,14 +662,1577 @@
   background-color: #8b2d7a;
 }
 
-@media (max-width: 968px) {
-  .DifferenceContainer {
+.ServicesSection {
+  background-color: #f9f9f9;
+  width: 100%;
+  padding: 80px 15px;
+}
+
+.ServicesContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 60px;
+  align-items: start;
+}
+
+.ServicesHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.ServicesTitle {
+  color: #145091;
+  font-size: 36px;
+  font-weight: 700;
+  font-family: "OpenSans-Bold", sans-serif;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.ServicesDescription {
+  color: #333333;
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.ViewAllServicesButton {
+  background-color: #ab4399;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  padding: 17px 50px;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  align-self: flex-start;
+  margin-top: 8px;
+}
+
+.ViewAllServicesButton:hover {
+  background-color: #8b2d7a;
+}
+
+.ServicesGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3px;
+}
+
+.ServiceCard {
+  position: relative;
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.ServiceImageWrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.ServiceImage {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.ServiceCard:hover .ServiceImage {
+  transform: scale(1.05);
+}
+
+.ServiceOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(20, 80, 145, 0);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+  text-align: center;
+  opacity: 0;
+  transition: all 0.3s ease;
+  color: #ffffff;
+}
+
+.ServiceCard:hover .ServiceOverlay {
+  background-color: rgba(20, 80, 145, 0.9);
+  opacity: 1;
+}
+
+.ServiceCardTitle {
+  font-size: 24px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 16px 0;
+  font-family: "OpenSans-Bold", sans-serif;
+}
+
+.ServiceCardDescription {
+  font-size: 16px;
+  line-height: 1.5;
+  color: #ffffff;
+  margin: 0 0 20px 0;
+}
+
+.ServiceLearnMore {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: color 0.3s ease;
+  margin-top: 8px;
+}
+
+.ServiceLearnMore:hover {
+  color: #ab4399;
+}
+
+.NewPatientSection {
+  background: url("/assets/images/new-patients-bg.jpg") no-repeat center center;
+  width: 100%;
+  padding: 40px 15px;
+  position: relative;
+  margin: 40px 40px 120px 40px;
+  max-width: 1448px;
+  height: 370px;
+}
+
+.NewPatientBanner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.NewPatientLeft {
+  padding: 0 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.NewPatientTitle {
+  color: #145091;
+  font-family: "OpenSans-Bold", sans-serif;
+  font-size: 60px;
+  line-height: 90%;
+  text-transform: uppercase;
+  margin: 0 0 14px 0;
+  line-height: 1.2;
+}
+
+.NewPatientDescription {
+  color: #fff;
+  font-family: "OpenSans-Semibold", sans-serif;
+  font-size: 16px;
+  line-height: 130%;
+  margin: 0;
+  font-weight: 400;
+}
+
+.NewPatientRight {
+  padding: 0px 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.OfferPriceContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.OfferPrice {
+  color: #fff;
+  font-family: OpenSans-Bold, sans-serif;
+  font-size: 150px;
+  font-weight: 700;
+  line-height: 100%;
+}
+
+.OfferDetails {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.OfferDetailItem {
+  color: #fff;
+  text-transform: uppercase;
+  /* letter-spacing: .5px; */
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 130%;
+}
+
+.OfferValue {
+  font-size: 18px;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 9px;
+  text-transform: uppercase;
+  margin-right: 65px;
+}
+
+.NewPatientLearnMoreButton {
+  background-color: #ab4399;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  padding: 17px 50px;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-right: 64px;
+}
+
+.NewPatientLearnMoreButton:hover {
+  background-color: #8b2d7a;
+}
+
+.ViewAllOffersContainer {
+  max-width: 1200px;
+  margin: 40px auto 0;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+
+.ViewAllOffersButton {
+  background-color: #ab4399;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  padding: 17px 50px;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 30px;
+}
+
+.ViewAllOffersButton:hover {
+  background-color: #8b2d7a;
+}
+
+/* Locations Section Styles */
+.LocationsSection {
+  background-color: #f9f9f9;
+  width: 100%;
+  padding: 30px 0;
+}
+
+.LocationsContainer {
+  max-width: 1520px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.LocationsTitle {
+  color: #145091;
+  font-size: 30px;
+  font-family: "OpenSans-Bold", sans-serif;
+  line-height: 100%;
+  margin: 0 0 15px;
+}
+
+.CarouselArrowsContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  max-width: 1520px;
+  width: 100%;
+  padding: 0;
+  position: relative;
+}
+
+.CarouselArrow {
+  background-color: rgba(0, 0, 0, 0.6);
+  border: none;
+  width: 40px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #d3d3d3;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  z-index: 2;
+}
+
+.CarouselArrowLeft {
+  position: absolute;
+  left: 0;
+  top: 200px;
+}
+
+.CarouselArrowRight {
+  position: absolute;
+  right: 0;
+  top: 200px;
+}
+
+.LocationsCarousel {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0;
+}
+
+.CarouselArrow:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #ffffff;
+}
+
+.CarouselContent {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+}
+
+.CarouselTrack {
+  display: flex;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+.CarouselPage {
+  display: flex;
+  flex: 0 0 100%;
+  min-width: 0;
+  gap: 3px;
+}
+
+.LocationCard {
+  flex: 0 0 25%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 0;
+}
+
+.LocationImageWrapper {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  overflow: hidden;
+  border-radius: 0;
+  cursor: pointer;
+}
+
+.LocationImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.LocationCard:hover .LocationImage {
+  transform: scale(1.02);
+}
+
+.LocationOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(20, 80, 145, 0);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-start;
+  padding: 25px 30px;
+  text-align: left;
+  opacity: 0;
+  transition: all 0.3s ease;
+  color: #ffffff;
+}
+
+.LocationCard:hover .LocationOverlay {
+  background-color: rgba(20, 80, 145, 0.95);
+  opacity: 1;
+}
+
+.LocationName {
+  font-size: 22px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 10px 0;
+  font-family: "OpenSans-Bold", sans-serif;
+  line-height: 1.3;
+}
+
+.LocationLearnMore {
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: color 0.3s ease;
+  letter-spacing: 0.5px;
+}
+
+.LocationLearnMore:hover {
+  color: #ab4399;
+}
+
+.CarouselDots {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.Dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: none;
+  background-color: #d3d3d3;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  padding: 0;
+}
+
+.DotActive {
+  background-color: #ab4399;
+}
+
+.Dot:hover {
+  background-color: #ab4399;
+}
+
+.SeeAllLocationsContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.SeeAllLocationsButton {
+  background-color: #ab4399;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  padding: 17px 50px;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  min-width: 250px;
+}
+
+.SeeAllLocationsButton:hover {
+  background-color: #8b2d7a;
+}
+
+/* Locations Responsive Design - Mobile and Tablet */
+
+/* Extra small devices (portrait phones, less than 576px) */
+@media (max-width: 575.98px) {
+  .LocationsSection {
+    padding: 40px 1rem;
+  }
+
+  .LocationsTitle {
+    font-size: 32px;
+    margin-bottom: 30px;
+  }
+
+  .CarouselArrowsContainer {
+    padding: 0;
+    max-width: 100%;
+  }
+
+  .LocationsCarousel {
+    padding: 0;
+  }
+
+  .LocationCard {
+    flex: 0 0 100%;
+    padding: 0;
+  }
+
+  .LocationImageWrapper {
+    height: 300px;
+  }
+
+  .LocationName {
+    font-size: 18px;
+  }
+
+  .CarouselArrow {
+    width: 35px;
+    height: 35px;
+  }
+
+  .CarouselArrowLeft {
+    left: 0;
+  }
+
+  .CarouselArrowRight {
+    right: 0;
+  }
+
+  .SeeAllLocationsButton {
+    padding: 14px 30px;
+    font-size: 13px;
+    min-width: 200px;
+  }
+}
+
+/* Portrait and Landscape - Mobile */
+@media (min-width: 0) and (max-width: 767.98px) {
+  .LocationsSection {
+    padding: 50px 1rem;
+  }
+
+  .LocationsTitle {
+    font-size: 36px;
+    margin-bottom: 35px;
+  }
+
+  .CarouselArrowsContainer {
+    padding: 0;
+    max-width: 100%;
+  }
+
+  .LocationsCarousel {
+    padding: 0;
+  }
+
+  .LocationCard {
+    flex: 0 0 100%;
+    padding: 0;
+  }
+
+  .LocationImageWrapper {
+    height: 350px;
+  }
+
+  .LocationOverlay {
+    padding: 20px 25px;
+  }
+
+  .LocationName {
+    font-size: 20px;
+  }
+
+  .CarouselArrow {
+    width: 38px;
+    height: 38px;
+  }
+}
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .LocationsSection {
+    padding: 50px 1.5rem;
+  }
+
+  .LocationsTitle {
+    font-size: 40px;
+  }
+
+  .CarouselArrowsContainer {
+    padding: 0;
+    max-width: 100%;
+  }
+
+  .LocationsCarousel {
+    padding: 0;
+  }
+
+  .LocationCard {
+    flex: 0 0 50%;
+    padding: 0;
+  }
+
+  .LocationImageWrapper {
+    height: 350px;
+  }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .LocationsSection {
+    padding: 60px 2rem;
+  }
+
+  .LocationsTitle {
+    font-size: 42px;
+  }
+
+  .CarouselArrowsContainer {
+    padding: 0;
+    max-width: 100%;
+  }
+
+  .LocationsCarousel {
+    padding: 0;
+  }
+
+  .LocationCard {
+    flex: 0 0 50%;
+    padding: 0;
+  }
+
+  .LocationImageWrapper {
+    height: 380px;
+  }
+
+  .LocationOverlay {
+    padding: 22px 28px;
+  }
+
+  .LocationName {
+    font-size: 21px;
+  }
+}
+
+/* Large devices (desktops, 992px and up) - Keep desktop layout unchanged */
+@media (min-width: 992px) {
+  /* Desktop styles remain unchanged */
+}
+
+/* Dentists Section Styles */
+.DentistsSection {
+  background-color: #ffffff;
+  width: 100%;
+  padding: 40px 15px;
+}
+
+.DentistsContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.DentistsTitle {
+  color: #145091;
+  font-size: 30px;
+  font-family: "OpenSans-Bold", sans-serif;
+  font-weight: 600;
+  line-height: 1.2;
+  margin: 0 0 20px 0;
+  text-align: center;
+}
+
+.DentistsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  width: 100%;
+}
+
+.DentistPanel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background-color: #ffffff;
+  padding: 30px 20px;
+  border-radius: 4px;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+}
+
+.DentistImageWrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 24px;
+  min-height: 200px;
+}
+
+.DentistImage {
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.DentistText {
+  color: #000;
+  font-family: "OpenSans-Regular", sans-serif;
+  font-size: 1rem;
+  line-height: 150%;
+  margin: 0;
+  text-align: center;
+}
+
+/* Dentists Section Responsive Design */
+
+/* Extra small devices (portrait phones, less than 576px) */
+@media (max-width: 575.98px) {
+  .DentistsSection {
+    padding: 40px 1rem;
+  }
+
+  .DentistsTitle {
+    font-size: 28px;
+    margin-bottom: 30px;
+  }
+
+  .DentistsGrid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .DentistPanel {
+    padding: 20px 15px;
+  }
+
+  .DentistImageWrapper {
+    min-height: 150px;
+  }
+}
+
+/* Portrait and Landscape - Mobile */
+@media (min-width: 0) and (max-width: 767.98px) {
+  .DentistsSection {
+    padding: 50px 1rem;
+  }
+
+  .DentistsTitle {
+    font-size: 32px;
+    margin-bottom: 40px;
+  }
+
+  .DentistsGrid {
     grid-template-columns: 1fr;
     gap: 40px;
   }
 
-  .StatisticsContainer {
+  .DentistPanel {
+    padding: 25px 20px;
+  }
+}
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .DentistsSection {
+    padding: 50px 1.5rem;
+  }
+
+  .DentistsTitle {
+    font-size: 34px;
+  }
+
+  .DentistsGrid {
     grid-template-columns: 1fr;
+    gap: 40px;
+  }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .DentistsSection {
+    padding: 60px 2rem;
+  }
+
+  .DentistsTitle {
+    font-size: 36px;
+    margin-bottom: 45px;
+  }
+
+  .DentistsGrid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+  }
+
+  .DentistPanel {
+    padding: 25px 15px;
+  }
+
+  .DentistImageWrapper {
+    min-height: 180px;
+  }
+}
+
+/* Gum Disease Section Styles */
+.GumDiseaseSection {
+  background-color: #f9f9f9;
+  width: 100%;
+  padding: 60px 15px;
+}
+
+.GumDiseaseContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 2.5fr;
+  gap: 40px;
+  align-items: center;
+  background: #53c0e9;
+  height: 265px;
+}
+
+.GumDiseaseLeft {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.GumDiseaseBookImage {
+  width: 100%;
+  height: auto;
+  max-width: 400px;
+  object-fit: contain;
+}
+
+.GumDiseaseRight {
+  flex-direction: column;
+  justify-content: center;
+  display: flex;
+  margin-bottom: 150px;
+}
+
+.GumDiseaseContent {
+  display: flex;
+  flex-direction: column;
+}
+
+.GumDiseaseDownloadLabel {
+  color: #fff;
+  font-family: "OpenSans-Regular", sans-serif;
+  font-size: 26px;
+  line-height: 100%;
+  margin: 0 0 5px;
+  text-transform: uppercase;
+}
+
+.GumDiseaseTitle {
+  color: #ffffff;
+  font-size: 36px;
+  font-weight: 700;
+  font-family: "OpenSans-Bold", sans-serif;
+  line-height: 1.2;
+  margin: 0;
+  text-transform: none;
+}
+
+.GumDiseaseSubtitle {
+  color: #ffffff;
+  font-size: 16px;
+  line-height: 1.5;
+  margin: 0;
+  font-family: "OpenSans-Regular", sans-serif;
+}
+
+.GumDiseaseForm {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.EmailInputWrapper {
+  display: flex;
+  align-items: center;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  padding: 12px 16px;
+  gap: 12px;
+  flex: 1;
+  max-width: 400px;
+}
+
+.MailIcon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.EmailInput {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 16px;
+  color: #333333;
+  flex: 1;
+  font-family: "OpenSans-Regular", sans-serif;
+}
+
+.EmailInput::placeholder {
+  color: #999999;
+}
+
+.DownloadButton {
+  background-color: #ab4399;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  padding: 17px 40px;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-family: "OpenSans-Bold", sans-serif;
+  white-space: nowrap;
+}
+
+.DownloadButton:hover {
+  background-color: #8b2d7a;
+}
+
+/* Gum Disease Section Responsive Design */
+
+/* Extra small devices (portrait phones, less than 576px) */
+@media (max-width: 575.98px) {
+  .GumDiseaseSection {
+    padding: 40px 1rem;
+  }
+
+  .GumDiseaseContainer {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .GumDiseaseTitle {
+    font-size: 28px;
+  }
+
+  .GumDiseaseForm {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .EmailInputWrapper {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .DownloadButton {
+    width: 100%;
+  }
+}
+
+/* Portrait and Landscape - Mobile */
+@media (min-width: 0) and (max-width: 767.98px) {
+  .GumDiseaseSection {
+    padding: 50px 1rem;
+  }
+
+  .GumDiseaseContainer {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .GumDiseaseTitle {
+    font-size: 32px;
+  }
+
+  .GumDiseaseForm {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .EmailInputWrapper {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .DownloadButton {
+    width: 100%;
+  }
+}
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .GumDiseaseSection {
+    padding: 50px 1.5rem;
+  }
+
+  .GumDiseaseContainer {
+    grid-template-columns: 1fr;
+    gap: 35px;
+  }
+
+  .GumDiseaseTitle {
+    font-size: 34px;
+  }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .GumDiseaseSection {
+    padding: 60px 2rem;
+  }
+
+  .GumDiseaseContainer {
+    grid-template-columns: 1fr 1.2fr;
+    gap: 35px;
+  }
+
+  .GumDiseaseTitle {
+    font-size: 32px;
+  }
+}
+
+/* Testimonials Section Styles */
+.TestimonialsSection {
+  background-color: #ffffff;
+  width: 100%;
+  padding: 80px 15px;
+}
+
+.TestimonialsContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.TestimonialsTitle {
+  color: #145091;
+  font-size: 36px;
+  font-weight: 700;
+  font-family: "OpenSans-Bold", sans-serif;
+  line-height: 1.2;
+  margin: 0 0 50px 0;
+  text-align: center;
+}
+
+.TestimonialsCarousel {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.TestimonialArrow {
+  background-color: #d3d3d3;
+  border: none;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #ffffff;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  border-radius: 4px;
+}
+
+.TestimonialArrow:hover {
+  background-color: #ab4399;
+}
+
+.TestimonialArrowLeft {
+  order: 1;
+}
+
+.TestimonialArrowRight {
+  order: 3;
+}
+
+.TestimonialsContent {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  order: 2;
+}
+
+.TestimonialsTrack {
+  display: flex;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+.TestimonialsPage {
+  display: flex;
+  flex: 0 0 100%;
+  min-width: 0;
+  gap: 0;
+  padding: 0 20px;
+}
+
+.TestimonialCard {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 30px;
+  background-color: #ffffff;
+  border: none;
+  border-radius: 4px;
+}
+
+.TestimonialCard:first-child {
+  border-right: 1px solid #e0e0e0;
+  padding-right: 45px;
+}
+
+.TestimonialCard:last-child {
+  padding-left: 45px;
+}
+
+.TestimonialName {
+  font-size: 28px;
+  font-weight: 700;
+  color: #000000;
+  font-family: "OpenSans-Bold", sans-serif;
+  margin: 0 0 8px 0;
+}
+
+.TestimonialLocation {
+  font-size: 16px;
+  color: #000000;
+  font-family: "OpenSans-Regular", sans-serif;
+  margin: 0 0 12px 0;
+}
+
+.TestimonialStars {
+  display: flex;
+  gap: 2px;
+  margin-bottom: 16px;
+}
+
+.Star {
+  color: #ffd700;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.TestimonialText {
+  font-size: 16px;
+  color: #000000;
+  font-family: "OpenSans-Regular", sans-serif;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.TestimonialDots {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  margin-top: 30px;
+}
+
+.TestimonialDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: none;
+  background-color: #d3d3d3;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  padding: 0;
+}
+
+.TestimonialDotActive {
+  background-color: #ab4399;
+}
+
+.TestimonialDot:hover {
+  background-color: #ab4399;
+}
+
+/* Testimonials Section Responsive Design */
+
+/* Extra small devices (portrait phones, less than 576px) */
+@media (max-width: 575.98px) {
+  .TestimonialsSection {
+    padding: 40px 1rem;
+  }
+
+  .TestimonialsTitle {
+    font-size: 28px;
+    margin-bottom: 30px;
+  }
+
+  .TestimonialsCarousel {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .TestimonialArrow {
+    width: 40px;
+    height: 40px;
+    order: 0;
+  }
+
+  .TestimonialArrowLeft {
+    align-self: flex-start;
+  }
+
+  .TestimonialArrowRight {
+    align-self: flex-end;
+  }
+
+  .TestimonialsContent {
+    order: 1;
+    width: 100%;
+  }
+
+  .TestimonialsPage {
+    flex-direction: column;
     gap: 20px;
+    padding: 0;
+  }
+
+  .TestimonialCard {
+    padding: 20px;
+  }
+
+  .TestimonialCard:first-child {
+    border-right: none;
+    border-bottom: 1px solid #e0e0e0;
+    padding-right: 20px;
+    padding-bottom: 20px;
+  }
+
+  .TestimonialCard:last-child {
+    padding-left: 20px;
+    padding-top: 20px;
+  }
+
+  .TestimonialName {
+    font-size: 24px;
+  }
+
+  .TestimonialText {
+    font-size: 14px;
+  }
+}
+
+/* Portrait and Landscape - Mobile */
+@media (min-width: 0) and (max-width: 767.98px) {
+  .TestimonialsSection {
+    padding: 50px 1rem;
+  }
+
+  .TestimonialsTitle {
+    font-size: 32px;
+    margin-bottom: 40px;
+  }
+
+  .TestimonialsCarousel {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .TestimonialArrow {
+    width: 45px;
+    height: 45px;
+  }
+
+  .TestimonialsPage {
+    flex-direction: column;
+    gap: 25px;
+    padding: 0;
+  }
+
+  .TestimonialCard {
+    padding: 25px;
+  }
+
+  .TestimonialCard:first-child {
+    border-right: none;
+    border-bottom: 1px solid #e0e0e0;
+    padding-right: 25px;
+    padding-bottom: 25px;
+  }
+
+  .TestimonialCard:last-child {
+    padding-left: 25px;
+    padding-top: 25px;
+  }
+}
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .TestimonialsSection {
+    padding: 50px 1.5rem;
+  }
+
+  .TestimonialsTitle {
+    font-size: 34px;
+  }
+
+  .TestimonialsPage {
+    flex-direction: column;
+  }
+
+  .TestimonialCard:first-child {
+    border-right: none;
+    border-bottom: 1px solid #e0e0e0;
+    padding-right: 25px;
+    padding-bottom: 25px;
+  }
+
+  .TestimonialCard:last-child {
+    padding-left: 25px;
+    padding-top: 25px;
+  }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .TestimonialsSection {
+    padding: 60px 2rem;
+  }
+
+  .TestimonialsTitle {
+    font-size: 36px;
+  }
+
+  .TestimonialsPage {
+    gap: 25px;
+    padding: 0 15px;
+  }
+
+  .TestimonialCard {
+    padding: 25px;
+  }
+}
+
+/* Insurance Section Styles */
+.InsuranceSection {
+  background-color: #f9f9f9;
+  width: 100%;
+  padding: 40px 15px;
+}
+
+.InsuranceContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.InsuranceTitle {
+  color: #145091;
+  font-size: 36px;
+  font-weight: 700;
+  font-family: "OpenSans-Bold", sans-serif;
+  line-height: 1.2;
+  margin: 0 0 50px 0;
+  text-align: center;
+}
+
+.InsuranceIconsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  width: 100%;
+}
+
+.InsuranceRow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  width: 100%;
+  justify-items: center;
+  align-items: center;
+}
+
+.InsuranceRow:last-child {
+  grid-template-columns: 1fr;
+  justify-content: center;
+}
+
+.InsuranceIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 200px;
+  height: 120px;
+  border-radius: 4px;
+  padding: 20px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.InsuranceIcon:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.InsuranceIconPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+  font-size: 14px;
+  text-align: center;
+}
+
+.InsuranceDescription {
+  color: #333333;
+  font-size: 16px;
+  line-height: 1.6;
+  text-align: center;
+  margin: 0 0 30px 0;
+  max-width: 800px;
+}
+
+.InsuranceLearnMoreButton {
+  background-color: #ab4399;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  padding: 17px 50px;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.InsuranceLearnMoreButton:hover {
+  background-color: #8b2d7a;
+}
+
+/* Insurance Section Responsive Design */
+
+/* Extra small devices (portrait phones, less than 576px) */
+@media (max-width: 575.98px) {
+  .InsuranceSection {
+    padding: 40px 1rem;
+  }
+
+  .InsuranceTitle {
+    font-size: 28px;
+    margin-bottom: 30px;
+  }
+
+  .InsuranceIconsGrid {
+    gap: 20px;
+  }
+
+  .InsuranceRow {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+
+  .InsuranceRow:last-child {
+    grid-template-columns: 1fr;
+  }
+
+  .InsuranceIcon {
+    max-width: 100%;
+    height: 100px;
+    padding: 15px;
+  }
+
+  .InsuranceDescription {
+    font-size: 14px;
+    margin-bottom: 25px;
+  }
+
+  .InsuranceLearnMoreButton {
+    padding: 14px 40px;
+    font-size: 13px;
+  }
+}
+
+/* Portrait and Landscape - Mobile */
+@media (min-width: 0) and (max-width: 767.98px) {
+  .InsuranceSection {
+    padding: 50px 1rem;
+  }
+
+  .InsuranceTitle {
+    font-size: 32px;
+    margin-bottom: 40px;
+  }
+
+  .InsuranceIconsGrid {
+    gap: 25px;
+  }
+
+  .InsuranceRow {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .InsuranceRow:last-child {
+    grid-template-columns: 1fr;
+  }
+
+  .InsuranceIcon {
+    max-width: 100%;
+    height: 110px;
+  }
+
+  .InsuranceDescription {
+    font-size: 15px;
+    margin-bottom: 25px;
+  }
+}
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .InsuranceSection {
+    padding: 50px 1.5rem;
+  }
+
+  .InsuranceTitle {
+    font-size: 34px;
+  }
+
+  .InsuranceRow {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .InsuranceSection {
+    padding: 60px 2rem;
+  }
+
+  .InsuranceTitle {
+    font-size: 36px;
+  }
+
+  .InsuranceRow {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+
+  .InsuranceIcon {
+    max-width: 180px;
+    height: 110px;
   }
 }

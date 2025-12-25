@@ -95,9 +95,11 @@
 
 .FeaturesSection {
   background-color: #f9f9f9;
-  padding: 80px 15px;
   width: 100%;
   height: 450px;
+  padding: 15px 15px;
+  display: flex;
+  align-items: center;
 }
 
 .FeaturesContainer {
@@ -113,7 +115,9 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  max-width: 310px;
+  max-width: 400px;
+  padding: 30px;
+  min-height: 410px;
 }
 
 .FeatureCard:hover {

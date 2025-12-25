@@ -1,0 +1,462 @@
+.navbar {
+  position: sticky;
+  width: 100%;
+  height: 80px;
+  background-color: #ffffff;
+  z-index: 1000;
+}
+
+.container {
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  max-width: 1400px;
+  height: 90px;
+  display: flex;
+  position: relative;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  transition: opacity 0.3s ease;
+  flex-shrink: 0;
+}
+
+.logo:hover {
+  opacity: 0.9;
+}
+
+.logoImage {
+  object-fit: contain;
+  width: auto;
+  height: 60px;
+  display: block;
+  margin-left: 160px;
+}
+
+.navLinks {
+  display: flex;
+  list-style: none;
+  gap: 1.5rem;
+  align-items: center;
+  flex: 1;
+  justify-content: center;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.navLinks.hidden {
+  display: none;
+}
+
+.navLink {
+  text-decoration: none;
+  color: #333333;
+  font-weight: 600;
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  transition: color 0.3s ease;
+  position: relative;
+  padding: 0.5rem 0;
+  white-space: nowrap;
+}
+
+.navLink::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: #1a5f7a;
+  transition: width 0.3s ease;
+}
+
+.navLink:hover {
+  color: #1a5f7a;
+}
+
+.navLink:hover::after {
+  width: 100%;
+}
+
+.rightActions {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-shrink: 0;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.rightActions.hidden {
+  display: none;
+}
+
+.searchBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.3s ease;
+  color: #333333;
+}
+
+.searchBtn:hover {
+  opacity: 0.7;
+}
+
+.searchIcon {
+  width: 20px;
+  height: 20px;
+}
+
+.bookNowBtn {
+  background-color: #AB4399;
+  color: #ffffff;
+  padding: 0.75rem 1.75rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  border: 2px solid #AB4399;
+  white-space: nowrap;
+}
+
+.bookNowBtn:hover {
+  background-color: #6d28d9;
+  border-color: #6d28d9;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+}
+
+.searchBar {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) translateX(-200%);
+  opacity: 0;
+  visibility: hidden;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  min-width: 400px;
+  max-width: 600px;
+  width: 100%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.4s ease, opacity 0.4s ease, visibility 0.4s ease;
+  z-index: 10;
+}
+
+.searchBarOpen {
+  transform: translate(-50%, -50%) translateX(0);
+  opacity: 1;
+  visibility: visible;
+}
+
+.searchInput {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  color: #333333;
+  background: transparent;
+  padding: 0.5rem 0;
+}
+
+.searchInput::placeholder {
+  color: #9ca3af;
+}
+
+.applyBtn {
+  background-color: #AB4399;
+  color: #ffffff;
+  border: none;
+  padding: 0.5rem 1.25rem;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  white-space: nowrap;
+}
+
+.applyBtn:hover {
+  background-color: #6d28d9;
+}
+
+.closeBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+  transition: color 0.3s ease;
+}
+
+.closeBtn:hover {
+  color: #333333;
+}
+
+.menuToggle {
+  display: none;
+  flex-direction: column;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  gap: 4px;
+  z-index: 1001;
+}
+
+.menuToggle span {
+  width: 25px;
+  height: 3px;
+  background-color: #333333;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+/* Mobile Menu Overlay */
+.mobileMenuOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.mobileMenuOverlay.mobileMenuOpen {
+  opacity: 1;
+  visibility: visible;
+}
+
+.mobileMenuContent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  max-width: 100%;
+  height: 100vh;
+  background-color: #ffffff;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.mobileMenuClose {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #333333;
+  transition: color 0.3s ease;
+  z-index: 10000;
+  width: 24px;
+  height: 24px;
+}
+
+.mobileMenuClose:hover {
+  color: #1a5f7a;
+}
+
+.mobileNavLinks {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+  margin-top: 4rem;
+  padding: 0 1.5rem;
+}
+
+.mobileNavLinks li {
+  width: 100%;
+}
+
+.mobileNavLink {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-decoration: none;
+  color: #333333;
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid #e5e7eb;
+  transition: color 0.3s ease;
+  position: relative;
+  width: 100%;
+}
+
+.mobileNavLink::after {
+  content: ">";
+  font-size: 1.2rem;
+  color: #333333;
+  font-weight: 400;
+  margin-left: auto;
+}
+
+.mobileNavLink:hover {
+  color: #1a5f7a;
+}
+
+/* Responsive Design */
+
+/* Extra small devices (portrait phones, less than 576px) */
+@media (max-width: 575.98px) {
+  .navLinks {
+    display: none;
+  }
+
+  .bookNowBtn {
+    display: none;
+  }
+
+  .menuToggle {
+    display: flex;
+  }
+
+  .logoImage {
+    margin-left: 1rem;
+  }
+
+  .container {
+    padding: 0 1rem;
+  }
+}
+
+/* Portrait and Landscape - Mobile */
+@media (min-width: 0) and (max-width: 767.98px) {
+  .navLinks {
+    display: none;
+  }
+
+  .bookNowBtn {
+    display: none;
+  }
+
+  .menuToggle {
+    display: flex;
+  }
+
+  .logoImage {
+    margin-left: 1rem;
+  }
+
+  .container {
+    padding: 0 1rem;
+    justify-content: space-between;
+  }
+}
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .navLinks {
+    display: none;
+  }
+
+  .bookNowBtn {
+    display: none;
+  }
+
+  .menuToggle {
+    display: flex;
+  }
+
+  .logoImage {
+    margin-left: 1.5rem;
+  }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .navLinks {
+    display: none;
+  }
+
+  .bookNowBtn {
+    display: none;
+  }
+
+  .menuToggle {
+    display: flex;
+  }
+
+  .logoImage {
+    margin-left: 2rem;
+  }
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  .menuToggle {
+    display: none;
+  }
+
+  .mobileMenuOverlay {
+    display: none;
+  }
+}
+
+/* For small desktop 1280 resolution */
+@media (min-width: 1200px) and (max-width: 1299.98px) {
+  .menuToggle {
+    display: none;
+  }
+
+  .mobileMenuOverlay {
+    display: none;
+  }
+}
+
+@media (min-width: 1200px) {
+  .menuToggle {
+    display: none;
+  }
+
+  .mobileMenuOverlay {
+    display: none;
+  }
+}
+
+@media (min-width: 1300px) {
+  .menuToggle {
+    display: none;
+  }
+
+  .mobileMenuOverlay {
+    display: none;
+  }
+}

@@ -8,6 +8,11 @@
   flex-wrap: wrap;
 }
 
+/* Mobile Sticky Section - Hidden by default, shown only in mobile media query */
+.MobileStickySection {
+  display: none;
+}
+
 .BannerContent {
   padding: 0px 15px;
   margin: 60px 141px 0;
@@ -2577,5 +2582,135 @@
 
   .CarouselArrowRight {
     top: 180px
+  }
+}
+
+/* Jarvis Scheduler Styles */
+.jarvisSchedulerWrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10000;
+  pointer-events: none;
+  display: none;
+  width: 0;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  visibility: hidden;
+}
+
+.jarvisSchedulerWrapper > * {
+  pointer-events: auto;
+}
+
+.jarvisManualTrigger {
+  text-align: center;
+  margin-top: 20px;
+  padding: 20px;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 10001;
+}
+
+.jarvisManualTrigger p {
+  margin-bottom: 15px;
+  color: #666;
+  font-size: 16px;
+}
+
+.jarvisManualTrigger button {
+  padding: 12px 24px;
+  background-color: #ab4399;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.jarvisManualTrigger button:hover {
+  background-color: #8b2d7a;
+}
+
+.jarvisErrorMessage {
+  color: #d32f2f;
+  font-size: 16px;
+  text-align: center;
+  padding: 40px;
+  background-color: #ffebee;
+  border-radius: 4px;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 10001;
+}
+
+/* Ensure Jarvis modal is visible and properly styled */
+:global([id*="jarvis"]),
+:global(jarvis-scheduler-v2),
+:global(#jarvis-iframe),
+:global([class*="jarvis"]) {
+  z-index: 10000 !important;
+  position: relative;
+}
+
+:global([id*="jarvis"] iframe),
+:global(jarvis-scheduler-v2 iframe) {
+  z-index: 10001 !important;
+  position: relative;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Ensure modal overlay is visible */
+:global([class*="modal"]),
+:global([class*="overlay"]),
+:global([id*="modal"]) {
+  z-index: 9999 !important;
+}
+
+/* Fix shadow DOM visibility */
+:global(jarvis-scheduler-v2) {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  z-index: 10000 !important;
+}
+
+:global(jarvis-scheduler-v2::part(shadow-root)) {
+  display: block !important;
+  visibility: visible !important;
+}
+
+/* Mobile Responsive for Jarvis */
+@media (max-width: 768px) {
+  .jarvisSchedulerWrapper {
+    min-height: 500px;
+  }
+
+  .jarvisManualTrigger {
+    padding: 15px;
+    bottom: 10px;
+    right: 10px;
+    left: 10px;
+  }
+
+  .jarvisManualTrigger p {
+    font-size: 14px;
+  }
+
+  .jarvisManualTrigger button {
+    padding: 10px 20px;
+    font-size: 14px;
   }
 }

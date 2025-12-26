@@ -170,9 +170,16 @@ export default function Navbar() {
               />
             </svg>
           </button>
-          <Link href="/appointment" className={styles.bookNowBtn}>
+          <button 
+            className={styles.bookNowBtn}
+            onClick={() => {
+              if (typeof window !== "undefined" && (window as any).openJarvisScheduler) {
+                (window as any).openJarvisScheduler();
+              }
+            }}
+          >
             BOOK NOW
-          </Link>
+          </button>
         </div>
 
         <button

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense, useRef, useCallback } from "react";
 import Navbar from "./components/Navbar/page";
 import Footer from "./components/Footer/page";
 import Image from "next/image";
@@ -13,6 +13,11 @@ import type {
   ParagraphTextImageSection,
   HomePageSection,
 } from "./lib/types";
+
+// Dev-only logging
+const isDev = process.env.NODE_ENV === 'development';
+const log = isDev ? console.log : () => {};
+const logError = isDev ? console.error : () => {};
 
 interface Location {
   id: number;
@@ -133,6 +138,15 @@ export default function Home() {
   const [showScrollToTop, setShowScrollToTop] = useState(false);
   const [pageData, setPageData] = useState<PageByRouteResponse | null>(null);
   const [loading, setLoading] = useState(true);
+  
+  // Jarvis scheduler refs and state
+  const scriptLoadedRef = useRef(false);
+  const schedulerInitializedRef = useRef(false);
+  const jarvisSchedulerRef = useRef<any>(null);
+  const observerRef = useRef<MutationObserver | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const [jarvisError, setJarvisError] = useState<string | null>(null);
+  const [showManualTrigger, setShowManualTrigger] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -155,6 +169,366 @@ export default function Home() {
       }
     };
     loadPageData();
+  }, []);
+
+  const getContainer = useCallback(() => {
+    return containerRef.current || document.getElementById("jarvis-scheduler-container");
+  }, []);
+
+  const loadJarvisScript = useCallback(() => {
+    return new Promise<void>((resolve, reject) => {
+      if (scriptLoadedRef.current) {
+        resolve();
+        return;
+      }
+
+      const existingInitScript = document.querySelector('script[src*="init.min.js"]');
+      const existingSchedulerScript = document.querySelector('script[src*="jarvis-scheduler-v2.min.js"]');
+      const customElementDefined = customElements.get('jarvis-scheduler-v2');
+      
+      if (existingInitScript && (window as any).JarvisAnalyticsScheduler && 
+          (customElementDefined || existingSchedulerScript)) {
+        scriptLoadedRef.current = true;
+        resolve();
+        return;
+      }
+
+      const initScript = document.createElement("script");
+      initScript.src = "https://schedule.jarvisanalytics.com/js/init.min.js";
+      initScript.async = true;
+      initScript.defer = true;
+      
+      initScript.onload = () => {
+        let attempts = 0;
+        const maxAttempts = 20;
+        const checkConstructor = setInterval(() => {
+          attempts++;
+          if ((window as any).JarvisAnalyticsScheduler) {
+            clearInterval(checkConstructor);
+            
+            if (customElements.get('jarvis-scheduler-v2')) {
+              scriptLoadedRef.current = true;
+              resolve();
+              return;
+            }
+            
+            // Prevent double registration of custom element
+            if (!customElements.get('jarvis-scheduler-v2')) {
+              const schedulerScript = document.createElement("script");
+              schedulerScript.id = "jarvis-scheduler";
+              schedulerScript.src = "https://schedule.jarvisanalytics.com/js/jarvis-scheduler-v2.min.js";
+              schedulerScript.async = true;
+              schedulerScript.defer = true;
+              
+              schedulerScript.onload = () => {
+                scriptLoadedRef.current = true;
+                resolve();
+              };
+              
+              schedulerScript.onerror = () => {
+                scriptLoadedRef.current = true;
+                resolve();
+              };
+              
+              document.head.appendChild(schedulerScript);
+            } else {
+              scriptLoadedRef.current = true;
+              resolve();
+            }
+          } else if (attempts >= maxAttempts) {
+            clearInterval(checkConstructor);
+            reject(new Error("JarvisAnalyticsScheduler constructor not available"));
+          }
+        }, 150);
+      };
+      
+      initScript.onerror = () => reject(new Error("Failed to load init.min.js"));
+      document.head.appendChild(initScript);
+    });
+  }, []);
+
+  const initializeJarvisScheduler = useCallback((): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      if ((window as any).__jarvisInitialized || schedulerInitializedRef.current) {
+        resolve();
+        return;
+      }
+
+      const container = getContainer();
+      if (!container) {
+        setShowManualTrigger(true);
+        reject(new Error("Container not found"));
+        return;
+      }
+
+      // CRITICAL: Show container BEFORE initialization
+      container.style.display = "block";
+      container.style.visibility = "visible";
+      container.style.width = "100%";
+      container.style.height = "100%";
+      container.style.position = "fixed";
+      container.style.top = "0";
+      container.style.left = "0";
+      container.style.right = "0";
+      container.style.bottom = "0";
+      container.style.margin = "0";
+      container.style.padding = "0";
+
+      const init = () => {
+        if (!(window as any).JarvisAnalyticsScheduler) {
+          setShowManualTrigger(true);
+          reject(new Error("Constructor not available"));
+          return;
+        }
+
+        try {
+          const jarvis = new (window as any).JarvisAnalyticsScheduler({
+            token: "52727|WstQGHi6U7ogt0V3YvL88pF5UsM2opZD63JeNhQ71731e6a2",
+            locationId: "5915",
+            companyId: "60",
+            containerId: "jarvis-scheduler-container",
+            colors: (window as any).jarvisFormColors || {},
+            showPhoneNumber: false,
+          });
+          
+          (window as any).jarvis = jarvis;
+          jarvisSchedulerRef.current = jarvis;
+          (window as any).__jarvisInitialized = true;
+          schedulerInitializedRef.current = true;
+
+          // UTM tracking
+          const extractUTM = (paramName: string) => {
+            const paramValue = new URLSearchParams(window.location.search).get(paramName) || '';
+            return paramValue || document.cookie.replace(new RegExp(`(?:(?:^|.*;\\s*)${paramName}\\s*=\\s*([^;]*).*$)|^.*$`), "$1") || '';
+          };
+          
+          const utmParams = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'gclid'];
+          const isUTMPresent = utmParams.some(param => extractUTM(param).length > 0);
+          
+          if (isUTMPresent) {
+            const utmValues = utmParams.map(param => `${param}=${extractUTM(param)}`).join('&');
+            const fullURL = `${window.location.href}?${utmValues}`;
+            jarvis.referrer = fullURL;
+            const expirationDate = new Date();
+            expirationDate.setDate(expirationDate.getDate() + 30);
+            document.cookie = `referrer_url=${fullURL}; path=/; expires=${expirationDate.toUTCString()}`;
+          } else {
+            jarvis.referrer = extractUTM('referrer_url') || '';
+          }
+
+          // DataLayer tracking
+          if (typeof jarvis.onNextStep === 'function') {
+            jarvis.onNextStep((event: any) => {
+              if (event.event === 'scheduling-success') {
+                (window as any).dataLayer = (window as any).dataLayer || [];
+                (window as any).dataLayer.push({'event': 'online_scheduler_form'});
+              }
+            });
+          }
+
+          // CRITICAL: Call render() first to create the component
+          if (typeof jarvis.render === 'function') {
+            try {
+              jarvis.render("jarvis-scheduler-container");
+            } catch {
+              try {
+                jarvis.render({ containerId: "jarvis-scheduler-container" });
+              } catch {
+                jarvis.render();
+              }
+            }
+          } else if (typeof jarvis.loadApp === 'function') {
+            jarvis.loadApp("jarvis-scheduler-container");
+          }
+
+          const locationTitle = new URLSearchParams(window.location.search).get('location_title');
+          
+          // Wait for component element to be created in DOM (optimized polling)
+          let attempts = 0;
+          const maxAttempts = 40;
+          let pollInterval: ReturnType<typeof setInterval> | null = null;
+          
+          const checkComponent = () => {
+            attempts++;
+            const component = document.querySelector("jarvis-scheduler-v2") as HTMLElement;
+            
+            if (component) {
+              if (pollInterval) clearInterval(pollInterval);
+              
+              const container = getContainer();
+              if (container && !container.contains(component)) {
+                container.appendChild(component as Node);
+              }
+              
+              // Style shadow DOM for visibility
+              if ((component as any).shadowRoot) {
+                const shadowApp = (component as any).shadowRoot.querySelector("#app");
+                if (shadowApp) {
+                  shadowApp.style.position = "relative";
+                  shadowApp.style.visibility = "visible";
+                  shadowApp.style.opacity = "1";
+                  shadowApp.style.display = "block";
+                  shadowApp.style.zIndex = "10001";
+                }
+                
+                // Ensure all content in shadow root is visible
+                const shadowContent = (component as any).shadowRoot.querySelectorAll("*");
+                shadowContent.forEach((el: HTMLElement) => {
+                  if (el.style) {
+                    el.style.visibility = "visible";
+                    el.style.opacity = "1";
+                  }
+                });
+              }
+              
+              // Ensure component itself is visible
+              component.style.display = "block";
+              component.style.visibility = "visible";
+              component.style.opacity = "1";
+              component.style.zIndex = "10000";
+              component.style.position = "relative";
+              
+              // Set city field if location title exists
+              if (locationTitle) {
+                setTimeout(() => {
+                  const cityField = document.querySelector('#city-field') as HTMLInputElement;
+                  if (cityField) {
+                    cityField.value = locationTitle;
+                  }
+                }, 300);
+              }
+              
+              // Wait for component to fully initialize, then call toggle()
+              // Check if component property exists (indicates component is ready)
+              let toggleAttempts = 0;
+              const maxToggleAttempts = 10;
+              
+              const tryToggle = () => {
+                toggleAttempts++;
+                if (typeof jarvis.toggle === 'function') {
+                  // Check if component exists (means it's initialized)
+                  if (jarvis.component || toggleAttempts >= maxToggleAttempts) {
+                    try {
+                      jarvis.toggle();
+                      
+                      // After toggle, ensure modal is visible
+                      setTimeout(() => {
+                        // Find and ensure modal/overlay elements are visible
+                        const modalElements = document.querySelectorAll('[id*="jarvis"], [class*="jarvis"], [class*="modal"], [class*="overlay"]');
+                        modalElements.forEach((el: Element) => {
+                          const htmlEl = el as HTMLElement;
+                          htmlEl.style.display = "block";
+                          htmlEl.style.visibility = "visible";
+                          htmlEl.style.opacity = "1";
+                          htmlEl.style.zIndex = "10000";
+                        });
+                        
+                        // Ensure iframes are visible
+                        const iframes = document.querySelectorAll('iframe[id*="jarvis"], iframe[src*="jarvis"]');
+                        iframes.forEach((iframe: Element) => {
+                          const htmlIframe = iframe as HTMLElement;
+                          htmlIframe.style.visibility = "visible";
+                          htmlIframe.style.opacity = "1";
+                          htmlIframe.style.zIndex = "10001";
+                        });
+                      }, 100);
+                    } catch (err) {
+                      logError("Error calling toggle:", err);
+                    }
+                  } else {
+                    // Component not ready yet, try again
+                    setTimeout(tryToggle, 100);
+                    return;
+                  }
+                }
+                setShowManualTrigger(false);
+                resolve();
+              };
+              
+              // Start trying toggle after a short delay
+              setTimeout(tryToggle, 200);
+              
+            } else if (attempts >= maxAttempts) {
+              if (pollInterval) clearInterval(pollInterval);
+              logError("Component not found after timeout");
+              setShowManualTrigger(true);
+              resolve();
+            }
+          };
+          
+          // Start polling with optimized interval
+          pollInterval = setInterval(checkComponent, 100);
+          
+        } catch (error) {
+          logError("Error initializing Jarvis scheduler:", error);
+          setShowManualTrigger(true);
+          setJarvisError(error instanceof Error ? error.message : "Failed to initialize scheduler");
+          reject(error);
+        }
+      };
+
+      // Start immediately if DOM ready, otherwise wait for DOMContentLoaded
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init, { once: true });
+      } else {
+        init();
+      }
+    });
+  }, [getContainer]);
+
+  // Function to open Jarvis scheduler popup
+  const openJarvisScheduler = useCallback(async () => {
+    try {
+      // Load script if not already loaded
+      await loadJarvisScript();
+      
+      // Initialize if not already initialized
+      if (!schedulerInitializedRef.current) {
+        await initializeJarvisScheduler();
+      } else {
+        // If already initialized, ensure container is visible and toggle it open
+        const container = getContainer();
+        if (container) {
+          container.style.display = "block";
+          container.style.visibility = "visible";
+          container.style.width = "100%";
+          container.style.height = "100%";
+          container.style.position = "fixed";
+          container.style.top = "0";
+          container.style.left = "0";
+          container.style.right = "0";
+          container.style.bottom = "0";
+          container.style.margin = "0";
+          container.style.padding = "0";
+        }
+        const scheduler = jarvisSchedulerRef.current || (window as any).jarvis;
+        if (scheduler?.toggle) {
+          scheduler.toggle();
+        }
+      }
+    } catch (error) {
+      setJarvisError(error instanceof Error ? error.message : "Failed to load scheduler");
+    }
+  }, [loadJarvisScript, initializeJarvisScheduler, getContainer]);
+
+  // Expose function globally so Navbar can call it
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      (window as any).openJarvisScheduler = openJarvisScheduler;
+    }
+    return () => {
+      if (typeof window !== "undefined") {
+        delete (window as any).openJarvisScheduler;
+      }
+    };
+  }, [openJarvisScheduler]);
+
+  const handleManualTrigger = useCallback(() => {
+    const scheduler = jarvisSchedulerRef.current || (window as any).jarvis;
+    if (scheduler?.toggle) {
+      scheduler.toggle();
+      setShowManualTrigger(false);
+    }
   }, []);
 
   // Helper function to check section type
@@ -240,15 +614,15 @@ export default function Home() {
               <p className={styles.BannerSubtitle}>
                 {heroSection.headingLarge
                   ? heroSection.headingLarge.replace(/\s+/g, " ").split(" ").map((word, index, array) => {
-                      const midPoint = Math.floor(array.length / 2);
-                      return (
-                        <span key={index}>
-                          {word}
-                          {index < array.length - 1 && " "}
-                          {index === midPoint - 1 && <br />}
-                        </span>
-                      );
-                    })
+                    const midPoint = Math.floor(array.length / 2);
+                    return (
+                      <span key={index}>
+                        {word}
+                        {index < array.length - 1 && " "}
+                        {index === midPoint - 1 && <br />}
+                      </span>
+                    );
+                  })
                   : "Right Around the corner"}
               </p>
               <div className={styles.SearchBar}>
@@ -507,9 +881,8 @@ export default function Home() {
               {Array.from({ length: totalPages }).map((_, index) => (
                 <button
                   key={index}
-                  className={`${styles.Dot} ${
-                    index === currentPage ? styles.DotActive : ""
-                  }`}
+                  className={`${styles.Dot} ${index === currentPage ? styles.DotActive : ""
+                    }`}
                   onClick={() => handleDotClick(index)}
                   aria-label={`Go to page ${index + 1}`}
                 />
@@ -716,11 +1089,10 @@ export default function Home() {
               {Array.from({ length: totalTestimonialPages }).map((_, index) => (
                 <button
                   key={index}
-                  className={`${styles.TestimonialDot} ${
-                    index === currentTestimonialPage
+                  className={`${styles.TestimonialDot} ${index === currentTestimonialPage
                       ? styles.TestimonialDotActive
                       : ""
-                  }`}
+                    }`}
                   onClick={() => handleTestimonialDotClick(index)}
                   aria-label={`Go to testimonial page ${index + 1}`}
                 />
@@ -776,7 +1148,24 @@ export default function Home() {
           </div>
         </section>
       </main>
-
+      <div className={styles.MobileStickySection}>
+        <div className={styles.MobileStickyDivider}></div>
+        <div className={styles.MobileStickyContent}>
+          <button className={styles.MobileStickyButton}>
+            FIND A LOCATION
+          </button>
+          <button 
+            className={styles.MobileStickyButton}
+            onClick={() => {
+              if (typeof window !== "undefined" && (window as any).openJarvisScheduler) {
+                (window as any).openJarvisScheduler();
+              }
+            }}
+          >
+            BOOK AN APPOINTMENT
+          </button>
+        </div>
+      </div>
       <Footer />
       {showScrollToTop && (
         <button
@@ -786,6 +1175,34 @@ export default function Home() {
         >
           <i className="fa fa-chevron-up"></i>
         </button>
+      )}
+      {/* Jarvis Scheduler Container - Hidden by default */}
+      <div
+        ref={containerRef}
+        className={styles.jarvisSchedulerWrapper}
+        id="jarvis-scheduler-container"
+        style={{ 
+          display: 'none',
+          width: '0',
+          height: '0',
+          margin: '0',
+          padding: '0'
+        }}
+      />
+      {jarvisError && (
+        <div className={styles.jarvisErrorMessage}>
+          <strong>Unable to load appointment scheduler</strong>
+          <br />
+          {jarvisError}
+        </div>
+      )}
+      {!jarvisError && showManualTrigger && (
+        <div className={styles.jarvisManualTrigger}>
+          <p>The scheduler is ready but may need to be opened manually.</p>
+          <button onClick={handleManualTrigger}>
+            Open Appointment Scheduler
+          </button>
+        </div>
       )}
     </>
   );

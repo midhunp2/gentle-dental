@@ -748,6 +748,158 @@ export default function Home() {
             </div>
           </section>
         )}
+        <section className={styles.ServicesSection}>
+          <div className={styles.ServicesContainer}>
+            <div className={styles.ServicesHeader}>
+              <h2 className={styles.ServicesTitle}>Our Services</h2>
+              <p className={styles.ServicesDescription}>
+                Gentle Dental dentists provide award-winning care. From
+                cleanings and exams to more specialized services such as root
+                canals and crowns, we provide all dental services under one roof
+                saving you time and money. All Gentle Dental practices offer
+                orthodontics for both adults and children including traditional
+                braces and Invisalign® clear aligners.
+              </p>
+              <button className={styles.ViewAllServicesButton}>
+                VIEW ALL SERVICES
+              </button>
+            </div>
+            <div className={styles.ServicesGrid}>
+              <div className={styles.ServiceCard}>
+                <div className={styles.ServiceImageWrapper}>
+                  <Image
+                    src="/assets/images/preventive-dentistry-thumbnail.webp"
+                    alt="Preventive Care"
+                    width={400}
+                    height={300}
+                    className={styles.ServiceImage}
+                  />
+                  <div className={styles.ServiceOverlay}>
+                    <h3 className={styles.ServiceCardTitle}>Preventive Care</h3>
+                    <p className={styles.ServiceCardDescription}>
+                      Routine dental checkups are important for a healthy and
+                      confident smile.
+                    </p>
+                    <a href="#" className={styles.ServiceLearnMore}>
+                      LEARN MORE &gt;
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <div className={styles.ServiceCard}>
+                <div className={styles.ServiceImageWrapper}>
+                  <Image
+                    src="/assets/images/gentle-dental-patients-come-first.jpg"
+                    alt="Emergency Dental Care"
+                    width={400}
+                    height={300}
+                    className={styles.ServiceImage}
+                  />
+                  <div className={styles.ServiceOverlay}>
+                    <h3 className={styles.ServiceCardTitle}>
+                      Emergency Dental Care
+                    </h3>
+                    <p className={styles.ServiceCardDescription}>
+                      Get immediate care when you need it most. We&apos;re here
+                      for your dental emergencies.
+                    </p>
+                    <a href="#" className={styles.ServiceLearnMore}>
+                      LEARN MORE &gt;
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <div className={styles.ServiceCard}>
+                <div className={styles.ServiceImageWrapper}>
+                  <Image
+                    src="/assets/images/gentle-dental-patients-come-first.jpg"
+                    alt="Orthodontics"
+                    width={400}
+                    height={300}
+                    className={styles.ServiceImage}
+                  />
+                  <div className={styles.ServiceOverlay}>
+                    <h3 className={styles.ServiceCardTitle}>Orthodontics</h3>
+                    <p className={styles.ServiceCardDescription}>
+                      Straighten your smile with traditional braces or
+                      Invisalign clear aligners.
+                    </p>
+                    <a href="#" className={styles.ServiceLearnMore}>
+                      LEARN MORE &gt;
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <div className={styles.ServiceCard}>
+                <div className={styles.ServiceImageWrapper}>
+                  <Image
+                    src="/assets/images/gentle-dental-patients-come-first.jpg"
+                    alt="Oral Surgery"
+                    width={400}
+                    height={300}
+                    className={styles.ServiceImage}
+                  />
+                  <div className={styles.ServiceOverlay}>
+                    <h3 className={styles.ServiceCardTitle}>Oral Surgery</h3>
+                    <p className={styles.ServiceCardDescription}>
+                      Expert surgical procedures performed with care and
+                      precision.
+                    </p>
+                    <a href="#" className={styles.ServiceLearnMore}>
+                      LEARN MORE &gt;
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <div className={styles.ServiceCard}>
+                <div className={styles.ServiceImageWrapper}>
+                  <Image
+                    src="/assets/images/gentle-dental-patients-come-first.jpg"
+                    alt="Pediatric Dentistry"
+                    width={400}
+                    height={300}
+                    className={styles.ServiceImage}
+                  />
+                  <div className={styles.ServiceOverlay}>
+                    <h3 className={styles.ServiceCardTitle}>
+                      Pediatric Dentistry
+                    </h3>
+                    <p className={styles.ServiceCardDescription}>
+                      Specialized dental care for children in a comfortable and
+                      friendly environment.
+                    </p>
+                    <a href="#" className={styles.ServiceLearnMore}>
+                      LEARN MORE &gt;
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <div className={styles.ServiceCard}>
+                <div className={styles.ServiceImageWrapper}>
+                  <Image
+                    src="/assets/images/gentle-dental-patients-come-first.jpg"
+                    alt="Cosmetic Dentistry"
+                    width={400}
+                    height={300}
+                    className={styles.ServiceImage}
+                  />
+                  <div className={styles.ServiceOverlay}>
+                    <h3 className={styles.ServiceCardTitle}>
+                      Cosmetic Dentistry
+                    </h3>
+                    <p className={styles.ServiceCardDescription}>
+                      Enhance your smile with our cosmetic dental treatments and
+                      procedures.
+                    </p>
+                    <a href="#" className={styles.ServiceLearnMore}>
+                      LEARN MORE &gt;
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
         <section className={styles.NewPatientSection}>
           <div className={styles.NewPatientBanner}>
             <div className={styles.NewPatientLeft}>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Script from "next/script";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,10 +26,99 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Get GTM ID from environment variable
+  const gtmId = process.env.NEXT_PUBLIC_GTM_ID || "";
+
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         {children}
+
+        {/* Initialize dataLayer immediately */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+            `,
+          }}
+        />
+
+        {/* Load GTM AFTER browser is idle - Only on production/live domain */}
+        {gtmId && (
+          <Script id="gtm-idle-loader" strategy="afterInteractive">
+            {`
+              (function() {
+                // Check if we're on localhost or local development
+                var hostname = window.location.hostname;
+                var isLocal = hostname === 'localhost' || 
+                             hostname === '127.0.0.1' || 
+                             hostname === '0.0.0.0' ||
+                             hostname.startsWith('192.168.') ||
+                             hostname.startsWith('10.') ||
+                             hostname.endsWith('.local') ||
+                             hostname.includes('.local:');
+                
+                // Only load GTM on production/live domain
+                if (isLocal) {
+                  console.log('GTM skipped: Running on local environment');
+                  return;
+                }
+
+                function loadGTM() {
+                  var gtmScript = document.createElement('script');
+                  gtmScript.async = true;
+                  gtmScript.src = 'https://www.googletagmanager.com/gtm.js?id=${gtmId}';
+                  document.head.appendChild(gtmScript);
+                }
+
+                if ('requestIdleCallback' in window) {
+                  requestIdleCallback(loadGTM, { timeout: 1500 });
+                } else {
+                  window.addEventListener('load', function() {
+                    setTimeout(loadGTM, 200);
+                  });
+                }
+              })();
+            `}
+          </Script>
+        )}
+
+        {/* GTM NoScript fallback - Only on production/live domain */}
+        {gtmId && (
+          <Script id="gtm-noscript-check" strategy="afterInteractive">
+            {`
+              (function() {
+                var hostname = window.location.hostname;
+                var isLocal = hostname === 'localhost' || 
+                             hostname === '127.0.0.1' || 
+                             hostname === '0.0.0.0' ||
+                             hostname.startsWith('192.168.') ||
+                             hostname.startsWith('10.') ||
+                             hostname.endsWith('.local') ||
+                             hostname.includes('.local:');
+                
+                if (isLocal) {
+                  var noscriptIframe = document.querySelector('noscript iframe[src*="googletagmanager.com"]');
+                  if (noscriptIframe && noscriptIframe.parentElement) {
+                    noscriptIframe.parentElement.remove();
+                  }
+                }
+              })();
+            `}
+          </Script>
+        )}
+
+        {/* GTM NoScript fallback iframe */}
+        {gtmId && (
+          <noscript>
+            <iframe
+              src={`https://www.googletagmanager.com/ns.html?id=${gtmId}`}
+              height="0"
+              width="0"
+              style={{ display: "none", visibility: "hidden" }}
+            />
+          </noscript>
+        )}
       </body>
     </html>
   );

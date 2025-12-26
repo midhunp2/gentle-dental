@@ -13,6 +13,7 @@
   padding: 0px 15px;
   margin: 60px 141px 0;
   width: 100%;
+  max-width: 1200px;
 }
 
 .BannerTitle {
@@ -220,6 +221,7 @@
   .FeatureCard {
     min-height: auto;
     padding: 20px;
+    max-width: 100%;
   }
 
   .FeatureTitle {
@@ -262,6 +264,12 @@
     padding: 40px 1rem;
   }
 
+  .ServicesContainer {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    padding: 0;
+  }
+
   .ServicesTitle {
     font-size: 28px;
   }
@@ -302,12 +310,44 @@
     flex-direction: column;
     gap: 15px;
   }
+
+  .OfferValue {
+    margin-right: 0;
+    text-align: center;
+  }
+
+  .NewPatientLearnMoreButton {
+    margin-right: 0;
+    width: 100%;
+  }
 }
 
 /* Portrait and Landscape - Mobile */
 @media (min-width: 0) and (max-width: 767.98px) {
   /* Banner styles for 0-699px handled by specific media query above */
   /* For 700-767.98px, banner uses default desktop styles */
+
+  .BannerContent {
+    padding: 30px 20px;
+    margin: 60px 0 0;
+  }
+
+  .BannerTitle {
+    font-size: 18px;
+  }
+
+  .BannerSubtitle {
+    font-size: 36px;
+  }
+
+  .SearchBar {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .SearchButton {
+    width: 100%;
+  }
 
   .FeaturesSection {
     height: auto;
@@ -322,6 +362,7 @@
   .FeatureCard {
     min-height: auto;
     padding: 25px;
+    max-width: 100%;
   }
 
   .DifferenceSection {
@@ -347,6 +388,12 @@
     padding: 50px 1rem;
   }
 
+  .ServicesContainer {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    padding: 0;
+  }
+
   .ServicesGrid {
     grid-template-columns: 1fr;
     gap: 20px;
@@ -370,6 +417,16 @@
   .OfferPrice {
     font-size: 56px;
   }
+
+  .OfferValue {
+    margin-right: 0;
+    text-align: center;
+  }
+
+  .NewPatientLearnMoreButton {
+    margin-right: 0;
+    width: 100%;
+  }
 }
 
 /* Small devices (landscape phones, 576px and up) */
@@ -386,6 +443,34 @@
 
 /* Medium devices (tablets, 768px and up) */
 @media (min-width: 768px) and (max-width: 991.98px) {
+  .BannerContent {
+    padding: 40px 60px;
+    margin: 60px 40px 0;
+  }
+
+  .BannerTitle {
+    font-size: 20px;
+  }
+
+  .BannerSubtitle {
+    font-size: 42px;
+  }
+
+  .SearchBar {
+    flex-direction: row;
+    max-width: 100%;
+  }
+
+  .SearchInputWrapper {
+    flex: 1;
+  }
+
+  .SearchButton {
+    width: auto;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
   .FeaturesSection {
     padding: 60px 2rem;
   }
@@ -419,6 +504,12 @@
     padding: 60px 2rem;
   }
 
+  .ServicesContainer {
+    grid-template-columns: 1fr;
+    gap: 50px;
+    padding: 0;
+  }
+
   .ServicesGrid {
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
@@ -441,6 +532,15 @@
 
   .OfferPrice {
     font-size: 64px;
+  }
+
+  .OfferValue {
+    margin-right: 0;
+    text-align: center;
+  }
+
+  .NewPatientLearnMoreButton {
+    margin-right: 0;
   }
 }
 
@@ -878,13 +978,15 @@
 .CarouselArrowLeft {
   position: absolute;
   left: 0;
-  top: 200px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .CarouselArrowRight {
   position: absolute;
   right: 0;
-  top: 200px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .LocationsCarousel {
@@ -1086,11 +1188,15 @@
   }
 
   .CarouselArrowLeft {
-    left: 0;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
   }
 
   .CarouselArrowRight {
-    right: 0;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
   }
 
   .SeeAllLocationsButton {
@@ -1140,6 +1246,18 @@
   .CarouselArrow {
     width: 38px;
     height: 38px;
+  }
+
+  .CarouselArrowLeft {
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .CarouselArrowRight {
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
   }
 }
 
@@ -1206,6 +1324,18 @@
 
   .LocationName {
     font-size: 21px;
+  }
+
+  .CarouselArrowLeft {
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .CarouselArrowRight {
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
   }
 }
 
@@ -1509,6 +1639,21 @@
   .GumDiseaseContainer {
     grid-template-columns: 1fr;
     gap: 30px;
+    height: auto;
+    padding: 30px 20px;
+  }
+
+  .GumDiseaseLeft {
+    order: 2;
+  }
+
+  .GumDiseaseRight {
+    order: 1;
+  }
+
+  .GumDiseaseBookImage {
+    height: auto;
+    max-height: 200px;
   }
 
   .GumDiseaseTitle {
@@ -1539,6 +1684,21 @@
   .GumDiseaseContainer {
     grid-template-columns: 1fr;
     gap: 30px;
+    height: auto;
+    padding: 30px 20px;
+  }
+
+  .GumDiseaseLeft {
+    order: 2;
+  }
+
+  .GumDiseaseRight {
+    order: 1;
+  }
+
+  .GumDiseaseBookImage {
+    height: auto;
+    max-height: 200px;
   }
 
   .GumDiseaseTitle {
@@ -1569,10 +1729,39 @@
   .GumDiseaseContainer {
     grid-template-columns: 1fr;
     gap: 35px;
+    height: auto;
+    padding: 35px 25px;
+  }
+
+  .GumDiseaseLeft {
+    order: 2;
+  }
+
+  .GumDiseaseRight {
+    order: 1;
+  }
+
+  .GumDiseaseBookImage {
+    height: auto;
+    max-height: 220px;
   }
 
   .GumDiseaseTitle {
     font-size: 34px;
+  }
+
+  .GumDiseaseForm {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .EmailInputWrapper {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .DownloadButton {
+    width: 100%;
   }
 }
 
@@ -1585,6 +1774,13 @@
   .GumDiseaseContainer {
     grid-template-columns: 1fr 1.2fr;
     gap: 35px;
+    height: auto;
+    padding: 40px 30px;
+  }
+
+  .GumDiseaseBookImage {
+    height: auto;
+    max-height: 250px;
   }
 
   .GumDiseaseTitle {
@@ -2195,12 +2391,12 @@
 
   .BannerContent {
     background-color: #145091;
-    padding: 30px 90px;
+    padding: 30px 20px;
     margin: 0;
     width: 100%;
     display: flex;
     flex-direction: column;
-    align-items: left;
+    align-items: flex-start;
     justify-content: center;
     min-height: 280px;
     gap: 16px;
@@ -2210,13 +2406,13 @@
     font-size: 16px;
     font-weight: 400;
     color: #ffffff;
-    text-align: leftr;
+    text-align: left;
     margin: 0;
     font-family: "OpenSans-Regular", sans-serif;
   }
 
   .BannerSubtitle {
-    font-size: 32px;
+    font-size: 28px;
     font-weight: 700;
     color: #ffffff;
     text-transform: uppercase;
@@ -2232,7 +2428,7 @@
   }
 
   .SearchBar {
-    flex-direction: row;
+    flex-direction: column;
     height: auto;
     padding: 0;
     margin-top: 8px;
@@ -2279,23 +2475,38 @@
     font-weight: 600;
     font-family: "OpenSans-Bold", sans-serif;
     letter-spacing: 0.5px;
+    width: 100%;
   }
 
-  .DifferenceContainer {
-    grid-template-columns: 1fr;
-    gap: 30px;
-    padding: 0rem;
+  .DifferenceImage {
+    width: 100%;
   }
 
-  .servicesContainer {
+  .PatientImage {
+    width: 100%;
+    height: auto;
+    max-height: 400px;
+    object-fit: cover;
+  }
+
+  .ServicesContainer {
     grid-template-columns: 1fr !important;
-    gap: 0px;
-    padding: 0rem;
+    gap: 40px;
+    padding: 0 1rem;
   }
 
-  .servicesGrid {
+  .ServicesGrid {
     grid-template-columns: 1fr !important;
-    gap: 0px;
-    padding: 0rem;
+    gap: 15px;
+  }
+
+  .GumDiseaseContainer {
+    height: auto;
+    padding: 30px 20px;
+  }
+
+  .GumDiseaseBookImage {
+    height: auto;
+    max-height: 200px;
   }
 }

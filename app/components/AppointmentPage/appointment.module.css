@@ -54,6 +54,43 @@
   border-radius: 4px;
 }
 
+/* Ensure Jarvis modal is visible and properly styled */
+:global([id*="jarvis"]),
+:global(jarvis-scheduler-v2),
+:global(#jarvis-iframe),
+:global([class*="jarvis"]) {
+  z-index: 10000 !important;
+  position: relative;
+}
+
+:global([id*="jarvis"] iframe),
+:global(jarvis-scheduler-v2 iframe) {
+  z-index: 10001 !important;
+  position: relative;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Ensure modal overlay is visible */
+:global([class*="modal"]),
+:global([class*="overlay"]),
+:global([id*="modal"]) {
+  z-index: 9999 !important;
+}
+
+/* Fix shadow DOM visibility */
+:global(jarvis-scheduler-v2) {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  z-index: 10000 !important;
+}
+
+:global(jarvis-scheduler-v2::part(shadow-root)) {
+  display: block !important;
+  visibility: visible !important;
+}
+
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .appointmentPage {

@@ -46,6 +46,8 @@ export default function Navbar() {
             className={styles.logoImage}
             width={180}
             height={60}
+            loading="eager"
+            priority
             unoptimized
           />
         </Link>

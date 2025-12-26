@@ -47,6 +47,8 @@ export default function Footer() {
                 width={120}
                 height={60}
                 className={styles.partnerLogo}
+                unoptimized
+                style={{ width: "auto", height: "auto" }}
               />
             </div>
             <div className={styles.logoWrapper}>
@@ -56,6 +58,8 @@ export default function Footer() {
                 width={120}
                 height={60}
                 className={styles.partnerLogo}
+                unoptimized
+                style={{ width: "auto", height: "auto" }}
               />
             </div>
             <div className={styles.logoWrapper}>
@@ -65,6 +69,8 @@ export default function Footer() {
                 width={120}
                 height={60}
                 className={styles.partnerLogo}
+                unoptimized
+                style={{ width: "auto", height: "auto" }}
               />
             </div>
           </div>

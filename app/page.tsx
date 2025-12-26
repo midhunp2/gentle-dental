@@ -5,6 +5,7 @@ import Navbar from "./components/Navbar/page";
 import Footer from "./components/Footer/page";
 import Image from "next/image";
 import styles from "./home.module.css";
+import { fetchHeroSections } from "./lib/queries/query";
 
 interface Location {
   id: number;
@@ -117,12 +118,28 @@ const testimonials: Testimonial[][] = [
   ],
 ];
 
+interface HeroSection {
+  backgroundImage: {
+    id: string;
+    mediaImage: {
+      alt: string;
+      title: string | null;
+      url: string;
+    };
+  };
+  ctaText: string;
+  headingLarge: string;
+  headingSmall: string;
+  searchPlaceholder: string;
+}
+
 export default function Home() {
   const [currentPage, setCurrentPage] = useState(0);
   const totalPages = Math.ceil(locations.length / CARDS_PER_PAGE);
   const [currentTestimonialPage, setCurrentTestimonialPage] = useState(0);
   const totalTestimonialPages = testimonials.length;
   const [showScrollToTop, setShowScrollToTop] = useState(false);
+  const [heroData, setHeroData] = useState<HeroSection | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -131,6 +148,20 @@ export default function Home() {
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const loadHeroData = async () => {
+      try {
+        const data = await fetchHeroSections();
+        if (data?.paragraphHeroSections?.nodes?.length > 0) {
+          setHeroData(data.paragraphHeroSections.nodes[0]);
+        }
+      } catch (error) {
+        console.error("Error loading hero data:", error);
+      }
+    };
+    loadHeroData();
   }, []);
 
   const scrollToTop = () => {
@@ -166,11 +197,34 @@ export default function Home() {
     <>
       <Navbar />
       <main>
-        <section className={styles.BannerWrapper}>
+        <section
+          className={styles.BannerWrapper}
+          style={{
+            backgroundImage: heroData?.backgroundImage?.mediaImage?.url
+              ? `url(${heroData.backgroundImage.mediaImage.url})`
+              : undefined,
+            backgroundSize: "cover",
+            backgroundPosition: "center center",
+            backgroundRepeat: "no-repeat",
+          }}
+        >
           <div className={styles.BannerContent}>
-            <h1 className={styles.BannerTitle}>Quality Dental Care is</h1>
+            <h1 className={styles.BannerTitle}>
+              {heroData?.headingSmall || "Quality Dental Care is"}
+            </h1>
             <p className={styles.BannerSubtitle}>
-              Right Around <br /> the corner
+              {heroData?.headingLarge
+                ? heroData.headingLarge.replace(/\s+/g, " ").split(" ").map((word, index, array) => {
+                    const midPoint = Math.floor(array.length / 2);
+                    return (
+                      <span key={index}>
+                        {word}
+                        {index < array.length - 1 && " "}
+                        {index === midPoint - 1 && <br />}
+                      </span>
+                    );
+                  })
+                : "Right Around the corner"}
             </p>
             <div className={styles.SearchBar}>
               <div className={styles.SearchInputWrapper}>
@@ -184,11 +238,16 @@ export default function Home() {
                 />
                 <input
                   type="text"
-                  placeholder="Search by City, State or ZIP code"
+                  placeholder={
+                    heroData?.searchPlaceholder ||
+                    "Search by City, State or ZIP code"
+                  }
                   className={styles.SearchInput}
                 />
               </div>
-              <button className={styles.SearchButton}>SEARCH</button>
+              <button className={styles.SearchButton}>
+                {heroData?.ctaText || "SEARCH"}
+              </button>
             </div>
           </div>
         </section>

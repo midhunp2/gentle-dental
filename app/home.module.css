@@ -93,6 +93,8 @@
   background-color: #6d28d9;
 }
 
+/* Mobile banner layout for 0-699px */
+
 .FeaturesSection {
   background-color: #f9f9f9;
   width: 100%;
@@ -156,55 +158,54 @@
 
 /* Responsive Design - Mobile and Tablet */
 
+/* Specific resolution for Samsung Galaxy S20 Ultra (412px) */
+@media (min-width: 400px) and (max-width: 450px) {
+  .FeaturesSection {
+    height: auto;
+    padding: 20px 10px;
+  }
+
+  .FeaturesContainer {
+    display: block;
+    font-size: 0;
+  }
+
+  .FeatureCard {
+    width: calc(100% / 3 - 3px);
+    display: inline-block;
+    vertical-align: top;
+    border-right: 0;
+    margin: 0;
+    padding: 0 10px;
+    position: relative;
+    font-size: 1rem;
+    min-height: auto;
+    max-width: none;
+  }
+
+  .FeatureTitle {
+    font-size: 12px;
+    margin-bottom: 6px;
+    line-height: 1.2;
+  }
+
+  .FeatureIcon {
+    margin-bottom: 6px;
+  }
+
+  .IconImage {
+    width: 50px;
+    height: 50px;
+  }
+
+  .FeatureDescription {
+    display: none;
+  }
+}
+
 /* Extra small devices (portrait phones, less than 576px) */
 @media (max-width: 575.98px) {
-  .BannerWrapper {
-    height: 400px;
-  }
-
-  .BannerContent {
-    margin: 40px 1rem 0;
-    padding: 0 1rem;
-  }
-
-  .BannerTitle {
-    font-size: 18px;
-  }
-
-  .BannerSubtitle {
-    font-size: 32px;
-  }
-
-  .SearchBar {
-    flex-direction: column;
-    height: auto;
-    padding: 16px;
-    gap: 12px;
-  }
-
-  .SearchInputWrapper {
-    width: 100%;
-    margin: 0;
-  }
-
-  .LocationIcon {
-    width: 24px;
-    height: 32px;
-    left: 12px;
-    margin-left: 12px;
-  }
-
-  .SearchInput {
-    padding-left: 50px;
-    margin: 0;
-    font-size: 14px;
-  }
-
-  .SearchButton {
-    width: 100%;
-    padding: 14px 20px;
-    margin-right: 0;
-  }
+  /* Banner styles handled by 0-699px media query */
 
   .FeaturesSection {
     height: auto;
@@ -234,12 +235,6 @@
     padding: 40px 0;
   }
 
-  .DifferenceContainer {
-    grid-template-columns: 1fr;
-    gap: 30px;
-    padding: 0 1rem;
-  }
-
   .PatientImage {
     width: 100%;
     height: auto;
@@ -265,11 +260,6 @@
 
   .ServicesSection {
     padding: 40px 1rem;
-  }
-
-  .ServicesContainer {
-    grid-template-columns: 1fr;
-    gap: 30px;
   }
 
   .ServicesTitle {
@@ -316,44 +306,8 @@
 
 /* Portrait and Landscape - Mobile */
 @media (min-width: 0) and (max-width: 767.98px) {
-  .BannerWrapper {
-    height: 450px;
-  }
-
-  .BannerContent {
-    margin: 50px 1rem 0;
-    padding: 0 1rem;
-  }
-
-  .BannerTitle {
-    font-size: 20px;
-  }
-
-  .BannerSubtitle {
-    font-size: 40px;
-  }
-
-  .SearchBar {
-    flex-direction: column;
-    height: auto;
-    padding: 16px;
-    gap: 12px;
-  }
-
-  .SearchInputWrapper {
-    width: 100%;
-    margin: 0;
-  }
-
-  .SearchInput {
-    margin: 0;
-  }
-
-  .SearchButton {
-    width: 100%;
-    padding: 14px 20px;
-    margin-right: 0;
-  }
+  /* Banner styles for 0-699px handled by specific media query above */
+  /* For 700-767.98px, banner uses default desktop styles */
 
   .FeaturesSection {
     height: auto;
@@ -374,12 +328,6 @@
     padding: 50px 0;
   }
 
-  .DifferenceContainer {
-    grid-template-columns: 1fr;
-    gap: 40px;
-    padding: 0 1rem;
-  }
-
   .PatientImage {
     width: 100%;
     height: auto;
@@ -397,11 +345,6 @@
 
   .ServicesSection {
     padding: 50px 1rem;
-  }
-
-  .ServicesContainer {
-    grid-template-columns: 1fr;
-    gap: 40px;
   }
 
   .ServicesGrid {
@@ -431,28 +374,6 @@
 
 /* Small devices (landscape phones, 576px and up) */
 @media (min-width: 576px) and (max-width: 767.98px) {
-  .BannerContent {
-    margin: 50px 1.5rem 0;
-  }
-
-  .BannerTitle {
-    font-size: 22px;
-  }
-
-  .BannerSubtitle {
-    font-size: 44px;
-  }
-
-  .SearchBar {
-    flex-direction: row;
-    height: 70px;
-  }
-
-  .SearchButton {
-    width: auto;
-    padding: 14px 40px;
-  }
-
   .FeaturesContainer {
     gap: 50px;
   }
@@ -465,28 +386,6 @@
 
 /* Medium devices (tablets, 768px and up) */
 @media (min-width: 768px) and (max-width: 991.98px) {
-  .BannerContent {
-    margin: 50px 2rem 0;
-    padding: 0 1rem;
-  }
-
-  .BannerTitle {
-    font-size: 22px;
-  }
-
-  .BannerSubtitle {
-    font-size: 48px;
-  }
-
-  .SearchBar {
-    height: 75px;
-    padding: 14px 18px;
-  }
-
-  .SearchButton {
-    padding: 15px 45px;
-  }
-
   .FeaturesSection {
     padding: 60px 2rem;
   }
@@ -505,11 +404,6 @@
     padding: 60px 0;
   }
 
-  .DifferenceContainer {
-    padding: 0 2rem;
-    gap: 40px;
-  }
-
   .PatientImage {
     width: 100%;
     height: auto;
@@ -523,11 +417,6 @@
 
   .ServicesSection {
     padding: 60px 2rem;
-  }
-
-  .ServicesContainer {
-    grid-template-columns: 1fr;
-    gap: 50px;
   }
 
   .ServicesGrid {
@@ -589,7 +478,7 @@
   flex-direction: column;
   gap: 16px;
   display: flex;
-  max-width: 850px;
+  max-width: 835px;
 }
 
 .DifferenceTitle {
@@ -1507,7 +1396,7 @@
 
 .GumDiseaseBookImage {
   width: 100%;
-  height: auto;
+  height: 250px;
   max-width: 400px;
   object-fit: contain;
 }
@@ -1516,7 +1405,7 @@
   flex-direction: column;
   justify-content: center;
   display: flex;
-  margin-bottom: 150px;
+  margin-bottom: 10px;
 }
 
 .GumDiseaseContent {
@@ -2234,5 +2123,179 @@
   .InsuranceIcon {
     max-width: 180px;
     height: 110px;
+  }
+}
+
+/* Scroll to Top Button */
+.scrollToTop {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 46px;
+  height: 50px;
+  background-color: #53c0e9;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+  flex-shrink: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.scrollToTop:hover {
+  background-color: #357abd;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.scrollToTop i {
+  font-size: 20px;
+  line-height: 1;
+}
+
+/* Responsive styles for scroll to top button */
+@media (max-width: 768px) {
+  .scrollToTop {
+    bottom: 20px;
+    right: 20px;
+    width: 45px;
+    height: 45px;
+  }
+
+  .scrollToTop i {
+    font-size: 18px;
+  }
+}
+
+@media (min-width: 0) and (max-width: 699px) {
+  .BannerWrapper {
+    background: none;
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    position: relative;
+  }
+
+  .BannerWrapper::before {
+    content: "";
+    background: url("/assets/images/gentle-dental-home-page-hero-banner-image.webp")
+      no-repeat center center;
+    background-size: cover;
+    width: 100%;
+    height: 50vh;
+    min-height: 250px;
+    max-height: 400px;
+    display: block;
+    flex-shrink: 0;
+  }
+
+  .BannerContent {
+    background-color: #145091;
+    padding: 30px 90px;
+    margin: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    justify-content: center;
+    min-height: 280px;
+    gap: 16px;
+  }
+
+  .BannerTitle {
+    font-size: 16px;
+    font-weight: 400;
+    color: #ffffff;
+    text-align: leftr;
+    margin: 0;
+    font-family: "OpenSans-Regular", sans-serif;
+  }
+
+  .BannerSubtitle {
+    font-size: 32px;
+    font-weight: 700;
+    color: #ffffff;
+    text-transform: uppercase;
+    text-align: left;
+    line-height: 1.1;
+    margin: 0;
+    letter-spacing: 0.5px;
+    font-family: "OpenSans-Bold", sans-serif;
+  }
+
+  .BannerSubtitle br {
+    display: block;
+  }
+
+  .SearchBar {
+    flex-direction: row;
+    height: auto;
+    padding: 0;
+    margin-top: 8px;
+    gap: 12px;
+    width: 100%;
+    max-width: 100%;
+    background: transparent;
+  }
+
+  .SearchInputWrapper {
+    width: 100%;
+    margin: 0;
+    background-color: #0f3f7e;
+    border-radius: 4px;
+    padding: 14px 16px;
+    min-height: 50px;
+  }
+
+  .LocationIcon {
+    width: 20px;
+    height: 20px;
+    left: 0;
+    margin-left: 0;
+    position: relative;
+  }
+
+  .SearchInput {
+    padding-left: 10px;
+    margin: 0;
+    font-size: 14px;
+    background: transparent;
+    color: #fff;
+  }
+
+  .SearchInput::placeholder {
+    color: #fff;
+    opacity: 0.9;
+  }
+
+  .SearchButton {
+    padding: 14px 20px;
+    margin-right: 0;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: "OpenSans-Bold", sans-serif;
+    letter-spacing: 0.5px;
+  }
+
+  .DifferenceContainer {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    padding: 0rem;
+  }
+
+  .servicesContainer {
+    grid-template-columns: 1fr !important;
+    gap: 0px;
+    padding: 0rem;
+  }
+
+  .servicesGrid {
+    grid-template-columns: 1fr !important;
+    gap: 0px;
+    padding: 0rem;
   }
 }

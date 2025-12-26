@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "./components/Navbar/page";
 import Footer from "./components/Footer/page";
 import Image from "next/image";
@@ -122,6 +122,20 @@ export default function Home() {
   const totalPages = Math.ceil(locations.length / CARDS_PER_PAGE);
   const [currentTestimonialPage, setCurrentTestimonialPage] = useState(0);
   const totalTestimonialPages = testimonials.length;
+  const [showScrollToTop, setShowScrollToTop] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollToTop(window.scrollY > 30);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   const handleNext = () => {
     setCurrentPage((prev) => (prev + 1) % totalPages);
@@ -156,8 +170,7 @@ export default function Home() {
           <div className={styles.BannerContent}>
             <h1 className={styles.BannerTitle}>Quality Dental Care is</h1>
             <p className={styles.BannerSubtitle}>
-              Right Around <br />
-              the corner
+              Right Around <br /> the corner
             </p>
             <div className={styles.SearchBar}>
               <div className={styles.SearchInputWrapper}>
@@ -861,6 +874,15 @@ export default function Home() {
         </section>
       </main>
       <Footer />
+      {showScrollToTop && (
+        <button
+          onClick={scrollToTop}
+          className={styles.scrollToTop}
+          aria-label="Scroll to top"
+        >
+          <i className="fa fa-chevron-up"></i>
+        </button>
+      )}
     </>
   );
 }

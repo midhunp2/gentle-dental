@@ -56,8 +56,10 @@ export const Skeleton: React.FC<SkeletonProps> = ({
 export const SkeletonText: React.FC<{
   lines?: number;
   className?: string;
-}> = ({ lines = 1, className = "" }) => (
-  <Skeleton variant="text" lines={lines} className={className} />
+  height?: string | number;
+  width?: string | number;
+}> = ({ lines = 1, className = "", height, width }) => (
+  <Skeleton variant="text" lines={lines} className={className} height={height} width={width} />
 );
 
 export const SkeletonBox: React.FC<{

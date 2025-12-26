@@ -1,5 +1,3 @@
-"use client";
-
 import styles from "./footer.module.css";
 import Image from "next/image";
 import Link from "next/link";
@@ -49,9 +47,6 @@ export default function Footer() {
                 width={120}
                 height={60}
                 className={styles.partnerLogo}
-                onError={(e) => {
-                  e.currentTarget.style.display = "none";
-                }}
               />
             </div>
             <div className={styles.logoWrapper}>
@@ -61,9 +56,6 @@ export default function Footer() {
                 width={120}
                 height={60}
                 className={styles.partnerLogo}
-                onError={(e) => {
-                  e.currentTarget.style.display = "none";
-                }}
               />
             </div>
             <div className={styles.logoWrapper}>
@@ -73,9 +65,6 @@ export default function Footer() {
                 width={120}
                 height={60}
                 className={styles.partnerLogo}
-                onError={(e) => {
-                  e.currentTarget.style.display = "none";
-                }}
               />
             </div>
           </div>

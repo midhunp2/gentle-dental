@@ -146,3 +146,549 @@
   }
 }
 
+/* Features Section Skeleton */
+.featuresSkeleton {
+  background-color: #f9f9f9;
+  width: 100%;
+  height: 450px;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.featureCardSkeleton {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 400px;
+  padding: 30px;
+  min-height: 410px;
+  gap: 24px;
+}
+
+.skeletonFeatureTitle {
+  margin-bottom: 0;
+}
+
+.skeletonFeatureIcon {
+  margin: 0;
+}
+
+.skeletonFeatureDescription {
+  text-align: center;
+}
+
+/* Difference Section Skeleton */
+.differenceSkeleton {
+  background-color: #ffffff;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 30px;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 60px 20px;
+}
+
+.skeletonDifferenceImage {
+  width: 507px;
+  height: 552px;
+  border-radius: 4px;
+}
+
+.differenceContentSkeleton {
+  flex-direction: column;
+  gap: 16px;
+  display: flex;
+  max-width: 835px;
+}
+
+.skeletonDifferenceTitle {
+  margin-bottom: 0;
+}
+
+.skeletonDifferenceText {
+  margin-bottom: 0;
+}
+
+.statisticsSkeleton {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  margin: 20px 0;
+}
+
+.statisticSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.skeletonStatisticNumber {
+  margin-bottom: 0;
+}
+
+.skeletonStatisticLabel {
+  margin-bottom: 0;
+}
+
+.skeletonLearnMoreButton {
+  margin-top: 0;
+  align-self: flex-start;
+}
+
+/* Services Section Skeleton */
+.servicesSkeleton {
+  background-color: #f9f9f9;
+  width: 100%;
+  padding: 80px 15px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.servicesHeaderSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.skeletonServicesTitle {
+  margin: 0;
+}
+
+.skeletonServicesDescription {
+  margin: 0;
+  max-width: 600px;
+}
+
+.skeletonViewAllButton {
+  margin: 0;
+  align-self: flex-start;
+}
+
+.servicesGridSkeleton {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.serviceCardSkeleton {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.skeletonServiceImage {
+  border-radius: 8px;
+}
+
+.skeletonServiceOverlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+}
+
+.skeletonServiceTitle {
+  margin-bottom: 0;
+}
+
+.skeletonServiceDescription {
+  margin-bottom: 0;
+}
+
+.skeletonServiceLink {
+  margin-top: 0;
+}
+
+/* New Patient Section Skeleton */
+.newPatientSkeleton {
+  margin: 40px auto;
+  padding: 0 20px;
+  max-width: 1200px;
+}
+
+.newPatientBannerSkeleton {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border-radius: 4px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #145091 0%, #0f3f7e 100%);
+  padding: 60px 50px;
+}
+
+.newPatientLeftSkeleton {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 14px;
+}
+
+.skeletonNewPatientTitle {
+  margin-bottom: 0;
+}
+
+.skeletonNewPatientDescription {
+  margin-bottom: 0;
+}
+
+.newPatientRightSkeleton {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 16px;
+}
+
+.skeletonOfferPrice {
+  margin-bottom: 0;
+}
+
+.offerDetailsSkeleton {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.skeletonOfferDetail {
+  margin-bottom: 0;
+}
+
+.skeletonOfferValue {
+  margin-bottom: 0;
+}
+
+.skeletonNewPatientButton {
+  margin-top: 0;
+}
+
+.skeletonViewAllOffersButton {
+  margin: 40px auto 0;
+  display: block;
+}
+
+/* Locations Section Skeleton */
+.locationsSkeleton {
+  background-color: #f9f9f9;
+  width: 100%;
+  padding: 30px 0;
+  max-width: 1520px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.skeletonLocationsTitle {
+  margin: 0 0 15px;
+}
+
+.locationsCarouselSkeleton {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0;
+  overflow: hidden;
+}
+
+.carouselPageSkeleton {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  width: 100%;
+}
+
+.locationCardSkeleton {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.skeletonLocationImage {
+  border-radius: 8px;
+}
+
+.skeletonLocationOverlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+}
+
+.skeletonLocationName {
+  margin-bottom: 0;
+}
+
+.skeletonLocationLink {
+  margin-top: 0;
+}
+
+.carouselDotsSkeleton {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 24px 0;
+}
+
+.skeletonDot {
+  opacity: 0.5;
+}
+
+.skeletonSeeAllButton {
+  margin: 24px auto 0;
+}
+
+/* Dentists Section Skeleton */
+.dentistsSkeleton {
+  padding: 60px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.skeletonDentistsTitle {
+  margin: 0 auto 40px;
+}
+
+.dentistsGridSkeleton {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+}
+
+.dentistPanelSkeleton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.skeletonDentistImage {
+  border-radius: 8px;
+}
+
+.skeletonDentistText {
+  text-align: center;
+}
+
+/* Gum Disease Section Skeleton */
+.gumDiseaseSkeleton {
+  display: flex;
+  gap: 40px;
+  padding: 60px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  align-items: center;
+}
+
+.skeletonGumDiseaseImage {
+  border-radius: 8px;
+}
+
+.gumDiseaseContentSkeleton {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.skeletonDownloadLabel {
+  margin-bottom: 0;
+}
+
+.skeletonGumDiseaseTitle {
+  margin-bottom: 0;
+}
+
+.skeletonGumDiseaseSubtitle {
+  margin-bottom: 0;
+}
+
+.gumDiseaseFormSkeleton {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.skeletonEmailInput {
+  flex: 1;
+}
+
+.skeletonDownloadButton {
+  margin: 0;
+}
+
+/* Testimonials Section Skeleton */
+.testimonialsSkeleton {
+  padding: 60px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.skeletonTestimonialsTitle {
+  margin: 0 auto 40px;
+}
+
+.testimonialsCarouselSkeleton {
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: center;
+}
+
+.testimonialCardSkeleton {
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 40px;
+}
+
+.skeletonTestimonialName {
+  margin-bottom: 0;
+}
+
+.skeletonTestimonialLocation {
+  margin-bottom: 0;
+}
+
+.skeletonStars {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 0;
+}
+
+.skeletonStar {
+  border-radius: 4px;
+}
+
+.skeletonTestimonialText {
+  text-align: center;
+  margin-top: 0;
+}
+
+/* Insurance Section Skeleton */
+.insuranceSkeleton {
+  padding: 60px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.skeletonInsuranceTitle {
+  margin: 0 auto 40px;
+}
+
+.insuranceGridSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.insuranceRowSkeleton {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.skeletonInsuranceIcon {
+  border-radius: 8px;
+}
+
+.skeletonInsuranceDescription {
+  margin: 0 auto 24px;
+  max-width: 600px;
+}
+
+.skeletonInsuranceButton {
+  margin: 0 auto;
+}
+
+/* Additional Mobile Responsive Styles */
+@media (max-width: 768px) {
+  .featuresSkeleton {
+    flex-direction: column;
+    height: auto;
+    padding: 40px 1rem;
+  }
+
+  .featureCardSkeleton {
+    min-height: auto;
+    padding: 20px;
+    max-width: 100%;
+  }
+
+  .differenceSkeleton {
+    grid-template-columns: 1fr;
+    padding: 40px 0;
+  }
+
+  .skeletonDifferenceImage {
+    width: 100%;
+    height: 400px;
+  }
+
+  .statisticsSkeleton {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .servicesGridSkeleton {
+    grid-template-columns: 1fr;
+  }
+
+  .newPatientBannerSkeleton {
+    grid-template-columns: 1fr;
+    padding: 50px 40px;
+  }
+
+  .carouselPageSkeleton {
+    grid-template-columns: 1fr;
+  }
+
+  .dentistsGridSkeleton {
+    grid-template-columns: 1fr;
+  }
+
+  .gumDiseaseSkeleton {
+    flex-direction: column;
+  }
+
+  .gumDiseaseFormSkeleton {
+    flex-direction: column;
+  }
+
+  .insuranceRowSkeleton {
+    justify-content: center;
+  }
+}
+

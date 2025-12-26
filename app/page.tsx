@@ -1,11 +1,18 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Navbar from "./components/Navbar/page";
 import Footer from "./components/Footer/page";
 import Image from "next/image";
 import styles from "./home.module.css";
-import { fetchHeroSections } from "./lib/queries/query";
+import { fetchPageByRoute } from "./lib/queries/query";
+import type {
+  PageByRouteResponse,
+  ParagraphHeroSection,
+  ParagraphIconCardsSection,
+  ParagraphTextImageSection,
+  HomePageSection,
+} from "./lib/types";
 
 interface Location {
   id: number;
@@ -118,28 +125,14 @@ const testimonials: Testimonial[][] = [
   ],
 ];
 
-interface HeroSection {
-  backgroundImage: {
-    id: string;
-    mediaImage: {
-      alt: string;
-      title: string | null;
-      url: string;
-    };
-  };
-  ctaText: string;
-  headingLarge: string;
-  headingSmall: string;
-  searchPlaceholder: string;
-}
-
 export default function Home() {
   const [currentPage, setCurrentPage] = useState(0);
   const totalPages = Math.ceil(locations.length / CARDS_PER_PAGE);
   const [currentTestimonialPage, setCurrentTestimonialPage] = useState(0);
   const totalTestimonialPages = testimonials.length;
   const [showScrollToTop, setShowScrollToTop] = useState(false);
-  const [heroData, setHeroData] = useState<HeroSection | null>(null);
+  const [pageData, setPageData] = useState<PageByRouteResponse | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -151,18 +144,43 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    const loadHeroData = async () => {
+    const loadPageData = async () => {
       try {
-        const data = await fetchHeroSections();
-        if (data?.paragraphHeroSections?.nodes?.length > 0) {
-          setHeroData(data.paragraphHeroSections.nodes[0]);
-        }
+        const data = await fetchPageByRoute("/node/7");
+        setPageData(data);
       } catch (error) {
-        console.error("Error loading hero data:", error);
+        console.error("Error loading page data:", error);
+      } finally {
+        setLoading(false);
       }
     };
-    loadHeroData();
+    loadPageData();
   }, []);
+
+  // Helper function to check section type
+  const isHeroSection = (
+    section: HomePageSection
+  ): section is ParagraphHeroSection => {
+    return "headingLarge" in section && "headingSmall" in section;
+  };
+
+  const isIconCardsSection = (
+    section: HomePageSection
+  ): section is ParagraphIconCardsSection => {
+    return "cards" in section && Array.isArray(section.cards);
+  };
+
+  const isTextImageSection = (
+    section: HomePageSection
+  ): section is ParagraphTextImageSection => {
+    return "sectiondescription" in section && "stats" in section;
+  };
+
+  // Get sections from GraphQL data (only the 3 available types)
+  const sections = pageData?.route?.entity?.sections || [];
+  const heroSection = sections.find(isHeroSection);
+  const iconCardsSection = sections.find(isIconCardsSection);
+  const textImageSection = sections.find(isTextImageSection);
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -193,340 +211,169 @@ export default function Home() {
   const handleTestimonialDotClick = (index: number) => {
     setCurrentTestimonialPage(index);
   };
+
+  // Don't render content while loading - Next.js will show loading.tsx automatically
+  if (loading) {
+    return null;
+  }
+
   return (
     <>
       <Navbar />
       <main>
-        <section
-          className={styles.BannerWrapper}
-          style={{
-            backgroundImage: heroData?.backgroundImage?.mediaImage?.url
-              ? `url(${heroData.backgroundImage.mediaImage.url})`
-              : undefined,
-            backgroundSize: "cover",
-            backgroundPosition: "center center",
-            backgroundRepeat: "no-repeat",
-          }}
-        >
-          <div className={styles.BannerContent}>
-            <h1 className={styles.BannerTitle}>
-              {heroData?.headingSmall || "Quality Dental Care is"}
-            </h1>
-            <p className={styles.BannerSubtitle}>
-              {heroData?.headingLarge
-                ? heroData.headingLarge.replace(/\s+/g, " ").split(" ").map((word, index, array) => {
-                    const midPoint = Math.floor(array.length / 2);
-                    return (
-                      <span key={index}>
-                        {word}
-                        {index < array.length - 1 && " "}
-                        {index === midPoint - 1 && <br />}
-                      </span>
-                    );
-                  })
-                : "Right Around the corner"}
-            </p>
-            <div className={styles.SearchBar}>
-              <div className={styles.SearchInputWrapper}>
-                <Image
-                  src="https://www.gentledental.com/themes/custom/gentledentaldptheme/images/location.svg"
-                  alt="Location"
-                  className={styles.LocationIcon}
-                  width={100}
-                  height={100}
-                  unoptimized
-                />
-                <input
-                  type="text"
-                  placeholder={
-                    heroData?.searchPlaceholder ||
-                    "Search by City, State or ZIP code"
-                  }
-                  className={styles.SearchInput}
-                />
-              </div>
-              <button className={styles.SearchButton}>
-                {heroData?.ctaText || "SEARCH"}
-              </button>
-            </div>
-          </div>
-        </section>
-        <section className={styles.FeaturesSection}>
-          <div className={styles.FeaturesContainer}>
-            <div className={styles.FeatureCardWrapper}>
-              <div className={styles.FeatureCard}>
-                <h2 className={styles.FeatureTitle}>Personalized Service</h2>
-                <div className={styles.FeatureIcon}>
+        {heroSection && (
+          <section
+            className={styles.BannerWrapper}
+            style={{
+              backgroundImage: heroSection.backgroundImage?.mediaImage?.url
+                ? `url(${heroSection.backgroundImage.mediaImage.url})`
+                : undefined,
+              backgroundSize: "cover",
+              backgroundPosition: "center center",
+              backgroundRepeat: "no-repeat",
+            }}
+          >
+            <div className={styles.BannerContent}>
+              <h1 className={styles.BannerTitle}>
+                {heroSection.headingSmall || "Quality Dental Care is"}
+              </h1>
+              <p className={styles.BannerSubtitle}>
+                {heroSection.headingLarge
+                  ? heroSection.headingLarge.replace(/\s+/g, " ").split(" ").map((word, index, array) => {
+                      const midPoint = Math.floor(array.length / 2);
+                      return (
+                        <span key={index}>
+                          {word}
+                          {index < array.length - 1 && " "}
+                          {index === midPoint - 1 && <br />}
+                        </span>
+                      );
+                    })
+                  : "Right Around the corner"}
+              </p>
+              <div className={styles.SearchBar}>
+                <div className={styles.SearchInputWrapper}>
                   <Image
-                    src="/assets/images/personalized-service-icon.png"
-                    alt="Personalized Service"
+                    src="https://www.gentledental.com/themes/custom/gentledentaldptheme/images/location.svg"
+                    alt="Location"
+                    className={styles.LocationIcon}
                     width={100}
                     height={100}
-                    className={styles.IconImage}
+                    unoptimized
+                  />
+                  <input
+                    type="text"
+                    placeholder={
+                      heroSection.searchPlaceholder ||
+                      "Search by City, State or ZIP code"
+                    }
+                    className={styles.SearchInput}
                   />
                 </div>
-                <p className={styles.FeatureDescription}>
-                  Our trustworthy doctors partner with you to create a
-                  personalized treatment plan. We have been providing peace of
-                  mind for you and your family for over 45 years.
-                </p>
+                <button className={styles.SearchButton}>
+                  {heroSection.ctaText || "SEARCH"}
+                </button>
               </div>
             </div>
-            <div className={styles.FeatureCard}>
-              <h2 className={styles.FeatureTitle}>Award-Winning Care</h2>
-              <div className={styles.FeatureIcon}>
-                <Image
-                  src="/assets/images/award-winning-care-icon.png"
-                  alt="Award-Winning Care"
-                  width={100}
-                  height={100}
-                  className={styles.IconImage}
-                />
-              </div>
-              <p className={styles.FeatureDescription}>
-                Gentle Dental has received more Boston Magazine &quot;Top
-                Dentist&quot; distinctions than any other dental practice in New
-                England. Our dentists and specialists provide the highest level
-                of care at each newly renovated, all-digital office.
-              </p>
-            </div>
-            <div className={styles.FeatureCard}>
-              <h2 className={styles.FeatureTitle}>On Your Schedule</h2>
-              <div className={styles.FeatureIcon}>
-                <Image
-                  src="/assets/images/dentistry-on-your-schedule.png"
-                  alt="On Your Schedule"
-                  width={100}
-                  height={100}
-                  className={styles.IconImage}
-                />
-              </div>
-              <p className={styles.FeatureDescription}>
-                Taking care of your health should fit within your schedule. We
-                are open late and on weekends so you can get the care you need.
-                Some of our locations are even open 7 days a week!
-              </p>
-            </div>
-          </div>
-        </section>
-        <section className={styles.DifferenceSection}>
-          <div className={styles.DifferenceContainer}>
-            <div className={styles.DifferenceImage}>
-              <Image
-                src="/assets/images/gentle-dental-patients-come-first.jpg"
-                alt="Smiling patient"
-                width={400}
-                height={600}
-                className={styles.PatientImage}
-              />
-            </div>
-            <div className={styles.DifferenceContent}>
-              <h2 className={styles.DifferenceTitle}>Patients Come First</h2>
-              <div className={styles.DifferenceText}>
-                <p>
-                  Healthy, confident smiles for life is our mission at Gentle
-                  Dental. Since 1971, we have been leading the way in dental
-                  care. Our founding dentists believed that taking care of your
-                  health should fit your busy schedule. That’s why they built
-                  dental practices in convenient locations with convenient
-                  hours. We’re here when you need us.
-                </p>
-
-                <p>
-                  {" "}
-                  Patients receive award-winning dental care from dentists who
-                  are graduates from top dental schools. Along with general
-                  dentistry, each location has specialty services which allows
-                  for high quality, coordinated care.
-                </p>
-
-                <p>
-                  {" "}
-                  All Gentle Dentals are newly built or renovated and outfitted
-                  with the latest in dental technology including{" "}
-                  <span className={styles.HighlightText}>
-                    digital low radiation x-rays,
-                  </span>{" "}
-                  3D scanning, intraoral cameras, and even CERC same-day crowns
-                  at select locations.
-                </p>
-              </div>
-              <div className={styles.StatisticsContainer}>
-                <div className={styles.Statistic}>
-                  <div className={styles.StatisticNumber}>49</div>
-                  <div className={styles.StatisticLabel}>
-                    Convenient Locations
-                  </div>
-                </div>
-                <div className={styles.Statistic}>
-                  <div className={styles.StatisticNumber}>49</div>
-                  <div className={styles.StatisticLabel}>
-                    Years of Trusted Dental Care
-                  </div>
-                </div>
-                <div className={styles.Statistic}>
-                  <div className={styles.StatisticNumber}>200+</div>
-                  <div className={styles.StatisticLabel}>
-                    Dentists and Specialists
-                  </div>
-                </div>
-              </div>
-              <button className={styles.LearnMoreButton}>LEARN MORE</button>
-            </div>
-          </div>
-        </section>
-        <section className={styles.ServicesSection}>
-          <div className={styles.ServicesContainer}>
-            <div className={styles.ServicesHeader}>
-              <h2 className={styles.ServicesTitle}>Our Services</h2>
-              <p className={styles.ServicesDescription}>
-                Gentle Dental dentists provide award-winning care. From
-                cleanings and exams to more specialized services such as root
-                canals and crowns, we provide all dental services under one roof
-                saving you time and money. All Gentle Dental practices offer
-                orthodontics for both adults and children including traditional
-                braces and Invisalign® clear aligners.
-              </p>
-              <button className={styles.ViewAllServicesButton}>
-                VIEW ALL SERVICES
-              </button>
-            </div>
-            <div className={styles.ServicesGrid}>
-              <div className={styles.ServiceCard}>
-                <div className={styles.ServiceImageWrapper}>
-                  <Image
-                    src="/assets/images/preventive-dentistry-thumbnail.webp"
-                    alt="Preventive Care"
-                    width={400}
-                    height={300}
-                    className={styles.ServiceImage}
-                  />
-                  <div className={styles.ServiceOverlay}>
-                    <h3 className={styles.ServiceCardTitle}>Preventive Care</h3>
-                    <p className={styles.ServiceCardDescription}>
-                      Routine dental checkups are important for a healthy and
-                      confident smile.
+          </section>
+        )}
+        {iconCardsSection && iconCardsSection.cards && iconCardsSection.cards.length > 0 && (
+          <section className={styles.FeaturesSection}>
+            <div className={styles.FeaturesContainer}>
+              {iconCardsSection.cards.map((card, index) => (
+                <div
+                  key={card.icontitle || index}
+                  className={index === 0 ? styles.FeatureCardWrapper : ""}
+                >
+                  <div className={styles.FeatureCard}>
+                    <h2 className={styles.FeatureTitle}>{card.icontitle}</h2>
+                    {card.icon?.mediaImage?.url && (
+                      <div className={styles.FeatureIcon}>
+                        <Image
+                          src={card.icon.mediaImage.url}
+                          alt={card.icon.mediaImage.alt || card.icontitle}
+                          width={100}
+                          height={100}
+                          className={styles.IconImage}
+                          quality={95}
+                          unoptimized={false}
+                        />
+                      </div>
+                    )}
+                    <p className={styles.FeatureDescription}>
+                      {card.icondescription}
                     </p>
-                    <a href="#" className={styles.ServiceLearnMore}>
-                      LEARN MORE &gt;
-                    </a>
                   </div>
                 </div>
-              </div>
-              <div className={styles.ServiceCard}>
-                <div className={styles.ServiceImageWrapper}>
+              ))}
+            </div>
+          </section>
+        )}
+        {textImageSection && (
+          <section className={styles.DifferenceSection}>
+            <div className={styles.DifferenceContainer}>
+              {textImageSection.image?.mediaImage?.url && (
+                <div className={styles.DifferenceImage}>
                   <Image
-                    src="/assets/images/gentle-dental-patients-come-first.jpg"
-                    alt="Emergency Dental Care"
+                    src={textImageSection.image.mediaImage.url}
+                    alt={textImageSection.image.mediaImage.alt || textImageSection.heading}
                     width={400}
-                    height={300}
-                    className={styles.ServiceImage}
+                    height={600}
+                    className={styles.PatientImage}
+                    quality={95}
+                    unoptimized={false}
                   />
-                  <div className={styles.ServiceOverlay}>
-                    <h3 className={styles.ServiceCardTitle}>
-                      Emergency Dental Care
-                    </h3>
-                    <p className={styles.ServiceCardDescription}>
-                      Get immediate care when you need it most. We&apos;re here
-                      for your dental emergencies.
-                    </p>
-                    <a href="#" className={styles.ServiceLearnMore}>
-                      LEARN MORE &gt;
-                    </a>
-                  </div>
                 </div>
-              </div>
-              <div className={styles.ServiceCard}>
-                <div className={styles.ServiceImageWrapper}>
-                  <Image
-                    src="/assets/images/gentle-dental-patients-come-first.jpg"
-                    alt="Orthodontics"
-                    width={400}
-                    height={300}
-                    className={styles.ServiceImage}
-                  />
-                  <div className={styles.ServiceOverlay}>
-                    <h3 className={styles.ServiceCardTitle}>Orthodontics</h3>
-                    <p className={styles.ServiceCardDescription}>
-                      Straighten your smile with traditional braces or
-                      Invisalign clear aligners.
-                    </p>
-                    <a href="#" className={styles.ServiceLearnMore}>
-                      LEARN MORE &gt;
-                    </a>
+              )}
+              <div className={styles.DifferenceContent}>
+                <h2 className={styles.DifferenceTitle}>
+                  {textImageSection.heading || "Patients Come First"}
+                </h2>
+                {textImageSection.sectiondescription && (
+                  <div className={styles.DifferenceText}>
+                    {textImageSection.sectiondescription.includes("<") ? (
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: textImageSection.sectiondescription,
+                        }}
+                      />
+                    ) : (
+                      <p>{textImageSection.sectiondescription}</p>
+                    )}
                   </div>
-                </div>
-              </div>
-              <div className={styles.ServiceCard}>
-                <div className={styles.ServiceImageWrapper}>
-                  <Image
-                    src="/assets/images/gentle-dental-patients-come-first.jpg"
-                    alt="Oral Surgery"
-                    width={400}
-                    height={300}
-                    className={styles.ServiceImage}
-                  />
-                  <div className={styles.ServiceOverlay}>
-                    <h3 className={styles.ServiceCardTitle}>Oral Surgery</h3>
-                    <p className={styles.ServiceCardDescription}>
-                      Expert surgical procedures performed with care and
-                      precision.
-                    </p>
-                    <a href="#" className={styles.ServiceLearnMore}>
-                      LEARN MORE &gt;
-                    </a>
+                )}
+                {textImageSection.stats && textImageSection.stats.length > 0 && (
+                  <div className={styles.StatisticsContainer}>
+                    {textImageSection.stats.map((stat, index) => (
+                      <div key={index} className={styles.Statistic}>
+                        <div className={styles.StatisticNumber}>
+                          {stat.number}
+                        </div>
+                        <div className={styles.StatisticLabel}>
+                          {stat.label}
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                </div>
-              </div>
-              <div className={styles.ServiceCard}>
-                <div className={styles.ServiceImageWrapper}>
-                  <Image
-                    src="/assets/images/gentle-dental-patients-come-first.jpg"
-                    alt="Pediatric Dentistry"
-                    width={400}
-                    height={300}
-                    className={styles.ServiceImage}
-                  />
-                  <div className={styles.ServiceOverlay}>
-                    <h3 className={styles.ServiceCardTitle}>
-                      Pediatric Dentistry
-                    </h3>
-                    <p className={styles.ServiceCardDescription}>
-                      Specialized dental care for children in a comfortable and
-                      friendly environment.
-                    </p>
-                    <a href="#" className={styles.ServiceLearnMore}>
-                      LEARN MORE &gt;
-                    </a>
-                  </div>
-                </div>
-              </div>
-              <div className={styles.ServiceCard}>
-                <div className={styles.ServiceImageWrapper}>
-                  <Image
-                    src="/assets/images/gentle-dental-patients-come-first.jpg"
-                    alt="Cosmetic Dentistry"
-                    width={400}
-                    height={300}
-                    className={styles.ServiceImage}
-                  />
-                  <div className={styles.ServiceOverlay}>
-                    <h3 className={styles.ServiceCardTitle}>
-                      Cosmetic Dentistry
-                    </h3>
-                    <p className={styles.ServiceCardDescription}>
-                      Enhance your smile with our cosmetic dental treatments and
-                      procedures.
-                    </p>
-                    <a href="#" className={styles.ServiceLearnMore}>
-                      LEARN MORE &gt;
-                    </a>
-                  </div>
-                </div>
+                )}
+                {textImageSection.ctaText && (
+                  <button className={styles.LearnMoreButton}>
+                    {textImageSection.ctaLink?.url ? (
+                      <a
+                        href={textImageSection.ctaLink.url}
+                        style={{ textDecoration: "none", color: "inherit" }}
+                      >
+                        {textImageSection.ctaText}
+                      </a>
+                    ) : (
+                      textImageSection.ctaText
+                    )}
+                  </button>
+                )}
               </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
         <section className={styles.NewPatientSection}>
           <div className={styles.NewPatientBanner}>
             <div className={styles.NewPatientLeft}>
@@ -688,7 +535,6 @@ export default function Home() {
                     height={200}
                     className={styles.DentistImage}
                     onError={(e) => {
-                      // Fallback if image doesn't exist
                       e.currentTarget.style.display = "none";
                     }}
                   />
@@ -707,7 +553,6 @@ export default function Home() {
                     height={300}
                     className={styles.DentistImage}
                     onError={(e) => {
-                      // Fallback if image doesn't exist
                       e.currentTarget.style.display = "none";
                     }}
                   />
@@ -727,7 +572,6 @@ export default function Home() {
                     height={200}
                     className={styles.DentistImage}
                     onError={(e) => {
-                      // Fallback if image doesn't exist
                       e.currentTarget.style.display = "none";
                     }}
                   />
@@ -932,6 +776,19 @@ export default function Home() {
           </div>
         </section>
       </main>
+
+      <div className={styles.MobileStickySection}>
+        <div className={styles.MobileStickyDivider}></div>
+        <div className={styles.MobileStickyContent}>
+          <button className={styles.MobileStickyButton}>
+            FIND A LOCATION
+          </button>
+          <button className={styles.MobileStickyButton}>
+            BOOK AN APPOINTMENT
+          </button>
+        </div>
+      </div>
+      
       <Footer />
       {showScrollToTop && (
         <button

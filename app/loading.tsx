@@ -4,7 +4,6 @@ import {
   HeroBannerSkeleton,
   FeaturesSkeleton,
   DifferenceSkeleton,
-  ServicesSkeleton,
   NewPatientSkeleton,
   LocationsSkeleton,
   DentistsSkeleton,
@@ -19,52 +18,47 @@ export default function Loading() {
     <>
       <Navbar />
       <main>
-        {/* Hero Banner Section */}
+        {/* Hero Banner Section - matches conditional rendering in page.tsx */}
         <section className={styles.BannerWrapper}>
           <HeroBannerSkeleton />
         </section>
 
-        {/* Features Section */}
+        {/* Features Section (Icon Cards) - matches conditional rendering in page.tsx */}
         <section className={styles.FeaturesSection}>
           <FeaturesSkeleton />
         </section>
 
-        {/* Difference Section */}
+        {/* Difference Section (Text Image) - matches conditional rendering in page.tsx */}
         <section className={styles.DifferenceSection}>
           <DifferenceSkeleton />
         </section>
 
-        {/* Services Section */}
-        <section className={styles.ServicesSection}>
-          <ServicesSkeleton />
-        </section>
-
-        {/* New Patient Section */}
+        {/* New Patient Section - always shown in page.tsx */}
         <section className={styles.NewPatientSection}>
           <NewPatientSkeleton />
         </section>
 
-        {/* Locations Section */}
+        {/* Locations Section - always shown in page.tsx */}
         <section className={styles.LocationsSection}>
           <LocationsSkeleton />
         </section>
 
-        {/* Dentists Section */}
+        {/* Dentists Section - always shown in page.tsx */}
         <section className={styles.DentistsSection}>
           <DentistsSkeleton />
         </section>
 
-        {/* Gum Disease Section */}
+        {/* Gum Disease Section - always shown in page.tsx */}
         <section className={styles.GumDiseaseSection}>
           <GumDiseaseSkeleton />
         </section>
 
-        {/* Testimonials Section */}
+        {/* Testimonials Section - always shown in page.tsx */}
         <section className={styles.TestimonialsSection}>
           <TestimonialsSkeleton />
         </section>
 
-        {/* Insurance Section */}
+        {/* Insurance Section - always shown in page.tsx */}
         <section className={styles.InsuranceSection}>
           <InsuranceSkeleton />
         </section>

@@ -62,6 +62,10 @@
   position: relative;
   padding: 0.5rem 0;
   white-space: nowrap;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
 }
 
 .navLink::after {
@@ -81,6 +85,85 @@
 
 .navLink:hover::after {
   width: 100%;
+}
+
+/* Dropdown Styles */
+.dropdownContainer {
+  position: relative;
+}
+
+.dropdownMenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #ffffff;
+  list-style: none;
+  padding: 0.5rem 0;
+  margin: 0;
+  min-width: 200px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  z-index: 1000;
+  pointer-events: auto;
+  margin-top: 0.5rem;
+}
+
+/* Create invisible hover bridge between button and dropdown */
+.dropdownMenu::before {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  height: 0.5rem;
+  background: transparent;
+}
+
+.dropdownLink {
+  display: block;
+  padding: 0.75rem 1.5rem;
+  text-decoration: none;
+  color: #333333;
+  font-weight: 500;
+  font-size: 0.9rem;
+  text-transform: none;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.dropdownLink:hover {
+  background-color: #f3f4f6;
+  color: #ab4399;
+}
+
+/* Mobile Dropdown Styles */
+.mobileDropdownContainer {
+  width: 100%;
+}
+
+.mobileDropdownMenu {
+  display: block;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  background-color: #f9fafb;
+  width: 100%;
+}
+
+.mobileDropdownLink {
+  display: block;
+  padding: 1rem 1.5rem;
+  text-decoration: none;
+  color: #333333;
+  font-weight: 500;
+  font-size: 0.9rem;
+  text-transform: none;
+  border-bottom: 1px solid #e5e7eb;
+  padding-left: 2.5rem;
+}
+
+.mobileDropdownLink:hover {
+  color: #ab4399;
+  background-color: #f3f4f6;
 }
 
 .rightActions {
@@ -316,6 +399,12 @@
   transition: color 0.3s ease;
   position: relative;
   width: 100%;
+  background: none;
+  border: none;
+  border-bottom: 1px solid #e5e7eb;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
 }
 
 .mobileNavLink::after {

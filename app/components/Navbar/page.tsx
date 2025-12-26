@@ -8,6 +8,8 @@ import Image from "next/image";
 export default function Navbar() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isMobileDropdownOpen, setIsMobileDropdownOpen] = useState(false);
 
   useEffect(() => {
     if (isMenuOpen) {
@@ -70,10 +72,34 @@ export default function Navbar() {
               PAYMENT OPTIONS
             </Link>
           </li>
-          <li>
-            <Link href="/resources" className={styles.navLink}>
+          <li
+            className={styles.dropdownContainer}
+            onMouseEnter={() => setIsDropdownOpen(true)}
+            onMouseLeave={() => setIsDropdownOpen(false)}
+          >
+            <button
+              className={styles.navLink}
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            >
               PATIENT RESOURCES
-            </Link>
+            </button>
+            {isDropdownOpen && (
+              <ul 
+                className={styles.dropdownMenu}
+                onMouseEnter={() => setIsDropdownOpen(true)}
+                onMouseLeave={() => setIsDropdownOpen(false)}
+              >
+                <li>
+                  <Link
+                    href="/patient-resources/articles"
+                    className={styles.dropdownLink}
+                    onClick={() => setIsDropdownOpen(false)}
+                  >
+                    Articles
+                  </Link>
+                </li>
+              </ul>
+            )}
           </li>
           <li>
             <Link href="/about" className={styles.navLink}>
@@ -221,13 +247,30 @@ export default function Navbar() {
               </Link>
             </li>
             <li>
-              <Link
-                href="/resources"
-                className={styles.mobileNavLink}
-                onClick={handleCloseMenu}
-              >
-                PATIENT RESOURCES
-              </Link>
+              <div className={styles.mobileDropdownContainer}>
+                <button
+                  className={styles.mobileNavLink}
+                  onClick={() => setIsMobileDropdownOpen(!isMobileDropdownOpen)}
+                >
+                  PATIENT RESOURCES
+                </button>
+                {isMobileDropdownOpen && (
+                  <ul className={styles.mobileDropdownMenu}>
+                    <li>
+                      <Link
+                        href="/patient-resources/articles"
+                        className={styles.mobileDropdownLink}
+                        onClick={() => {
+                          setIsMobileDropdownOpen(false);
+                          handleCloseMenu();
+                        }}
+                      >
+                        Articles
+                      </Link>
+                    </li>
+                  </ul>
+                )}
+              </div>
             </li>
             <li>
               <Link

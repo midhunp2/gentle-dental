@@ -6,6 +6,7 @@ import Footer from "./components/Footer/page";
 import Image from "next/image";
 import styles from "./home.module.css";
 import { fetchHeroSections } from "./lib/queries/query";
+import { HeroBannerSkeleton } from "./components/Skeleton/Skeleton";
 
 interface Location {
   id: number;
@@ -140,6 +141,7 @@ export default function Home() {
   const totalTestimonialPages = testimonials.length;
   const [showScrollToTop, setShowScrollToTop] = useState(false);
   const [heroData, setHeroData] = useState<HeroSection | null>(null);
+  const [isHeroLoading, setIsHeroLoading] = useState(true);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -152,6 +154,7 @@ export default function Home() {
 
   useEffect(() => {
     const loadHeroData = async () => {
+      setIsHeroLoading(true);
       try {
         const data = await fetchHeroSections();
         if (data?.paragraphHeroSections?.nodes?.length > 0) {
@@ -159,6 +162,8 @@ export default function Home() {
         }
       } catch (error) {
         console.error("Error loading hero data:", error);
+      } finally {
+        setIsHeroLoading(false);
       }
     };
     loadHeroData();
@@ -208,48 +213,52 @@ export default function Home() {
             backgroundRepeat: "no-repeat",
           }}
         >
-          <div className={styles.BannerContent}>
-            <h1 className={styles.BannerTitle}>
-              {heroData?.headingSmall || "Quality Dental Care is"}
-            </h1>
-            <p className={styles.BannerSubtitle}>
-              {heroData?.headingLarge
-                ? heroData.headingLarge.replace(/\s+/g, " ").split(" ").map((word, index, array) => {
-                    const midPoint = Math.floor(array.length / 2);
-                    return (
-                      <span key={index}>
-                        {word}
-                        {index < array.length - 1 && " "}
-                        {index === midPoint - 1 && <br />}
-                      </span>
-                    );
-                  })
-                : "Right Around the corner"}
-            </p>
-            <div className={styles.SearchBar}>
-              <div className={styles.SearchInputWrapper}>
-                <Image
-                  src="https://www.gentledental.com/themes/custom/gentledentaldptheme/images/location.svg"
-                  alt="Location"
-                  className={styles.LocationIcon}
-                  width={100}
-                  height={100}
-                  unoptimized
-                />
-                <input
-                  type="text"
-                  placeholder={
-                    heroData?.searchPlaceholder ||
-                    "Search by City, State or ZIP code"
-                  }
-                  className={styles.SearchInput}
-                />
+          {isHeroLoading ? (
+            <HeroBannerSkeleton />
+          ) : (
+            <div className={styles.BannerContent}>
+              <h1 className={styles.BannerTitle}>
+                {heroData?.headingSmall || "Quality Dental Care is"}
+              </h1>
+              <p className={styles.BannerSubtitle}>
+                {heroData?.headingLarge
+                  ? heroData.headingLarge.replace(/\s+/g, " ").split(" ").map((word, index, array) => {
+                      const midPoint = Math.floor(array.length / 2);
+                      return (
+                        <span key={index}>
+                          {word}
+                          {index < array.length - 1 && " "}
+                          {index === midPoint - 1 && <br />}
+                        </span>
+                      );
+                    })
+                  : "Right Around the corner"}
+              </p>
+              <div className={styles.SearchBar}>
+                <div className={styles.SearchInputWrapper}>
+                  <Image
+                    src="https://www.gentledental.com/themes/custom/gentledentaldptheme/images/location.svg"
+                    alt="Location"
+                    className={styles.LocationIcon}
+                    width={100}
+                    height={100}
+                    unoptimized
+                  />
+                  <input
+                    type="text"
+                    placeholder={
+                      heroData?.searchPlaceholder ||
+                      "Search by City, State or ZIP code"
+                    }
+                    className={styles.SearchInput}
+                  />
+                </div>
+                <button className={styles.SearchButton}>
+                  {heroData?.ctaText || "SEARCH"}
+                </button>
               </div>
-              <button className={styles.SearchButton}>
-                {heroData?.ctaText || "SEARCH"}
-              </button>
             </div>
-          </div>
+          )}
         </section>
         <section className={styles.FeaturesSection}>
           <div className={styles.FeaturesContainer}>

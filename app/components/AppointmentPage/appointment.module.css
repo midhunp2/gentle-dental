@@ -1,0 +1,128 @@
+.appointmentPage {
+  min-height: calc(100vh - 200px);
+  background-color: #f9f9f9;
+  padding: 60px 15px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.header {
+  text-align: center;
+  padding: 40px 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+  color: #145091;
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  font-family: "OpenSans-Bold", sans-serif;
+}
+
+.subtitle {
+  color: #333333;
+  font-size: 18px;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.instructions {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  text-align: left;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.instructionItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  color: #333333;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.instructionNumber {
+  background-color: #ab4399;
+  color: #ffffff;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  flex-shrink: 0;
+  font-size: 14px;
+}
+
+.schedulerContainer {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 40px 20px;
+  min-height: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.schedulerWrapper {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+
+.errorMessage {
+  color: #d32f2f;
+  font-size: 16px;
+  text-align: center;
+  padding: 40px;
+  background-color: #ffebee;
+  border-radius: 4px;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .appointmentPage {
+    padding: 40px 15px;
+  }
+
+  .header {
+    padding: 30px 15px;
+  }
+
+  .title {
+    font-size: 28px;
+  }
+
+  .subtitle {
+    font-size: 16px;
+  }
+
+  .instructions {
+    gap: 12px;
+  }
+
+  .instructionItem {
+    font-size: 14px;
+  }
+
+  .schedulerContainer {
+    padding: 20px 15px;
+    min-height: 500px;
+  }
+}
+

@@ -131,8 +131,6 @@
 }
 
 .bookNowBtn:hover {
-  background-color: #6d28d9;
-  border-color: #6d28d9;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
 }
@@ -193,7 +191,7 @@
 }
 
 .applyBtn:hover {
-  background-color: #6d28d9;
+  background-color: #ab4399;
 }
 
 .closeBtn {
@@ -284,7 +282,7 @@
 }
 
 .mobileMenuClose:hover {
-  color: #1a5f7a;
+  color: #ab4399;
 }
 
 .mobileNavLinks {
@@ -329,7 +327,7 @@
 }
 
 .mobileNavLink:hover {
-  color: #1a5f7a;
+  color: #ab4399;
 }
 
 /* Responsive Design */

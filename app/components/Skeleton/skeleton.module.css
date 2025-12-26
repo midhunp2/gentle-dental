@@ -1,0 +1,148 @@
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    #f0f0f0 25%,
+    #e0e0e0 50%,
+    #f0f0f0 75%
+  );
+  background-size: 200% 100%;
+  animation: loading 1.5s ease-in-out infinite;
+  display: inline-block;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.text {
+  border-radius: 4px;
+}
+
+.rectangular {
+  border-radius: 4px;
+}
+
+.circular {
+  border-radius: 50%;
+}
+
+.skeletonContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* Appointment Scheduler Skeleton */
+.appointmentSkeleton {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.skeletonHeader {
+  width: 100%;
+  border-radius: 8px;
+}
+
+.skeletonCalendar {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.skeletonCalendarHeader {
+  width: 100%;
+  border-radius: 4px;
+}
+
+.skeletonCalendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+}
+
+.skeletonCalendarDay {
+  aspect-ratio: 1;
+  border-radius: 4px;
+}
+
+.skeletonForm {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.skeletonFormField {
+  width: 100%;
+}
+
+.skeletonButton {
+  width: 200px;
+  border-radius: 4px;
+  margin-top: 8px;
+}
+
+/* Hero Banner Skeleton */
+.heroSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 0 15px;
+  margin: 60px 141px 0;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.skeletonTitle {
+  width: 300px;
+  border-radius: 4px;
+}
+
+.skeletonSubtitle {
+  width: 100%;
+  border-radius: 4px;
+}
+
+.skeletonSearchBar {
+  width: 100%;
+  max-width: 1190px;
+  border-radius: 4px;
+  margin-top: 24px;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .heroSkeleton {
+    margin: 40px 15px 0;
+    padding: 0;
+  }
+
+  .skeletonTitle {
+    width: 200px;
+  }
+
+  .skeletonCalendarGrid {
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+  }
+
+  .skeletonCalendarDay {
+    height: 40px;
+  }
+
+  .appointmentSkeleton {
+    padding: 15px;
+    gap: 16px;
+  }
+}
+

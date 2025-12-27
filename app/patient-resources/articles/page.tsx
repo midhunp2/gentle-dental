@@ -7,79 +7,60 @@ import Footer from "@/app/components/Footer/page"
 import Image from "next/image"
 import Link from "next/link"
 import ArticleCardSkeleton from "./ArticleCardSkeleton"
+import { fetchArticles } from "@/app/lib/queries/query"
 
 const ARTICLES_PER_PAGE = 3
 
-const articles = [
-  {
-    id: 1,
-    slug: "dental-sealants-how-they-work",
-    title: "Dental Sealants: How They Work | Gentle Dental",
-    description: "Comprehensive Guide to Dental Sealants: Benefits, Application, and Cost. Learn how sealants protect your teeth from cavities...",
-    image: "/assets/images/gentle-dental-waltham.webp"
-  },
-  {
-    id: 2,
-    slug: "unlocking-wellness-itero-wellness-scans",
-    title: "Unlocking Wellness: The Importance of iTero Wellness Scans",
-    description: "Maintaining our health is more important than ever but it can sometimes feel overwhelming. Discover how iTero scans help...",
-    image: "/assets/images/gentle-dental-waltham.webp"
-  },
-  {
-    id: 3,
-    slug: "how-much-does-wisdom-tooth-removal-cost",
-    title: "How Much Does a Wisdom Tooth Removal Cost?",
-    description: "How much to pull a tooth? Tooth extraction costs can vary based on the type of procedure and your insurance coverage...",
-    image: "/assets/images/gentle-dental-waltham.webp"
-  },
-  {
-    id: 4,
-    slug: "root-canal-treatment-complete-guide",
-    title: "Root Canal Treatment: A Complete Guide to Pain Relief",
-    description: "Everything you need to know about root canal therapy. Learn about the procedure, recovery time, and how modern techniques make it pain-free...",
-    image: "/assets/images/gentle-dental-waltham.webp"
-  },
-  {
-    id: 5,
-    slug: "teeth-whitening-options-compared",
-    title: "Teeth Whitening Options: In-Office vs. At-Home Treatments",
-    description: "Compare professional teeth whitening treatments with at-home options. Find out which method works best for your smile and budget...",
-    image: "/assets/images/gentle-dental-waltham.webp"
-  },
-  {
-    id: 6,
-    slug: "gum-disease-prevention-tips",
-    title: "Gum Disease Prevention: Essential Tips for Healthy Gums",
-    description: "Protect your gums from periodontal disease with these expert tips. Learn about early warning signs and effective prevention strategies...",
-    image: "/assets/images/gentle-dental-waltham.webp"
-  },
-  {
-    id: 7,
-    slug: "invisalign-vs-traditional-braces",
-    title: "Invisalign vs. Traditional Braces: Which is Right for You?",
-    description: "Compare Invisalign clear aligners with traditional metal braces. Discover the pros and cons of each orthodontic treatment option...",
-    image: "/assets/images/gentle-dental-waltham.webp"
-  },
-  {
-    id: 8,
-    slug: "emergency-dental-care-what-to-know",
-    title: "Emergency Dental Care: What You Need to Know",
-    description: "When dental emergencies strike, knowing what to do can save your tooth. Learn about common emergencies and when to seek immediate care...",
-    image: "/assets/images/gentle-dental-waltham.webp"
-  },
-  {
-    id: 9,
-    slug: "childrens-dental-health-guide",
-    title: "Children's Dental Health: A Parent's Complete Guide",
-    description: "Help your child develop healthy dental habits that last a lifetime. From first tooth to braces, learn how to care for your child's smile...",
-    image: "/assets/images/gentle-dental-waltham.webp"
-  }   
-  
-]
+interface ArticleCard {
+  id: string
+  slug: string
+  title: string
+  description: string
+  image: string
+  imageAlt?: string
+  ctaText?: string
+  ctaLink?: string
+}
+
+interface ArticlesData {
+  articles: ArticleCard[]
+  bannerImage?: string
+  bannerImageAlt?: string
+  bannerHeading?: string | null
+}
+
+// Helper function to generate slug from title
+const generateSlug = (title: string): string => {
+  return title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "")
+}
+
+// Helper function to strip HTML tags from description
+const stripHtml = (html: string): string => {
+  if (!html) return ""
+  // Remove HTML tags and decode entities
+  return html
+    .replace(/<[^>]*>/g, "")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .trim()
+}
 
 const Articles = () => {
   const [currentPage, setCurrentPage] = useState(1)
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [articlesData, setArticlesData] = useState<ArticlesData>({
+    articles: [],
+  })
+  const [isInitialLoad, setIsInitialLoad] = useState(true)
+
+  const articles = articlesData.articles
   const totalPages = Math.ceil(articles.length / ARTICLES_PER_PAGE)
 
   // Get articles for current page
@@ -87,19 +68,77 @@ const Articles = () => {
   const endIndex = startIndex + ARTICLES_PER_PAGE
   const currentArticles = articles.slice(startIndex, endIndex)
 
+  // Fetch articles data on mount
+  useEffect(() => {
+    const loadArticles = async () => {
+      try {
+        setIsLoading(true)
+        const data = await fetchArticles()
+        
+        // Transform the data
+        const transformedArticles: ArticleCard[] = data.paragraphArticleCards.nodes.map(
+          (card: any, index: number) => {
+            const title = card.title?.value || ""
+            const description = card.description?.processed || card.description?.value || ""
+            const imageUrl = card.image?.mediaImage?.url || ""
+            const imageAlt = card.image?.mediaImage?.alt || title
+            const ctaLink = card.ctaLink?.url || `/patient-resources/articles/${generateSlug(title)}`
+            const ctaText = card.ctaText || card.ctaLink?.title || "READ MORE"
+            
+            return {
+              id: `article-${index}`,
+              slug: generateSlug(title),
+              title,
+              description: stripHtml(description),
+              image: imageUrl,
+              imageAlt,
+              ctaText,
+              ctaLink,
+            }
+          }
+        )
+
+        // Get banner data
+        const banner = data.paragraphArticleBanners?.nodes?.[0]
+        const bannerImage = banner?.bannerImage?.mediaImage?.url || "/assets/images/articles-banner.jpg"
+        const bannerImageAlt = banner?.bannerImage?.mediaImage?.alt || "Articles Banner"
+        const bannerHeading = banner?.bannerHeading
+
+        setArticlesData({
+          articles: transformedArticles,
+          bannerImage,
+          bannerImageAlt,
+          bannerHeading,
+        })
+      } catch (error) {
+        console.error("Error loading articles:", error)
+        // Keep empty state on error
+      } finally {
+        setIsLoading(false)
+        setIsInitialLoad(false)
+      }
+    }
+
+    loadArticles()
+  }, [])
+
   // Scroll to top when page changes
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" })
-  }, [currentPage])
+    if (!isInitialLoad) {
+      window.scrollTo({ top: 0, behavior: "smooth" })
+    }
+  }, [currentPage, isInitialLoad])
 
   // Simulate loading state for page transitions
   useEffect(() => {
-    setIsLoading(true)
-    const timer = setTimeout(() => {
-      setIsLoading(false)
-    }, 300) // Short delay to show loading state
-    return () => clearTimeout(timer)
-  }, [currentPage])
+    if (!isInitialLoad) {
+      setIsLoading(true)
+      const timer = setTimeout(() => {
+        setIsLoading(false)
+      }, 300) // Short delay to show loading state
+      return () => clearTimeout(timer)
+    }
+  }, [currentPage, isInitialLoad])
 
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
@@ -167,8 +206,8 @@ const Articles = () => {
         <div className={styles.ArticlesBanner}>
           <div className={styles.ArticlesBannerImage}>
             <Image 
-              src="/assets/images/articles-banner.jpg" 
-              alt="Articles Banner" 
+              src={articlesData.bannerImage || "/assets/images/articles-banner.jpg"} 
+              alt={articlesData.bannerImageAlt || "Articles Banner"} 
               fill
               priority
               className={styles.BannerImage}
@@ -176,7 +215,9 @@ const Articles = () => {
             />
           </div>
           <div className={styles.ArticlesBannerContent}>
-            <h1 className={styles.ArticlesTitle}>Articles</h1>
+            <h1 className={styles.ArticlesTitle}>
+              {articlesData.bannerHeading || "Articles"}
+            </h1>
           </div>
         </div>
         <section className={styles.ArticlesSection}>
@@ -194,7 +235,7 @@ const Articles = () => {
                     <div className={styles.ArticleImageWrapper}>
                       <Image 
                         src={article.image} 
-                        alt={article.title} 
+                        alt={article.imageAlt || article.title} 
                         width={400} 
                         height={300}
                         className={styles.ArticleImage}
@@ -203,8 +244,8 @@ const Articles = () => {
                     <div className={styles.ArticleContent}>
                       <h2 className={styles.ArticleTitle}>{article.title}</h2>
                       <p className={styles.ArticleDescription}>{article.description}</p>
-                      <Link href={`/patient-resources/articles/${article.slug}`} className={styles.ReadMoreButton}>
-                        READ MORE
+                      <Link href={article.ctaLink || `/patient-resources/articles/${article.slug}`} className={styles.ReadMoreButton}>
+                        {article.ctaText || "READ MORE"}
                       </Link>
                     </div>
                   </div>

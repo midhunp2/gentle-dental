@@ -10,7 +10,7 @@ import {
   GumDiseaseSkeleton,
   TestimonialsSkeleton,
   InsuranceSkeleton,
-} from "./components/Skeleton/Skeleton";
+} from "./components/Ui/Skeleton/Skeleton";
 import styles from "./home.module.css";
 
 export default function Loading() {

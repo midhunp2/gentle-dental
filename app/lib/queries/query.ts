@@ -109,3 +109,51 @@ export async function fetchHeroSections() {
     throw error;
   }
 }
+
+export const ArticlesQuery = gql`
+  query ArticlesQuery {
+    paragraphArticleCards(first: 100) {
+      nodes {
+        title {
+          value
+        }
+        description {
+          processed
+          value
+        }
+        image {
+          mediaImage {
+            alt
+            url
+          }
+        }
+        ctaLink {
+          url
+          title
+        }
+        ctaText
+      }
+    }
+    paragraphArticleBanners(first: 1) {
+      nodes {
+        bannerImage {
+          mediaImage {
+            alt
+            url
+          }
+        }
+        bannerHeading
+      }
+    }
+  }
+`;
+
+export async function fetchArticles() {
+  try {
+    const data = await client.request(ArticlesQuery);
+    return data;
+  } catch (error) {
+    console.error("Error fetching articles:", error);
+    throw error;
+  }
+}

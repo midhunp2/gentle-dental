@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, Suspense, useRef, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import Navbar from "./components/Navbar/page";
 import Footer from "./components/Footer/page";
 import Image from "next/image";
@@ -15,7 +16,7 @@ import type {
 } from "./lib/types";
 
 // Dev-only logging
-const isDev = process.env.NODE_ENV === 'development';
+const isDev = process.env.NODE_ENV === "development";
 const log = isDev ? console.log : () => {};
 const logError = isDev ? console.error : () => {};
 
@@ -131,6 +132,7 @@ const testimonials: Testimonial[][] = [
 ];
 
 export default function Home() {
+  const router = useRouter();
   const [currentPage, setCurrentPage] = useState(0);
   const totalPages = Math.ceil(locations.length / CARDS_PER_PAGE);
   const [currentTestimonialPage, setCurrentTestimonialPage] = useState(0);
@@ -138,7 +140,8 @@ export default function Home() {
   const [showScrollToTop, setShowScrollToTop] = useState(false);
   const [pageData, setPageData] = useState<PageByRouteResponse | null>(null);
   const [loading, setLoading] = useState(true);
-  
+  const [searchLocation, setSearchLocation] = useState("");
+
   // Jarvis scheduler refs and state
   const scriptLoadedRef = useRef(false);
   const schedulerInitializedRef = useRef(false);
@@ -172,7 +175,10 @@ export default function Home() {
   }, []);
 
   const getContainer = useCallback(() => {
-    return containerRef.current || document.getElementById("jarvis-scheduler-container");
+    return (
+      containerRef.current ||
+      document.getElementById("jarvis-scheduler-container")
+    );
   }, []);
 
   const loadJarvisScript = useCallback(() => {
@@ -182,12 +188,19 @@ export default function Home() {
         return;
       }
 
-      const existingInitScript = document.querySelector('script[src*="init.min.js"]');
-      const existingSchedulerScript = document.querySelector('script[src*="jarvis-scheduler-v2.min.js"]');
-      const customElementDefined = customElements.get('jarvis-scheduler-v2');
-      
-      if (existingInitScript && (window as any).JarvisAnalyticsScheduler && 
-          (customElementDefined || existingSchedulerScript)) {
+      const existingInitScript = document.querySelector(
+        'script[src*="init.min.js"]'
+      );
+      const existingSchedulerScript = document.querySelector(
+        'script[src*="jarvis-scheduler-v2.min.js"]'
+      );
+      const customElementDefined = customElements.get("jarvis-scheduler-v2");
+
+      if (
+        existingInitScript &&
+        (window as any).JarvisAnalyticsScheduler &&
+        (customElementDefined || existingSchedulerScript)
+      ) {
         scriptLoadedRef.current = true;
         resolve();
         return;
@@ -197,7 +210,7 @@ export default function Home() {
       initScript.src = "https://schedule.jarvisanalytics.com/js/init.min.js";
       initScript.async = true;
       initScript.defer = true;
-      
+
       initScript.onload = () => {
         let attempts = 0;
         const maxAttempts = 20;
@@ -205,31 +218,32 @@ export default function Home() {
           attempts++;
           if ((window as any).JarvisAnalyticsScheduler) {
             clearInterval(checkConstructor);
-            
-            if (customElements.get('jarvis-scheduler-v2')) {
+
+            if (customElements.get("jarvis-scheduler-v2")) {
               scriptLoadedRef.current = true;
               resolve();
               return;
             }
-            
+
             // Prevent double registration of custom element
-            if (!customElements.get('jarvis-scheduler-v2')) {
+            if (!customElements.get("jarvis-scheduler-v2")) {
               const schedulerScript = document.createElement("script");
               schedulerScript.id = "jarvis-scheduler";
-              schedulerScript.src = "https://schedule.jarvisanalytics.com/js/jarvis-scheduler-v2.min.js";
+              schedulerScript.src =
+                "https://schedule.jarvisanalytics.com/js/jarvis-scheduler-v2.min.js";
               schedulerScript.async = true;
               schedulerScript.defer = true;
-              
+
               schedulerScript.onload = () => {
                 scriptLoadedRef.current = true;
                 resolve();
               };
-              
+
               schedulerScript.onerror = () => {
                 scriptLoadedRef.current = true;
                 resolve();
               };
-              
+
               document.head.appendChild(schedulerScript);
             } else {
               scriptLoadedRef.current = true;
@@ -237,19 +251,25 @@ export default function Home() {
             }
           } else if (attempts >= maxAttempts) {
             clearInterval(checkConstructor);
-            reject(new Error("JarvisAnalyticsScheduler constructor not available"));
+            reject(
+              new Error("JarvisAnalyticsScheduler constructor not available")
+            );
           }
         }, 150);
       };
-      
-      initScript.onerror = () => reject(new Error("Failed to load init.min.js"));
+
+      initScript.onerror = () =>
+        reject(new Error("Failed to load init.min.js"));
       document.head.appendChild(initScript);
     });
   }, []);
 
   const initializeJarvisScheduler = useCallback((): Promise<void> => {
     return new Promise((resolve, reject) => {
-      if ((window as any).__jarvisInitialized || schedulerInitializedRef.current) {
+      if (
+        (window as any).__jarvisInitialized ||
+        schedulerInitializedRef.current
+      ) {
         resolve();
         return;
       }
@@ -290,7 +310,7 @@ export default function Home() {
             colors: (window as any).jarvisFormColors || {},
             showPhoneNumber: false,
           });
-          
+
           (window as any).jarvis = jarvis;
           jarvisSchedulerRef.current = jarvis;
           (window as any).__jarvisInitialized = true;
@@ -298,36 +318,59 @@ export default function Home() {
 
           // UTM tracking
           const extractUTM = (paramName: string) => {
-            const paramValue = new URLSearchParams(window.location.search).get(paramName) || '';
-            return paramValue || document.cookie.replace(new RegExp(`(?:(?:^|.*;\\s*)${paramName}\\s*=\\s*([^;]*).*$)|^.*$`), "$1") || '';
+            const paramValue =
+              new URLSearchParams(window.location.search).get(paramName) || "";
+            return (
+              paramValue ||
+              document.cookie.replace(
+                new RegExp(
+                  `(?:(?:^|.*;\\s*)${paramName}\\s*=\\s*([^;]*).*$)|^.*$`
+                ),
+                "$1"
+              ) ||
+              ""
+            );
           };
-          
-          const utmParams = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'gclid'];
-          const isUTMPresent = utmParams.some(param => extractUTM(param).length > 0);
-          
+
+          const utmParams = [
+            "utm_source",
+            "utm_medium",
+            "utm_campaign",
+            "utm_term",
+            "utm_content",
+            "gclid",
+          ];
+          const isUTMPresent = utmParams.some(
+            (param) => extractUTM(param).length > 0
+          );
+
           if (isUTMPresent) {
-            const utmValues = utmParams.map(param => `${param}=${extractUTM(param)}`).join('&');
+            const utmValues = utmParams
+              .map((param) => `${param}=${extractUTM(param)}`)
+              .join("&");
             const fullURL = `${window.location.href}?${utmValues}`;
             jarvis.referrer = fullURL;
             const expirationDate = new Date();
             expirationDate.setDate(expirationDate.getDate() + 30);
             document.cookie = `referrer_url=${fullURL}; path=/; expires=${expirationDate.toUTCString()}`;
           } else {
-            jarvis.referrer = extractUTM('referrer_url') || '';
+            jarvis.referrer = extractUTM("referrer_url") || "";
           }
 
           // DataLayer tracking
-          if (typeof jarvis.onNextStep === 'function') {
+          if (typeof jarvis.onNextStep === "function") {
             jarvis.onNextStep((event: any) => {
-              if (event.event === 'scheduling-success') {
+              if (event.event === "scheduling-success") {
                 (window as any).dataLayer = (window as any).dataLayer || [];
-                (window as any).dataLayer.push({'event': 'online_scheduler_form'});
+                (window as any).dataLayer.push({
+                  event: "online_scheduler_form",
+                });
               }
             });
           }
 
           // CRITICAL: Call render() first to create the component
-          if (typeof jarvis.render === 'function') {
+          if (typeof jarvis.render === "function") {
             try {
               jarvis.render("jarvis-scheduler-container");
             } catch {
@@ -337,32 +380,38 @@ export default function Home() {
                 jarvis.render();
               }
             }
-          } else if (typeof jarvis.loadApp === 'function') {
+          } else if (typeof jarvis.loadApp === "function") {
             jarvis.loadApp("jarvis-scheduler-container");
           }
 
-          const locationTitle = new URLSearchParams(window.location.search).get('location_title');
-          
+          const locationTitle = new URLSearchParams(window.location.search).get(
+            "location_title"
+          );
+
           // Wait for component element to be created in DOM (optimized polling)
           let attempts = 0;
           const maxAttempts = 40;
           let pollInterval: ReturnType<typeof setInterval> | null = null;
-          
+
           const checkComponent = () => {
             attempts++;
-            const component = document.querySelector("jarvis-scheduler-v2") as HTMLElement;
-            
+            const component = document.querySelector(
+              "jarvis-scheduler-v2"
+            ) as HTMLElement;
+
             if (component) {
               if (pollInterval) clearInterval(pollInterval);
-              
+
               const container = getContainer();
               if (container && !container.contains(component)) {
                 container.appendChild(component as Node);
               }
-              
+
               // Style shadow DOM for visibility
               if ((component as any).shadowRoot) {
-                const shadowApp = (component as any).shadowRoot.querySelector("#app");
+                const shadowApp = (component as any).shadowRoot.querySelector(
+                  "#app"
+                );
                 if (shadowApp) {
                   shadowApp.style.position = "relative";
                   shadowApp.style.visibility = "visible";
@@ -370,9 +419,11 @@ export default function Home() {
                   shadowApp.style.display = "block";
                   shadowApp.style.zIndex = "10001";
                 }
-                
+
                 // Ensure all content in shadow root is visible
-                const shadowContent = (component as any).shadowRoot.querySelectorAll("*");
+                const shadowContent = (
+                  component as any
+                ).shadowRoot.querySelectorAll("*");
                 shadowContent.forEach((el: HTMLElement) => {
                   if (el.style) {
                     el.style.visibility = "visible";
@@ -380,41 +431,45 @@ export default function Home() {
                   }
                 });
               }
-              
+
               // Ensure component itself is visible
               component.style.display = "block";
               component.style.visibility = "visible";
               component.style.opacity = "1";
               component.style.zIndex = "10000";
               component.style.position = "relative";
-              
+
               // Set city field if location title exists
               if (locationTitle) {
                 setTimeout(() => {
-                  const cityField = document.querySelector('#city-field') as HTMLInputElement;
+                  const cityField = document.querySelector(
+                    "#city-field"
+                  ) as HTMLInputElement;
                   if (cityField) {
                     cityField.value = locationTitle;
                   }
                 }, 300);
               }
-              
+
               // Wait for component to fully initialize, then call toggle()
               // Check if component property exists (indicates component is ready)
               let toggleAttempts = 0;
               const maxToggleAttempts = 10;
-              
+
               const tryToggle = () => {
                 toggleAttempts++;
-                if (typeof jarvis.toggle === 'function') {
+                if (typeof jarvis.toggle === "function") {
                   // Check if component exists (means it's initialized)
                   if (jarvis.component || toggleAttempts >= maxToggleAttempts) {
                     try {
                       jarvis.toggle();
-                      
+
                       // After toggle, ensure modal is visible
                       setTimeout(() => {
                         // Find and ensure modal/overlay elements are visible
-                        const modalElements = document.querySelectorAll('[id*="jarvis"], [class*="jarvis"], [class*="modal"], [class*="overlay"]');
+                        const modalElements = document.querySelectorAll(
+                          '[id*="jarvis"], [class*="jarvis"], [class*="modal"], [class*="overlay"]'
+                        );
                         modalElements.forEach((el: Element) => {
                           const htmlEl = el as HTMLElement;
                           htmlEl.style.display = "block";
@@ -422,9 +477,11 @@ export default function Home() {
                           htmlEl.style.opacity = "1";
                           htmlEl.style.zIndex = "10000";
                         });
-                        
+
                         // Ensure iframes are visible
-                        const iframes = document.querySelectorAll('iframe[id*="jarvis"], iframe[src*="jarvis"]');
+                        const iframes = document.querySelectorAll(
+                          'iframe[id*="jarvis"], iframe[src*="jarvis"]'
+                        );
                         iframes.forEach((iframe: Element) => {
                           const htmlIframe = iframe as HTMLElement;
                           htmlIframe.style.visibility = "visible";
@@ -444,10 +501,9 @@ export default function Home() {
                 setShowManualTrigger(false);
                 resolve();
               };
-              
+
               // Start trying toggle after a short delay
               setTimeout(tryToggle, 200);
-              
             } else if (attempts >= maxAttempts) {
               if (pollInterval) clearInterval(pollInterval);
               logError("Component not found after timeout");
@@ -455,21 +511,24 @@ export default function Home() {
               resolve();
             }
           };
-          
+
           // Start polling with optimized interval
           pollInterval = setInterval(checkComponent, 100);
-          
         } catch (error) {
           logError("Error initializing Jarvis scheduler:", error);
           setShowManualTrigger(true);
-          setJarvisError(error instanceof Error ? error.message : "Failed to initialize scheduler");
+          setJarvisError(
+            error instanceof Error
+              ? error.message
+              : "Failed to initialize scheduler"
+          );
           reject(error);
         }
       };
 
       // Start immediately if DOM ready, otherwise wait for DOMContentLoaded
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init, { once: true });
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", init, { once: true });
       } else {
         init();
       }
@@ -481,7 +540,7 @@ export default function Home() {
     try {
       // Load script if not already loaded
       await loadJarvisScript();
-      
+
       // Initialize if not already initialized
       if (!schedulerInitializedRef.current) {
         await initializeJarvisScheduler();
@@ -507,7 +566,9 @@ export default function Home() {
         }
       }
     } catch (error) {
-      setJarvisError(error instanceof Error ? error.message : "Failed to load scheduler");
+      setJarvisError(
+        error instanceof Error ? error.message : "Failed to load scheduler"
+      );
     }
   }, [loadJarvisScript, initializeJarvisScheduler, getContainer]);
 
@@ -530,6 +591,17 @@ export default function Home() {
       setShowManualTrigger(false);
     }
   }, []);
+
+  // Handle search button click
+  const handleSearchClick = () => {
+    if (searchLocation.trim()) {
+      router.push(
+        `/dental-offices?p=${encodeURIComponent(searchLocation.trim())}&miles=5`
+      );
+    } else {
+      router.push("/dental-offices");
+    }
+  };
 
   // Helper function to check section type
   const isHeroSection = (
@@ -613,16 +685,19 @@ export default function Home() {
               </h1>
               <p className={styles.BannerSubtitle}>
                 {heroSection.headingLarge
-                  ? heroSection.headingLarge.replace(/\s+/g, " ").split(" ").map((word, index, array) => {
-                    const midPoint = Math.floor(array.length / 2);
-                    return (
-                      <span key={index}>
-                        {word}
-                        {index < array.length - 1 && " "}
-                        {index === midPoint - 1 && <br />}
-                      </span>
-                    );
-                  })
+                  ? heroSection.headingLarge
+                      .replace(/\s+/g, " ")
+                      .split(" ")
+                      .map((word, index, array) => {
+                        const midPoint = Math.floor(array.length / 2);
+                        return (
+                          <span key={index}>
+                            {word}
+                            {index < array.length - 1 && " "}
+                            {index === midPoint - 1 && <br />}
+                          </span>
+                        );
+                      })
                   : "Right Around the corner"}
               </p>
               <div className={styles.SearchBar}>
@@ -637,6 +712,13 @@ export default function Home() {
                   />
                   <input
                     type="text"
+                    value={searchLocation}
+                    onChange={(e) => setSearchLocation(e.target.value)}
+                    onKeyPress={(e) => {
+                      if (e.key === "Enter") {
+                        handleSearchClick();
+                      }
+                    }}
                     placeholder={
                       heroSection.searchPlaceholder ||
                       "Search by City, State or ZIP code"
@@ -644,45 +726,50 @@ export default function Home() {
                     className={styles.SearchInput}
                   />
                 </div>
-                <button className={styles.SearchButton}>
+                <button
+                  className={styles.SearchButton}
+                  onClick={handleSearchClick}
+                >
                   {heroSection.ctaText || "SEARCH"}
                 </button>
               </div>
             </div>
           </section>
         )}
-        {iconCardsSection && iconCardsSection.cards && iconCardsSection.cards.length > 0 && (
-          <section className={styles.FeaturesSection}>
-            <div className={styles.FeaturesContainer}>
-              {iconCardsSection.cards.map((card, index) => (
-                <div
-                  key={card.icontitle || index}
-                  className={index === 0 ? styles.FeatureCardWrapper : ""}
-                >
-                  <div className={styles.FeatureCard}>
-                    <h2 className={styles.FeatureTitle}>{card.icontitle}</h2>
-                    {card.icon?.mediaImage?.url && (
-                      <div className={styles.FeatureIcon}>
-                        <Image
-                          src={card.icon.mediaImage.url}
-                          alt={card.icon.mediaImage.alt || card.icontitle}
-                          width={100}
-                          height={100}
-                          className={styles.IconImage}
-                          quality={95}
-                          unoptimized={false}
-                        />
-                      </div>
-                    )}
-                    <p className={styles.FeatureDescription}>
-                      {card.icondescription}
-                    </p>
+        {iconCardsSection &&
+          iconCardsSection.cards &&
+          iconCardsSection.cards.length > 0 && (
+            <section className={styles.FeaturesSection}>
+              <div className={styles.FeaturesContainer}>
+                {iconCardsSection.cards.map((card, index) => (
+                  <div
+                    key={card.icontitle || index}
+                    className={index === 0 ? styles.FeatureCardWrapper : ""}
+                  >
+                    <div className={styles.FeatureCard}>
+                      <h2 className={styles.FeatureTitle}>{card.icontitle}</h2>
+                      {card.icon?.mediaImage?.url && (
+                        <div className={styles.FeatureIcon}>
+                          <Image
+                            src={card.icon.mediaImage.url}
+                            alt={card.icon.mediaImage.alt || card.icontitle}
+                            width={100}
+                            height={100}
+                            className={styles.IconImage}
+                            quality={95}
+                            unoptimized={false}
+                          />
+                        </div>
+                      )}
+                      <p className={styles.FeatureDescription}>
+                        {card.icondescription}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
+                ))}
+              </div>
+            </section>
+          )}
         {textImageSection && (
           <section className={styles.DifferenceSection}>
             <div className={styles.DifferenceContainer}>
@@ -690,7 +777,10 @@ export default function Home() {
                 <div className={styles.DifferenceImage}>
                   <Image
                     src={textImageSection.image.mediaImage.url}
-                    alt={textImageSection.image.mediaImage.alt || textImageSection.heading}
+                    alt={
+                      textImageSection.image.mediaImage.alt ||
+                      textImageSection.heading
+                    }
                     width={400}
                     height={600}
                     className={styles.PatientImage}
@@ -716,20 +806,21 @@ export default function Home() {
                     )}
                   </div>
                 )}
-                {textImageSection.stats && textImageSection.stats.length > 0 && (
-                  <div className={styles.StatisticsContainer}>
-                    {textImageSection.stats.map((stat, index) => (
-                      <div key={index} className={styles.Statistic}>
-                        <div className={styles.StatisticNumber}>
-                          {stat.number}
+                {textImageSection.stats &&
+                  textImageSection.stats.length > 0 && (
+                    <div className={styles.StatisticsContainer}>
+                      {textImageSection.stats.map((stat, index) => (
+                        <div key={index} className={styles.Statistic}>
+                          <div className={styles.StatisticNumber}>
+                            {stat.number}
+                          </div>
+                          <div className={styles.StatisticLabel}>
+                            {stat.label}
+                          </div>
                         </div>
-                        <div className={styles.StatisticLabel}>
-                          {stat.label}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                      ))}
+                    </div>
+                  )}
                 {textImageSection.ctaText && (
                   <button className={styles.LearnMoreButton}>
                     {textImageSection.ctaLink?.url ? (
@@ -1033,8 +1124,9 @@ export default function Home() {
               {Array.from({ length: totalPages }).map((_, index) => (
                 <button
                   key={index}
-                  className={`${styles.Dot} ${index === currentPage ? styles.DotActive : ""
-                    }`}
+                  className={`${styles.Dot} ${
+                    index === currentPage ? styles.DotActive : ""
+                  }`}
                   onClick={() => handleDotClick(index)}
                   aria-label={`Go to page ${index + 1}`}
                 />
@@ -1241,10 +1333,11 @@ export default function Home() {
               {Array.from({ length: totalTestimonialPages }).map((_, index) => (
                 <button
                   key={index}
-                  className={`${styles.TestimonialDot} ${index === currentTestimonialPage
+                  className={`${styles.TestimonialDot} ${
+                    index === currentTestimonialPage
                       ? styles.TestimonialDotActive
                       : ""
-                    }`}
+                  }`}
                   onClick={() => handleTestimonialDotClick(index)}
                   aria-label={`Go to testimonial page ${index + 1}`}
                 />
@@ -1303,13 +1396,14 @@ export default function Home() {
       <div className={styles.MobileStickySection}>
         <div className={styles.MobileStickyDivider}></div>
         <div className={styles.MobileStickyContent}>
-          <button className={styles.MobileStickyButton}>
-            FIND A LOCATION
-          </button>
-          <button 
+          <button className={styles.MobileStickyButton}>FIND A LOCATION</button>
+          <button
             className={styles.MobileStickyButton}
             onClick={() => {
-              if (typeof window !== "undefined" && (window as any).openJarvisScheduler) {
+              if (
+                typeof window !== "undefined" &&
+                (window as any).openJarvisScheduler
+              ) {
                 (window as any).openJarvisScheduler();
               }
             }}
@@ -1333,12 +1427,12 @@ export default function Home() {
         ref={containerRef}
         className={styles.jarvisSchedulerWrapper}
         id="jarvis-scheduler-container"
-        style={{ 
-          display: 'none',
-          width: '0',
-          height: '0',
-          margin: '0',
-          padding: '0'
+        style={{
+          display: "none",
+          width: "0",
+          height: "0",
+          margin: "0",
+          padding: "0",
         }}
       />
       {jarvisError && (

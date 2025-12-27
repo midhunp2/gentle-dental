@@ -20,6 +20,23 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Google Maps API Setup
+
+The dental offices search page requires a Google Maps API key. To set it up:
+
+1. Get a Google Maps API key from the [Google Cloud Console](https://console.cloud.google.com/)
+2. Enable the following APIs:
+   - Maps JavaScript API
+   - Geocoding API
+3. Create a `.env.local` file in the root directory
+4. Add your API key:
+   ```
+   NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_api_key_here
+   ```
+5. Restart your development server
+
+Without the API key, the map will display a message prompting you to add the key.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

@@ -5,6 +5,7 @@ export interface DentalOffice {
   phone: string;
   lat: number;
   lng: number;
+  distance?: number;
 }
 
 // Dental offices data with coordinates

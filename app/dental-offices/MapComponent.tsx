@@ -29,13 +29,9 @@ declare global {
 }
 
 // Move libraries outside component to avoid re-render warnings
-const libraries: (
-  | "places"
-  | "drawing"
-  | "geometry"
-  | "localContext"
-  | "visualization"
-)[] = ["places"];
+const libraries: ("places" | "drawing" | "geometry" | "visualization")[] = [
+  "places",
+];
 
 interface MapComponentProps {
   center: { lat: number; lng: number };
@@ -100,17 +96,11 @@ const MapComponent = ({
       setIsLoaded(true);
 
       // Fit bounds to show all markers if there are offices
-      if (
-        offices.length > 0 &&
-        typeof window !== "undefined" &&
-        window.google
-      ) {
+      if (offices.length > 0) {
         try {
-          const bounds = new window.google.maps.LatLngBounds();
+          const bounds = new google.maps.LatLngBounds();
           offices.forEach((office) => {
-            bounds.extend(
-              new window.google.maps.LatLng(office.lat, office.lng)
-            );
+            bounds.extend(new google.maps.LatLng(office.lat, office.lng));
           });
           map.fitBounds(bounds);
         } catch (error) {

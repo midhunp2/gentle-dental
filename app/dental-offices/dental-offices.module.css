@@ -347,11 +347,11 @@
 
 /* Offices List Section */
 .officesListSection {
+  background-color: #fff;
   width: 100%;
   max-width: 1200px;
-  margin: 0 auto;
-  padding: 40px 160px 60px;
-  background-color: #ffffff;
+  margin: 10px auto;
+  padding: 40px 0px 70px;
 }
 
 .breadcrumbs {

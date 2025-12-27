@@ -2616,6 +2616,72 @@
     background-color: #e0e0e0;
   }
 
+  /* Mobile Accessibility Improvements */
+  .SearchButton,
+  .ViewAllServicesButton,
+  .LearnMoreButton,
+  .NewPatientLearnMoreButton,
+  .ViewAllOffersButton,
+  .SeeAllLocationsButton,
+  .DownloadButton,
+  .InsuranceLearnMoreButton,
+  .ServiceLearnMore,
+  .LocationLearnMore,
+  .CarouselArrow,
+  .TestimonialArrow,
+  .Dot,
+  .TestimonialDot {
+    min-height: 48px; /* Accessibility: minimum touch target */
+    min-width: 48px; /* Accessibility: minimum touch target */
+  }
+
+  /* Better focus states for mobile */
+  button:focus-visible,
+  a:focus-visible {
+    outline: 3px solid #145091;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* Improve text readability */
+  .BannerTitle,
+  .BannerSubtitle,
+  .FeatureTitle,
+  .DifferenceTitle,
+  .ServicesTitle,
+  .NewPatientTitle,
+  .LocationsTitle,
+  .DentistsTitle,
+  .GumDiseaseTitle,
+  .TestimonialsTitle,
+  .InsuranceTitle {
+    line-height: 1.3;
+  }
+
+  /* Better spacing for touch interactions */
+  .FeatureCard,
+  .ServiceCard,
+  .LocationCard,
+  .OfficeCard {
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+
+  /* Improve form field accessibility */
+  .SearchInput,
+  .EmailInput {
+    font-size: 16px !important; /* Prevent zoom on iOS */
+    padding: 14px 16px;
+    min-height: 48px; /* Accessibility: minimum touch target */
+  }
+
+  .SearchInput:focus,
+  .EmailInput:focus {
+    outline: 3px solid #145091;
+    outline-offset: 2px;
+    border: 2px solid #145091;
+  }
+
   .DifferenceContainer {
     display: contents;
   }

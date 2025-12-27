@@ -226,6 +226,8 @@
   justify-content: center;
   transition: opacity 0.3s ease;
   color: #333333;
+  min-width: 44px; /* Accessibility: minimum touch target */
+  min-height: 44px; /* Accessibility: minimum touch target */
 }
 
 .searchBtn:hover {
@@ -342,6 +344,10 @@
   padding: 0.5rem;
   gap: 4px;
   z-index: 1001;
+  min-width: 44px; /* Accessibility: minimum touch target */
+  min-height: 44px; /* Accessibility: minimum touch target */
+  align-items: center;
+  justify-content: center;
 }
 
 .menuToggle span {
@@ -400,8 +406,8 @@
   color: #333333;
   transition: color 0.3s ease;
   z-index: 10000;
-  width: 24px;
-  height: 24px;
+  min-width: 44px; /* Accessibility: minimum touch target */
+  min-height: 44px; /* Accessibility: minimum touch target */
 }
 
 .mobileMenuClose:hover {
@@ -445,6 +451,7 @@
   cursor: pointer;
   font-family: inherit;
   text-align: left;
+  min-height: 48px; /* Accessibility: minimum touch target */
 }
 
 .mobileNavLink::after {

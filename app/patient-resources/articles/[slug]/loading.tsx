@@ -1,6 +1,7 @@
 import Navbar from "@/app/components/Navbar/page"
 import Footer from "@/app/components/Footer/page"
 import styles from "../articles.module.css"
+import { SkeletonBox, SkeletonText } from "@/app/components/Ui/Skeleton/Skeleton"
 
 export default function ArticleDetailLoading() {
   return (
@@ -9,21 +10,11 @@ export default function ArticleDetailLoading() {
       <main id="main-content">
         <section className={styles.ArticleDetailSection}>
           <div className={styles.ArticleDetailContainer}>
-            <div className={styles.SkeletonDetailImage} />
-            <div className={styles.SkeletonLine} style={{ width: '200px', height: '20px', marginBottom: '16px' }} />
-            <div className={styles.SkeletonLine} style={{ width: '80%', height: '40px', marginBottom: '24px' }} />
-            <div style={{ marginTop: '20px' }}>
-              {Array.from({ length: 8 }).map((_, index) => (
-                <div
-                  key={index}
-                  className={styles.SkeletonLine}
-                  style={{
-                    height: '16px',
-                    width: index === 7 ? '60%' : '100%',
-                    marginBottom: '12px',
-                  }}
-                />
-              ))}
+            <SkeletonBox height={400} width="100%" className={styles.SkeletonDetailImage} />
+            <SkeletonBox height={20} width="200px" className={styles.skeletonDate} />
+            <SkeletonBox height={40} width="80%" className={styles.skeletonTitle} />
+            <div className={styles.skeletonContent}>
+              <SkeletonText lines={8} height={16} className={styles.skeletonParagraph} />
             </div>
           </div>
         </section>

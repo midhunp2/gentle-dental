@@ -9,6 +9,7 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import { dentalOffices, type DentalOffice } from "../lib/dentalOffices";
 import { getGoogleMapsApiKey } from "../lib/config";
+import { Skeleton, SkeletonBox, SkeletonText } from "../components/Ui/Skeleton/Skeleton";
 
 // Dynamically import Google Maps to avoid SSR issues
 const MapComponent = dynamic(() => import("./MapComponent"), { ssr: false });
@@ -365,7 +366,16 @@ function DentalOfficesContent() {
             {/* Office List */}
             <div className={styles.officeList}>
               {isLoading ? (
-                <div className={styles.loadingMessage}>Searching for offices...</div>
+                <div className={styles.officeListSkeleton}>
+                  {Array.from({ length: 3 }).map((_, index) => (
+                    <div key={index} className={styles.officeCardSkeleton}>
+                      <SkeletonBox height={24} width="70%" className={styles.skeletonOfficeName} />
+                      <SkeletonText lines={2} height={16} className={styles.skeletonOfficeAddress} />
+                      <SkeletonBox height={20} width="40%" className={styles.skeletonOfficePhone} />
+                      <SkeletonBox height={48} width="100%" className={styles.skeletonBookButton} />
+                    </div>
+                  ))}
+                </div>
               ) : filteredOffices.length > 0 ? (
                 <>
                   {hasSearched && (
@@ -508,29 +518,47 @@ export default function DentalOfficesPage() {
             <div className={styles.contentWrapper}>
               <div className={styles.leftPanel}>
                 <div className={styles.searchSection}>
-                  <h2 className={styles.searchTitle}>
-                    Enter your ZIP code or location to locate a practice nearest to you
-                  </h2>
+                  <SkeletonBox height={20} width="90%" className={styles.skeletonSearchTitle} />
                   <div className={styles.searchInputs}>
                     <div className={styles.inputWrapper}>
-                      <input
-                        type="text"
-                        placeholder="Search by City, State or ZIP code"
-                        className={styles.locationInput}
-                        disabled
-                      />
+                      <SkeletonBox height={48} width="100%" className={styles.skeletonInput} />
                     </div>
-                    <select className={styles.radiusSelect} disabled>
-                      <option>5 Miles</option>
-                    </select>
+                    <SkeletonBox height={48} width="100%" className={styles.skeletonSelect} />
                   </div>
-                  <button className={styles.submitButton} disabled>
-                    LOADING...
-                  </button>
+                  <SkeletonBox height={48} width="100%" className={styles.skeletonSubmitButton} />
+                </div>
+                <div className={styles.officeList}>
+                  <div className={styles.officeListSkeleton}>
+                    {Array.from({ length: 3 }).map((_, index) => (
+                      <div key={index} className={styles.officeCardSkeleton}>
+                        <SkeletonBox height={24} width="70%" className={styles.skeletonOfficeName} />
+                        <SkeletonText lines={2} height={16} className={styles.skeletonOfficeAddress} />
+                        <SkeletonBox height={20} width="40%" className={styles.skeletonOfficePhone} />
+                        <SkeletonBox height={48} width="100%" className={styles.skeletonBookButton} />
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
               <div className={styles.rightPanel}>
-                <div className={styles.mapLoading}>Loading map...</div>
+                <div className={styles.mapLoadingSkeleton}>
+                  <SkeletonBox height="100%" width="100%" className={styles.skeletonMap} />
+                </div>
+              </div>
+            </div>
+            <div className={styles.officesListSection}>
+              <SkeletonBox height={20} width="200px" className={styles.skeletonBreadcrumb} />
+              <SkeletonBox height={32} width="300px" className={styles.skeletonOfficesTitle} />
+              <SkeletonBox height={20} width="400px" className={styles.skeletonOfficesSubtitle} />
+              <div className={styles.filterTabsSkeleton}>
+                {[1, 2, 3].map((i) => (
+                  <SkeletonBox key={i} height={48} width="120px" className={styles.skeletonFilterTab} />
+                ))}
+              </div>
+              <div className={styles.officesGridSkeleton}>
+                {Array.from({ length: 9 }).map((_, i) => (
+                  <SkeletonBox key={i} height={24} width="100%" className={styles.skeletonOfficeListItem} />
+                ))}
               </div>
             </div>
           </main>

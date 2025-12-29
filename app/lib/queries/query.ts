@@ -183,12 +183,13 @@ export const PageByRouteQuery = gql`
 `;
 
 export const HomePageQuery = gql`
-  query HomePage {
-    route(path: "/node/7") {
+  query HomePage($path: String!) {
+    route(path: $path) {
       ... on RouteInternal {
         url
         entity {
           ... on NodeHomepage {
+            title
             sections {
               ... on ParagraphHeroSection {
                 id
@@ -288,6 +289,7 @@ export const HomePageQuery = gql`
                 }
               }
               ... on ParagraphLocationCard {
+                id
                 link {
                   url
                   title
@@ -396,6 +398,22 @@ export const HomePageQuery = gql`
                   }
                 }
               }
+              ... on ParagraphDentistCard {
+                id
+                description {
+                  value
+                }
+                image {
+                  mediaImage {
+                    alt
+                    url
+                  }
+                  name
+                }
+                title {
+                  value
+                }
+              }
             }
           }
         }
@@ -436,9 +454,9 @@ export async function fetchPageByRoute(path: string = "/node/7") {
   }
 }
 
-export async function fetchHomePage() {
+export async function fetchHomePage(path: string = "/node/7") {
   try {
-    const data = await client.request(HomePageQuery);
+    const data = await client.request(HomePageQuery, { path });
     return data;
   } catch (error) {
     console.error("Error fetching home page:", error);

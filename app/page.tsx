@@ -844,6 +844,11 @@ export default function Home() {
                               height={300}
                               className={styles.ServiceImage}
                             />
+                            <div className={styles.ServiceBottomOverlay}>
+                              <h3 className={styles.ServiceCardTitle}>
+                                {service.title?.value || "Service"}
+                              </h3>
+                            </div>
                             <div className={styles.ServiceOverlay}>
                               <h3 className={styles.ServiceCardTitle}>
                                 {service.title?.value || "Service"}
@@ -1356,6 +1361,11 @@ export default function Home() {
                     {insuranceSection.description.value}
                   </p>
                 )}
+                {!insuranceSection.description?.value && (
+                  <p className={styles.InsuranceDescription}>
+                    We are in-network providers with most major dental insurance companies. Call us to confirm coverage.
+                  </p>
+                )}
                 {insuranceSection.ctaText &&
                   (insuranceSection.ctaLink?.url ? (
                     <a
@@ -1369,6 +1379,11 @@ export default function Home() {
                       {insuranceSection.ctaText}
                     </button>
                   ))}
+                {!insuranceSection.ctaText && (
+                  <button className={styles.InsuranceLearnMoreButton}>
+                    LEARN MORE
+                  </button>
+                )}
               </div>
             </section>
           )}

@@ -43,6 +43,7 @@
   gap: 12px;
   max-width: 1190px;
   height: 81px;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
 }
 
 .SearchInputWrapper {
@@ -347,6 +348,7 @@
   .SearchBar {
     flex-direction: column;
     gap: 12px;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
   }
 
   .SearchButton {
@@ -463,6 +465,7 @@
   .SearchBar {
     flex-direction: row;
     max-width: 100%;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
   }
 
   .SearchInputWrapper {
@@ -742,6 +745,27 @@
   transform: scale(1.05);
 }
 
+.ServiceBottomOverlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+  padding: 20px 12px;  
+  display: flex;
+  align-items: center;
+  z-index: 1;
+}
+
+.ServiceBottomOverlay .ServiceCardTitle {
+  color: #fff;
+  margin: 0;
+  font-family: OpenSans-Bold, sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
 .ServiceOverlay {
   position: absolute;
   top: 0;
@@ -758,6 +782,7 @@
   opacity: 0;
   transition: all 0.3s ease;
   color: #ffffff;
+  z-index: 2;
 }
 
 .ServiceCard:hover .ServiceOverlay {
@@ -2181,21 +2206,18 @@
   font-weight: 700;
   font-family: "OpenSans-Bold", sans-serif;
   line-height: 1.2;
-  margin: 0 0 50px 0;
   text-align: center;
 }
 
 .InsuranceIconsGrid {
   display: flex;
   flex-direction: column;
-  gap: 30px;
   width: 100%;
 }
 
 .InsuranceRow {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  width: 100%;
+  grid-template-columns: repeat(5, 1fr);  width: 100%;
   justify-items: center;
   align-items: center;
 }
@@ -2213,13 +2235,7 @@
   max-width: 200px;
   height: 120px;
   border-radius: 4px;
-  padding: 20px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.InsuranceIcon:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .InsuranceIconPlaceholder {
@@ -2235,11 +2251,11 @@
 
 .InsuranceDescription {
   color: #333333;
-  font-size: 16px;
+  font-size: 18px;
   line-height: 1.6;
   text-align: center;
   margin: 0 0 30px 0;
-  max-width: 800px;
+  font-weight: 600;
 }
 
 .InsuranceLearnMoreButton {
@@ -2486,6 +2502,7 @@
     width: 100%;
     max-width: 100%;
     background: transparent;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
   }
 
   .SearchInputWrapper {

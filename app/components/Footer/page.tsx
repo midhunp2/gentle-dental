@@ -130,15 +130,7 @@ export default function Footer() {
               className={styles.socialIcon}
               aria-label="YouTube"
             >
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M8 5v14l11-7z" fill="currentColor" />
-              </svg>
+              <i className="fa fa-youtube-play"></i>
             </a>
           </div>
         </div>

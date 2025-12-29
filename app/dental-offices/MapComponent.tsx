@@ -251,6 +251,8 @@ const MapComponent = ({
         style={{
           opacity: isLoaded ? 1 : 0,
           transition: "opacity 0.3s ease-in",
+          width: "100%",
+          height: "100%",
         }}
       >
         <GoogleMap
@@ -260,7 +262,6 @@ const MapComponent = ({
           mapContainerStyle={{
             width: "100%",
             height: "100%",
-            minHeight: "500px",
           }}
           onLoad={handleMapLoad}
         >

@@ -282,6 +282,8 @@
   background-color: #f0f0f0;
   height: calc(100vh - 200px);
   min-height: 600px;
+  display: flex;
+  flex-direction: column;
 }
 
 .mapLoading {

@@ -20,6 +20,7 @@ import type {
   ServiceItem,
   HomePageSection,
   InsuranceLogo,
+  TestimonialCard,
 } from "./lib/types";
 
 // Dev-only logging
@@ -582,7 +583,7 @@ export default function Home() {
   // Get dynamic testimonials from GraphQL data and group them into pairs
   const testimonialCards =
     testimonialSection?.testimonialCards?.filter((card) => card.status) || [];
-  const testimonials: (typeof testimonialCards)[][] = [];
+  const testimonials: TestimonialCard[][] = [];
   for (let i = 0; i < testimonialCards.length; i += 2) {
     testimonials.push(testimonialCards.slice(i, i + 2));
   }

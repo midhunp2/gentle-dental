@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense, useRef, useCallback, useMemo } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Navbar from "../components/Navbar/page";
 import Footer from "../components/Footer/page";
@@ -9,6 +9,23 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import { getGoogleMapsApiKey } from "../lib/config";
 import { SkeletonBox, SkeletonText } from "../components/Ui/Skeleton/Skeleton";
+
+// Hook to detect mobile device
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 767.98);
+    };
+    
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  return isMobile;
+}
 
 export interface DentalOffice {
   id: string;
@@ -409,7 +426,23 @@ export const dentalOffices: DentalOffice[] = [
 ];
 
 // Dynamically import Google Maps to avoid SSR issues
-const MapComponent = dynamic(() => import("./MapComponent"), { ssr: false });
+// Lazy load map component with loading delay on mobile for better performance
+const MapComponent = dynamic(() => import("./MapComponent"), { 
+  ssr: false,
+  loading: () => (
+    <div style={{ 
+      width: "100%", 
+      height: "100%", 
+      minHeight: "300px",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: "#f0f0f0"
+    }}>
+      <SkeletonBox height="100%" width="100%" />
+    </div>
+  )
+});
 
 // Helper function to calculate distance between two coordinates (Haversine formula)
 function calculateDistance(
@@ -457,6 +490,62 @@ function findMatchingOffice(query: string): DentalOffice | null {
   return match || null;
 }
 
+// Memoized component for offices grid to improve performance
+const OfficesGridContent = ({ locationFilter, isMobile }: { locationFilter: "all" | "ma" | "nh"; isMobile: boolean }) => {
+  const gridContent = useMemo(() => {
+    const filtered =
+      locationFilter === "all"
+        ? dentalOffices
+        : locationFilter === "ma"
+        ? dentalOffices.filter(
+            (office) => !office.address.includes(", NH")
+          )
+        : dentalOffices.filter((office) =>
+            office.address.includes(", NH")
+          );
+
+    // Sort alphabetically by city name
+    const sorted = [...filtered].sort((a, b) => {
+      const getBaseCity = (name: string) => {
+        // Extract base city name for sorting (e.g., "Boston - Newbury St" -> "Boston")
+        const displayName = name.replace("Gentle Dental ", "").trim();
+        const parts = displayName.split(" - ");
+        return parts[0].split(" at ")[0].trim();
+      };
+      return getBaseCity(a.name).localeCompare(getBaseCity(b.name));
+    });
+
+    // Split into columns - single column on mobile for better performance
+    const columnCount = isMobile ? 1 : 3;
+    const columnSize = Math.ceil(sorted.length / columnCount);
+    const columns = Array.from({ length: columnCount }, (_, i) =>
+      sorted.slice(i * columnSize, (i + 1) * columnSize)
+    );
+
+    return columns.map((column, colIndex) => (
+      <div key={colIndex} className={styles.officeColumn}>
+        {column.map((office) => {
+          // Extract full location name for display (e.g., "Boston - Newbury St" or "Worcester at the Trolley Yard")
+          const displayName = office.name
+            .replace("Gentle Dental ", "")
+            .trim();
+          return (
+            <div key={office.id} className={styles.officeListItem}>
+              {displayName}
+            </div>
+          );
+        })}
+      </div>
+    ));
+  }, [locationFilter, isMobile]);
+
+  return (
+    <div className={styles.officesGrid} id="offices-grid" role="tabpanel" aria-labelledby="filter-tabs">
+      {gridContent}
+    </div>
+  );
+};
+
 // Geocode location using Google Geocoding API
 async function geocodeLocation(
   location: string
@@ -486,22 +575,25 @@ async function geocodeLocation(
   }
 }
 
-// Get search suggestions based on query
+// Get search suggestions based on query - optimized with early return
 function getSearchSuggestions(query: string): DentalOffice[] {
   if (!query.trim()) return [];
 
   const lowerQuery = query.toLowerCase().trim();
   const suggestions: DentalOffice[] = [];
+  const maxSuggestions = 10; // Limit suggestions for better performance
 
   // Find offices matching the query
-  dentalOffices.forEach((office) => {
+  for (const office of dentalOffices) {
+    if (suggestions.length >= maxSuggestions) break;
+    
     const nameMatch = office.name.toLowerCase().includes(lowerQuery);
     const addressMatch = office.address.toLowerCase().includes(lowerQuery);
 
     if (nameMatch || addressMatch) {
       suggestions.push(office);
     }
-  });
+  }
 
   // Sort by relevance (exact matches first, then partial)
   return suggestions.sort((a, b) => {
@@ -516,6 +608,7 @@ function getSearchSuggestions(query: string): DentalOffice[] {
 function DentalOfficesContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const isMobile = useIsMobile();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [radius, setRadius] = useState(5);
@@ -529,6 +622,12 @@ function DentalOfficesContent() {
   const [locationFilter, setLocationFilter] = useState<"all" | "ma" | "nh">(
     "all"
   );
+  const [visibleOffices, setVisibleOffices] = useState<Set<string>>(new Set());
+  const [showOfficesGrid, setShowOfficesGrid] = useState(false);
+  const [shouldLoadMap, setShouldLoadMap] = useState(false);
+  const officesGridRef = useRef<HTMLDivElement>(null);
+  const officeCardRefs = useRef<Map<string, HTMLDivElement>>(new Map());
+  const observerRef = useRef<IntersectionObserver | null>(null);
 
   // Update suggestions as user types
   useEffect(() => {
@@ -560,6 +659,104 @@ function DentalOfficesContent() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
+
+  // Initialize visible offices - fewer on mobile for better performance
+  useEffect(() => {
+    if (filteredOffices.length > 0) {
+      const initialCount = isMobile ? 3 : 5;
+      const initialVisible = new Set(
+        filteredOffices.slice(0, initialCount).map((office) => office.id)
+      );
+      setVisibleOffices(initialVisible);
+    }
+  }, [filteredOffices.length, isMobile]);
+
+  // Intersection Observer for lazy loading office cards
+  // Optimized settings for mobile performance
+  useEffect(() => {
+    // Clean up previous observer
+    if (observerRef.current) {
+      observerRef.current.disconnect();
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const officeId = entry.target.getAttribute("data-office-id");
+            if (officeId) {
+              setVisibleOffices((prev) => new Set(prev).add(officeId));
+            }
+          }
+        });
+      },
+      {
+        root: null,
+        // Smaller rootMargin on mobile for better performance
+        rootMargin: isMobile ? "30px" : "50px",
+        threshold: isMobile ? 0.05 : 0.1,
+      }
+    );
+
+    observerRef.current = observer;
+
+    // Observe all office cards after a small delay to ensure DOM is ready
+    // Longer delay on mobile to reduce initial work
+    const timeoutId = setTimeout(() => {
+      officeCardRefs.current.forEach((ref) => {
+        if (ref) {
+          observer.observe(ref);
+        }
+      });
+    }, isMobile ? 200 : 100);
+
+    return () => {
+      clearTimeout(timeoutId);
+      observer.disconnect();
+    };
+  }, [filteredOffices, isMobile]);
+
+  // Intersection Observer for lazy loading offices grid section
+  // Delay map loading on mobile for better initial performance
+  useEffect(() => {
+    if (isMobile) {
+      // Delay map loading on mobile until user interacts or scrolls
+      const timer = setTimeout(() => {
+        setShouldLoadMap(true);
+      }, 1000);
+      return () => clearTimeout(timer);
+    } else {
+      setShouldLoadMap(true);
+    }
+  }, [isMobile]);
+
+  // Intersection Observer for lazy loading offices grid section
+  useEffect(() => {
+    if (!officesGridRef.current) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setShowOfficesGrid(true);
+            observer.disconnect();
+          }
+        });
+      },
+      {
+        root: null,
+        // Smaller rootMargin on mobile
+        rootMargin: isMobile ? "50px" : "100px",
+        threshold: isMobile ? 0.05 : 0.1,
+      }
+    );
+
+    observer.observe(officesGridRef.current);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [isMobile]);
 
   const handleSearchFromURL = async (location: string, miles: number) => {
     setIsLoading(true);
@@ -598,8 +795,8 @@ function DentalOfficesContent() {
     }
   };
 
-  // Filter offices within radius
-  const filterOfficesByRadius = (
+  // Filter offices within radius - memoized for performance
+  const filterOfficesByRadius = useCallback((
     center: { lat: number; lng: number },
     radiusMiles: number
   ) => {
@@ -616,7 +813,7 @@ function DentalOfficesContent() {
 
     setFilteredOffices(filtered);
     setHasSearched(true);
-  };
+  }, []);
 
   // Handle search submission
   const handleSearch = async () => {
@@ -726,6 +923,7 @@ function DentalOfficesContent() {
                   width={20}
                   height={20}
                   unoptimized
+                  loading="lazy"
                   aria-hidden="true"
                 />
                 <input
@@ -854,49 +1052,91 @@ function DentalOfficesContent() {
                     mile{radius !== 1 ? "s" : ""}
                   </div>
                 )}
-                {filteredOffices.map((office) => (
-                  <article
-                    key={office.id}
-                    className={`${styles.officeCard} ${
-                      selectedOffice === office.id ? styles.selected : ""
-                    }`}
-                    onClick={() => setSelectedOffice(office.id)}
-                    role="listitem"
-                    tabIndex={0}
-                    onKeyPress={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        e.preventDefault();
-                        setSelectedOffice(office.id);
-                      }
-                    }}
-                    aria-label={`${office.name}, ${office.address}, Phone: ${office.phone}`}
-                    aria-pressed={selectedOffice === office.id}
-                  >
-                    <h3 className={styles.officeName}>{office.name}</h3>
-                    <p className={styles.officeAddress}>{office.address}</p>
-                    <div>
-                      <a
-                        href={`tel:${office.phone}`}
-                        className={styles.officePhone}
-                        onClick={(e) => e.stopPropagation()}
-                        aria-label={`Call ${office.name} at ${office.phone}`}
-                      >
-                        {office.phone}
-                      </a>
-                      <a
-                        href="#"
-                        className={styles.bookNowLink}
-                        onClick={(e) => {
+                {filteredOffices.map((office, index) => {
+                  // Show fewer initial cards on mobile
+                  const initialCount = isMobile ? 3 : 5;
+                  const isVisible = visibleOffices.has(office.id) || index < initialCount;
+                  const cardRef = (node: HTMLDivElement | null) => {
+                    if (node) {
+                      officeCardRefs.current.set(office.id, node);
+                    } else {
+                      officeCardRefs.current.delete(office.id);
+                    }
+                  };
+
+                  return (
+                    <article
+                      key={office.id}
+                      ref={cardRef}
+                      data-office-id={office.id}
+                      className={`${styles.officeCard} ${
+                        selectedOffice === office.id ? styles.selected : ""
+                      }`}
+                      onClick={() => setSelectedOffice(office.id)}
+                      role="listitem"
+                      tabIndex={0}
+                      onKeyPress={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
                           e.preventDefault();
-                          e.stopPropagation();
-                        }}
-                        aria-label={`Book appointment at ${office.name}`}
-                      >
-                        Book Now
-                      </a>
-                    </div>
-                  </article>
-                ))}
+                          setSelectedOffice(office.id);
+                        }
+                      }}
+                      aria-label={`${office.name}, ${office.address}, Phone: ${office.phone}`}
+                      aria-pressed={selectedOffice === office.id}
+                    >
+                      {isVisible ? (
+                        <>
+                          <h3 className={styles.officeName}>{office.name}</h3>
+                          <p className={styles.officeAddress}>{office.address}</p>
+                          <div>
+                            <a
+                              href={`tel:${office.phone}`}
+                              className={styles.officePhone}
+                              onClick={(e) => e.stopPropagation()}
+                              aria-label={`Call ${office.name} at ${office.phone}`}
+                            >
+                              {office.phone}
+                            </a>
+                            <a
+                              href="#"
+                              className={styles.bookNowLink}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                              }}
+                              aria-label={`Book appointment at ${office.name}`}
+                            >
+                              Book Now
+                            </a>
+                          </div>
+                        </>
+                      ) : (
+                        <div className={styles.officeCardSkeleton}>
+                          <SkeletonBox
+                            height={24}
+                            width="70%"
+                            className={styles.skeletonOfficeName}
+                          />
+                          <SkeletonText
+                            lines={2}
+                            height={16}
+                            className={styles.skeletonOfficeAddress}
+                          />
+                          <SkeletonBox
+                            height={20}
+                            width="40%"
+                            className={styles.skeletonOfficePhone}
+                          />
+                          <SkeletonBox
+                            height={48}
+                            width="100%"
+                            className={styles.skeletonBookButton}
+                          />
+                        </div>
+                      )}
+                    </article>
+                  );
+                })}
               </>
             ) : (
               <div className={styles.noResults} role="status" aria-live="polite">
@@ -912,17 +1152,27 @@ function DentalOfficesContent() {
 
         {/* Right Panel - Map */}
         <div className={styles.rightPanel} aria-label="Map showing dental office locations">
-          <MapComponent
-            center={mapCenter}
-            offices={filteredOffices}
-            selectedOffice={selectedOffice}
-            onOfficeSelect={setSelectedOffice}
-          />
+          {shouldLoadMap ? (
+            <MapComponent
+              center={mapCenter}
+              offices={filteredOffices}
+              selectedOffice={selectedOffice}
+              onOfficeSelect={setSelectedOffice}
+            />
+          ) : (
+            <div className={styles.mapLoadingSkeleton}>
+              <SkeletonBox
+                height="100%"
+                width="100%"
+                className={styles.skeletonMap}
+              />
+            </div>
+          )}
         </div>
       </div>
 
       {/* Offices List Section */}
-      <div className={styles.officesListSection}>
+      <div className={styles.officesListSection} ref={officesGridRef}>
         <div className={styles.breadcrumbs}>
           <span>Gentle Dental</span>
           <span className={styles.breadcrumbSeparator}>/</span>
@@ -970,55 +1220,20 @@ function DentalOfficesContent() {
           </button>
         </div>
 
-        <div className={styles.officesGrid} id="offices-grid" role="tabpanel" aria-labelledby="filter-tabs">
-          {(() => {
-            const filtered =
-              locationFilter === "all"
-                ? dentalOffices
-                : locationFilter === "ma"
-                ? dentalOffices.filter(
-                    (office) => !office.address.includes(", NH")
-                  )
-                : dentalOffices.filter((office) =>
-                    office.address.includes(", NH")
-                  );
-
-            // Sort alphabetically by city name
-            const sorted = [...filtered].sort((a, b) => {
-              const getBaseCity = (name: string) => {
-                // Extract base city name for sorting (e.g., "Boston - Newbury St" -> "Boston")
-                const displayName = name.replace("Gentle Dental ", "").trim();
-                const parts = displayName.split(" - ");
-                return parts[0].split(" at ")[0].trim();
-              };
-              return getBaseCity(a.name).localeCompare(getBaseCity(b.name));
-            });
-
-            // Split into three columns
-            const columnSize = Math.ceil(sorted.length / 3);
-            const columns = [
-              sorted.slice(0, columnSize),
-              sorted.slice(columnSize, columnSize * 2),
-              sorted.slice(columnSize * 2),
-            ];
-
-            return columns.map((column, colIndex) => (
-              <div key={colIndex} className={styles.officeColumn}>
-                {column.map((office) => {
-                  // Extract full location name for display (e.g., "Boston - Newbury St" or "Worcester at the Trolley Yard")
-                  const displayName = office.name
-                    .replace("Gentle Dental ", "")
-                    .trim();
-                  return (
-                    <div key={office.id} className={styles.officeListItem}>
-                      {displayName}
-                    </div>
-                  );
-                })}
-              </div>
-            ));
-          })()}
-        </div>
+        {showOfficesGrid ? (
+          <OfficesGridContent locationFilter={locationFilter} isMobile={isMobile} />
+        ) : (
+          <div className={styles.officesGridSkeleton} id="offices-grid" role="tabpanel" aria-labelledby="filter-tabs">
+            {Array.from({ length: 9 }).map((_, i) => (
+              <SkeletonBox
+                key={i}
+                height={24}
+                width="100%"
+                className={styles.skeletonOfficeListItem}
+              />
+            ))}
+          </div>
+        )}
 
         <p className={styles.sundayNote}>*Open on Sundays</p>
       </div>

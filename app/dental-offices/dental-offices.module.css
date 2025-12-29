@@ -483,6 +483,10 @@
 @media (min-width: 0) and (max-width: 767.98px) {
   .mainContainer {
     padding: 0;
+    /* Performance optimizations for mobile */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    will-change: scroll-position;
   }
 
   .contentWrapper {
@@ -493,6 +497,8 @@
     width: 100%;
     box-shadow: none;
     gap: 0;
+    /* Performance optimizations */
+    contain: layout style paint;
   }
 
   .leftPanel {
@@ -501,6 +507,9 @@
     max-height: none;
     height: auto;
     order: 2;
+    /* Performance optimizations */
+    contain: layout style;
+    -webkit-overflow-scrolling: touch;
   }
 
   .rightPanel {
@@ -512,6 +521,10 @@
     position: sticky;
     top: 88px;
     z-index: 1;
+    /* Performance optimizations */
+    contain: layout style paint;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
   }
 
   .searchSection {
@@ -571,11 +584,18 @@
   .officeList {
     border: 16px solid #145091;
     padding: 16px;
+    /* Performance optimizations */
+    contain: layout style;
+    -webkit-overflow-scrolling: touch;
   }
 
   .officeCard {
     padding: 14px 16px;
     min-height: auto;
+    /* Performance optimizations */
+    contain: layout style;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
   }
 
   .officeName {
@@ -868,6 +888,9 @@
     gap: 12px;
     padding: 16px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    /* Performance optimizations */
+    contain: layout style;
+    will-change: contents;
   }
 
   .officeColumn {

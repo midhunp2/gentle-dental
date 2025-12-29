@@ -1408,7 +1408,7 @@ export default function Home() {
             </section>
           )}
       </main>
-      <div className={styles.MobileStickySection}>
+      {/* <div className={styles.MobileStickySection}>
         <div className={styles.MobileStickyDivider}></div>
         <div className={styles.MobileStickyContent}>
           <button className={styles.MobileStickyButton}>FIND A LOCATION</button>
@@ -1426,7 +1426,7 @@ export default function Home() {
             BOOK AN APPOINTMENT
           </button>
         </div>
-      </div>
+      </div> */}
       <Footer />
       {showScrollToTop && (
           <button

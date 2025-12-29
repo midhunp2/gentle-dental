@@ -80,17 +80,35 @@ const MapComponent = ({
     }
   }, [isMapLoaded, scriptLoaded]);
 
+  // Detect mobile for optimized map options
+  const [isMobile, setIsMobile] = useState(false);
+  
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 767.98);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
   const mapOptions = useMemo(
     () => ({
       disableDefaultUI: false,
-      clickableIcons: true,
-      scrollwheel: true,
+      clickableIcons: !isMobile, // Disable on mobile for better performance
+      scrollwheel: !isMobile, // Disable scrollwheel on mobile (use pinch instead)
       zoomControl: true,
       streetViewControl: false,
       mapTypeControl: false,
-      fullscreenControl: true,
+      fullscreenControl: !isMobile, // Hide on mobile to save space
+      gestureHandling: isMobile ? "cooperative" : "auto", // Better mobile touch handling
+      // Performance optimizations for mobile
+      ...(isMobile && {
+        disableDoubleClickZoom: false,
+        keyboardShortcuts: false,
+      }),
     }),
-    []
+    [isMobile]
   );
 
   const handleMarkerClick = useCallback(

@@ -774,10 +774,6 @@ function DentalOfficesContent() {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             setShowOfficesGrid(true);
-            // Mark offices grid as loaded when it becomes visible
-            setTimeout(() => {
-              markSectionLoaded("officesGrid");
-            }, 300);
             observer.disconnect();
           }
         });
@@ -795,7 +791,7 @@ function DentalOfficesContent() {
     return () => {
       observer.disconnect();
     };
-  }, [isMobile, markSectionLoaded]);
+  }, [isMobile]);
 
   const handleSearchFromURL = async (location: string, miles: number) => {
     setIsLoading(true);
@@ -1336,9 +1332,6 @@ function DentalOfficesContent() {
       </div>
 
       {/* Offices List Section */}
-      {!sectionsLoaded.officesGrid ? (
-        <OfficesGridSectionSkeleton />
-      ) : (
       <div className={styles.officesListSection} ref={officesGridRef}>
         <div className={styles.breadcrumbs}>
           <span>Gentle Dental</span>
@@ -1404,7 +1397,6 @@ function DentalOfficesContent() {
 
         <p className={styles.sundayNote}>*Open on Sundays</p>
       </div>
-      )}
     </main>
   );
 }

@@ -173,3 +173,22 @@ button:focus {
   outline: 3px solid #145091;
   outline-offset: 2px;
 }
+
+/* Hide Next.js default loading bar/progress indicator */
+#nprogress,
+.nprogress,
+.nprogress-bar,
+.nprogress-peg,
+[data-nextjs-router-loading],
+[data-nextjs-router-loading] *,
+#__next-loading-indicator,
+.__next-loading-indicator {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  height: 0 !important;
+  width: 0 !important;
+  pointer-events: none !important;
+  position: absolute !important;
+  left: -9999px !important;
+}

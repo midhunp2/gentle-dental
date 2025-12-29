@@ -42,6 +42,60 @@ export default function RootLayout({
         <link rel="preconnect" href="https://maps.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
+        {/* Remove Next.js loading bar */}
+        <Script id="remove-loading-bar" strategy="afterInteractive">
+          {`
+            (function() {
+              // Function to remove loading bars
+              function removeLoadingBars() {
+                // Remove nprogress elements
+                const nprogress = document.getElementById('nprogress');
+                if (nprogress) nprogress.remove();
+                
+                // Remove any elements with nprogress class
+                document.querySelectorAll('.nprogress, .nprogress-bar, .nprogress-peg').forEach(el => el.remove());
+                
+                // Remove Next.js router loading indicators
+                document.querySelectorAll('[data-nextjs-router-loading]').forEach(el => {
+                  el.style.display = 'none';
+                  el.remove();
+                });
+                
+                // Remove any fixed position elements at top that look like loading bars (small height, blue color)
+                document.querySelectorAll('div').forEach(el => {
+                  const style = window.getComputedStyle(el);
+                  if (style.position === 'fixed' && 
+                      style.top === '0px' && 
+                      parseInt(style.height) <= 5 &&
+                      (style.zIndex === '9999' || parseInt(style.zIndex) > 9990)) {
+                    el.style.display = 'none';
+                    el.remove();
+                  }
+                });
+              }
+              
+              // Run immediately
+              if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', removeLoadingBars);
+              } else {
+                removeLoadingBars();
+              }
+              
+              // Run after page load
+              window.addEventListener('load', removeLoadingBars);
+              
+              // Watch for dynamically added elements
+              const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                  if (mutation.addedNodes.length) {
+                    removeLoadingBars();
+                  }
+                });
+              });
+              observer.observe(document.body, { childList: true, subtree: true });
+            })();
+          `}
+        </Script>
         <SkipLink />
         <div id="main-content" tabIndex={-1} style={{ outline: "none" }}>
           <Suspense fallback={null}>

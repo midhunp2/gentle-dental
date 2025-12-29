@@ -53,19 +53,46 @@ export interface ParagraphTextImageSection {
   stats: Stat[];
 }
 
-export interface Service {
-  title: {
-    value: string;
-  };
-  image: {
-    mediaImage: MediaImage;
-  };
-}
+export type ServiceItem = 
+  | {
+      id: string;
+      image?: {
+        mediaImage: MediaImage & { title?: string | null };
+      };
+      title?: {
+        value: string;
+      };
+    }
+  | {
+      id: string;
+      ctaLink?: CtaLink;
+      ctaText?: string;
+      description?: {
+        value: string;
+      };
+      title?: {
+        value: string;
+      };
+    };
 
 export interface ParagraphServicesGrid {
   id: string;
   sectionTitle: string;
-  services: Service[];
+  services: ServiceItem[];
+}
+
+export interface ParagraphInsuranceLogo {
+  id: string;
+  name?: string;
+}
+
+export interface ParagraphIconCard {
+  id: string;
+  icondescription?: string;
+  icontitle?: string;
+  icon?: {
+    mediaImage: MediaImage;
+  };
 }
 
 export interface Location {
@@ -146,13 +173,113 @@ export interface InsuranceIcon {
   };
 }
 
+export interface ParagraphServiceCard {
+  id: string;
+  image?: {
+    mediaImage: MediaImage & { title?: string };
+  };
+  title?: {
+    value: string;
+  };
+  link?: {
+    url: string;
+  };
+}
+
+export interface ParagraphStatItem {
+  id: string;
+  number?: string;
+}
+
+export interface TestimonialCard {
+  name: string;
+  rating: number | null;
+  review: string;
+  status: boolean;
+}
+
+export interface ParagraphTestimonialSection {
+  id: string;
+  title?: {
+    value: string;
+  };
+  testimonialCards?: TestimonialCard[];
+}
+
+export interface InsuranceLogo {
+  logo: {
+    name: string;
+    mediaImage: MediaImage;
+  };
+}
+
 export interface ParagraphInsuranceSection {
   id: string;
   sectionTitle?: string;
-  description?: string;
-  insuranceIcons?: InsuranceIcon[];
+  description?: {
+    value: string;
+  };
+  logosSection?: InsuranceLogo[];
   ctaText?: string;
   ctaLink?: CtaLink;
+}
+
+export interface ParagraphLocationCard {
+  id?: string;
+  link?: CtaLink;
+  locationCard?: string;
+}
+
+export interface ParagraphOfferBanner {
+  id: string;
+  ctaLink?: CtaLink;
+  ctaText?: string;
+  description?: {
+    value: string;
+  };
+  heading?: string;
+  price?: string;
+}
+
+export interface ParagraphHoverText {
+  id: string;
+  ctaText?: string;
+  ctaLink?: {
+    url: string;
+  };
+  description?: {
+    value: string;
+  };
+  title?: {
+    value: string;
+  };
+}
+
+export interface ParagraphTestimonial {
+  id: string;
+  name?: string;
+  rating?: number;
+  review?: string;
+}
+
+export interface LocationCarouselItem {
+  image?: {
+    mediaImage: MediaImage;
+  };
+  link?: CtaLink;
+  locationCard?: string;
+}
+
+export interface ParagraphLocationsSection {
+  id: string;
+  sectionTitle?: string;
+  locations?: Location[];
+  viewAllButtonText?: string;
+  viewAllButtonLink?: CtaLink;
+  ctaLink?: CtaLink;
+  ctaText?: string;
+  status?: boolean;
+  locationCarousel?: LocationCarouselItem[];
 }
 
 export type HomePageSection =
@@ -162,10 +289,19 @@ export type HomePageSection =
   | ParagraphServicesGrid
   | ParagraphLocationsSection
   | ParagraphTestimonialsSection
+  | ParagraphTestimonialSection
   | ParagraphNewPatientSection
   | ParagraphDentistsSection
   | ParagraphGumDiseaseSection
-  | ParagraphInsuranceSection;
+  | ParagraphInsuranceSection
+  | ParagraphServiceCard
+  | ParagraphStatItem
+  | ParagraphLocationCard
+  | ParagraphOfferBanner
+  | ParagraphHoverText
+  | ParagraphTestimonial
+  | ParagraphInsuranceLogo
+  | ParagraphIconCard;
 
 export interface NodeHomepage {
   sections: HomePageSection[];

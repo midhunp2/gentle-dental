@@ -42,7 +42,7 @@ export default function Footer() {
           <div className={styles.partnerLogos}>
             <div className={styles.logoWrapper}>
               <Image
-                src="/assets/images/ada-logo.png"
+                src="/assets/images/ada-footer-logo.png"
                 alt="American Dental Association"
                 width={120}
                 height={60}
@@ -64,7 +64,7 @@ export default function Footer() {
             </div>
             <div className={styles.logoWrapper}>
               <Image
-                src="/assets/images/mds-logo.png"
+                src="/assets/images/mds-footer-logos.png"
                 alt="MDS"
                 width={120}
                 height={60}

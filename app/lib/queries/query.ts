@@ -60,6 +60,342 @@ export const PageByRouteQuery = gql`
                   label
                 }
               }
+              ... on ParagraphServiceCard {
+                id
+                image {
+                  mediaImage {
+                    alt
+                    title
+                    url
+                  }
+                }
+                title {
+                  value
+                }
+                link {
+                  url
+                }
+              }
+              ... on ParagraphStatItem {
+                id
+                number
+              }
+              ... on ParagraphTestimonialSection {
+                id
+                title {
+                  value
+                }
+                testimonialCards {
+                  name
+                  rating
+                  review
+                  status
+                }
+              }
+              ... on ParagraphInsuranceSection {
+                id
+                ctaLink {
+                  url
+                  title
+                }
+                ctaText
+                description {
+                  value
+                }
+                logosSection {
+                  logo {
+                    name
+                    mediaImage {
+                      alt
+                      url
+                    }
+                  }
+                }
+              }
+              ... on ParagraphLocationCard {
+                id
+                link {
+                  url
+                  title
+                }
+                locationCard
+              }
+              ... on ParagraphOfferBanner {
+                id
+                ctaLink {
+                  url
+                  title
+                }
+                ctaText
+                description {
+                  value
+                }
+                heading
+                price
+              }
+              ... on ParagraphHoverText {
+                id
+                ctaText
+                ctaLink {
+                  url
+                }
+                description {
+                  value
+                }
+                title {
+                  value
+                }
+              }
+              ... on ParagraphTestimonial {
+                id
+                name
+                rating
+                review
+              }
+              ... on ParagraphLocationsSection {
+                id
+                ctaLink {
+                  title
+                  url
+                }
+                ctaText
+                status
+                locationCarousel {
+                  image {
+                    mediaImage {
+                      alt
+                      url
+                    }
+                  }
+                  link {
+                    url
+                    title
+                  }
+                  locationCard
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const HomePageQuery = gql`
+  query HomePage {
+    route(path: "/node/7") {
+      ... on RouteInternal {
+        url
+        entity {
+          ... on NodeHomepage {
+            sections {
+              ... on ParagraphHeroSection {
+                id
+                backgroundImage {
+                  mediaImage {
+                    alt
+                    url
+                  }
+                }
+                headingLarge
+                headingSmall
+                searchPlaceholder
+              }
+              ... on ParagraphIconCardsSection {
+                id
+                cards {
+                  icontitle
+                  icondescription
+                  icon {
+                    mediaImage {
+                      alt
+                      url
+                    }
+                  }
+                }
+              }
+              ... on ParagraphTextImageSection {
+                id
+                heading
+                sectiondescription
+                image {
+                  mediaImage {
+                    alt
+                    url
+                  }
+                }
+                ctaText
+                ctaLink {
+                  url
+                  title
+                }
+                stats {
+                  number
+                  label
+                }
+              }
+              ... on ParagraphServiceCard {
+                id
+                image {
+                  mediaImage {
+                    alt
+                    title
+                    url
+                  }
+                }
+                title {
+                  value
+                }
+                link {
+                  url
+                }
+              }
+              ... on ParagraphStatItem {
+                id
+                number
+              }
+              ... on ParagraphTestimonialSection {
+                id
+                title {
+                  value
+                }
+                testimonialCards {
+                  name
+                  rating
+                  review
+                  status
+                }
+              }
+              ... on ParagraphInsuranceSection {
+                id
+                ctaLink {
+                  url
+                  title
+                }
+                ctaText
+                description {
+                  value
+                }
+                logosSection {
+                  logo {
+                    name
+                    mediaImage {
+                      alt
+                      url
+                    }
+                  }
+                }
+              }
+              ... on ParagraphLocationCard {
+                link {
+                  url
+                  title
+                }
+                locationCard
+              }
+              ... on ParagraphOfferBanner {
+                id
+                ctaLink {
+                  url
+                  title
+                }
+                ctaText
+                description {
+                  value
+                }
+                heading
+                price
+              }
+              ... on ParagraphHoverText {
+                id
+                ctaText
+                ctaLink {
+                  url
+                }
+                description {
+                  value
+                }
+                title {
+                  value
+                }
+              }
+              ... on ParagraphTestimonial {
+                id
+                name
+                rating
+                review
+              }
+              ... on ParagraphLocationsSection {
+                id
+                ctaLink {
+                  title
+                  url
+                }
+                ctaText
+                status
+                locationCarousel {
+                  image {
+                    mediaImage {
+                      alt
+                      url
+                    }
+                  }
+                  link {
+                    url
+                    title
+                  }
+                  locationCard
+                }
+              }
+              ... on ParagraphInsuranceLogo {
+                id
+                name
+              }
+              ... on ParagraphIconCard {
+                id
+                icondescription
+                icontitle
+                icon {
+                  mediaImage {
+                    alt
+                    url
+                  }
+                }
+              }
+              ... on ParagraphServicesGrid {
+                id
+                sectionTitle
+                services {
+                  ... on ParagraphServiceCard {
+                    id
+                    image {
+                      mediaImage {
+                        alt
+                        url
+                        title
+                      }
+                    }
+                    title {
+                      value
+                    }
+                  }
+                  ... on ParagraphHoverText {
+                    id
+                    ctaLink {
+                      url
+                      title
+                    }
+                    ctaText
+                    description {
+                      value
+                    }
+                    title {
+                      value
+                    }
+                  }
+                }
+              }
             }
           }
         }
@@ -96,6 +432,16 @@ export async function fetchPageByRoute(path: string = "/node/7") {
     return data;
   } catch (error) {
     console.error("Error fetching page by route:", error);
+    throw error;
+  }
+}
+
+export async function fetchHomePage() {
+  try {
+    const data = await client.request(HomePageQuery);
+    return data;
+  } catch (error) {
+    console.error("Error fetching home page:", error);
     throw error;
   }
 }

@@ -6,13 +6,20 @@ import Navbar from "./components/Navbar/page";
 import Footer from "./components/Footer/page";
 import Image from "next/image";
 import styles from "./home.module.css";
-import { fetchPageByRoute } from "./lib/queries/query";
+import { fetchHomePage } from "./lib/queries/query";
 import type {
   PageByRouteResponse,
   ParagraphHeroSection,
   ParagraphIconCardsSection,
   ParagraphTextImageSection,
+  ParagraphLocationsSection,
+  ParagraphTestimonialSection,
+  ParagraphInsuranceSection,
+  ParagraphOfferBanner,
+  ParagraphServicesGrid,
+  ServiceItem,
   HomePageSection,
+  InsuranceLogo,
 } from "./lib/types";
 
 // Dev-only logging
@@ -20,123 +27,12 @@ const isDev = process.env.NODE_ENV === "development";
 const log = isDev ? console.log : () => {};
 const logError = isDev ? console.error : () => {};
 
-interface Location {
-  id: number;
-  name: string;
-  image: string;
-  link?: string;
-}
-
-const locations: Location[] = [
-  {
-    id: 1,
-    name: "Gentle Dental Waltham",
-    image: "/assets/images/gentle-dental-waltham.webp",
-  },
-  {
-    id: 2,
-    name: "Gentle Dental Franklin",
-    image: "/assets/images/gentle-dental-patients-come-first.jpg",
-  },
-  {
-    id: 3,
-    name: "Gentle Dental Worcester at the Trolley Yard",
-    image: "/assets/images/gentle-dental-patients-come-first.jpg",
-  },
-  {
-    id: 4,
-    name: "Gentle Dental Malden",
-    image: "/assets/images/gentle-dental-patients-come-first.jpg",
-  },
-  {
-    id: 5,
-    name: "Gentle Dental Location 5",
-    image: "/assets/images/gentle-dental-patients-come-first.jpg",
-  },
-  {
-    id: 6,
-    name: "Gentle Dental Location 6",
-    image: "/assets/images/gentle-dental-patients-come-first.jpg",
-  },
-  {
-    id: 7,
-    name: "Gentle Dental Location 7",
-    image: "/assets/images/gentle-dental-patients-come-first.jpg",
-  },
-  {
-    id: 8,
-    name: "Gentle Dental Location 8",
-    image: "/assets/images/gentle-dental-patients-come-first.jpg",
-  },
-];
-
 const CARDS_PER_PAGE = 4;
-
-interface Testimonial {
-  id: number;
-  name: string;
-  location: string;
-  rating: number;
-  text: string;
-}
-
-const testimonials: Testimonial[][] = [
-  [
-    {
-      id: 1,
-      name: "Laura",
-      location: "Gentle Dental Cambridge",
-      rating: 5,
-      text: "I would definitely recommend my experience at Gentle Dental Cambridge in Porter Square. A truly wonderful team of talented people! And they are paired with the most up-to-date technology. My experience was terrific! I needed a root canal and crowns in addition to a cavity filling. I was in safe hands! From start to finish, I was treated well and the procedures were completed in a timely manner.",
-    },
-    {
-      id: 2,
-      name: "Michel",
-      location: "Gentle Dental Jamaica Plain",
-      rating: 5,
-      text: 'Dr. Mancini and his staff got me in for an appointment within an hour of my call and took care of a loose, temporary cap. To my surprise they were able to "install" my permanent crown even though the appointment for that procedure was scheduled a week later. Perfect fit! Made my day. Thank you Gentle Dental Jamaica Plain!',
-    },
-  ],
-  [
-    {
-      id: 3,
-      name: "Sarah",
-      location: "Gentle Dental Waltham",
-      rating: 5,
-      text: "Excellent service from start to finish! The staff was friendly and professional. Dr. Smith explained everything clearly and made me feel comfortable throughout my visit. I highly recommend this location!",
-    },
-    {
-      id: 4,
-      name: "John",
-      location: "Gentle Dental Franklin",
-      rating: 5,
-      text: "I've been coming here for years and the quality of care never disappoints. The office is clean, modern, and the team always goes above and beyond. Best dental experience I've ever had!",
-    },
-  ],
-  [
-    {
-      id: 5,
-      name: "Emily",
-      location: "Gentle Dental Malden",
-      rating: 5,
-      text: "The team at Gentle Dental Malden is amazing! They made my dental visit stress-free and comfortable. The hygienist was gentle and thorough, and Dr. Johnson was very knowledgeable. I'm so glad I found this practice!",
-    },
-    {
-      id: 6,
-      name: "Michael",
-      location: "Gentle Dental Worcester",
-      rating: 5,
-      text: "Outstanding care and attention to detail. The entire staff is professional and caring. They took the time to explain my treatment options and made sure I was comfortable every step of the way. Highly recommend!",
-    },
-  ],
-];
 
 export default function Home() {
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(0);
-  const totalPages = Math.ceil(locations.length / CARDS_PER_PAGE);
   const [currentTestimonialPage, setCurrentTestimonialPage] = useState(0);
-  const totalTestimonialPages = testimonials.length;
   const [showScrollToTop, setShowScrollToTop] = useState(false);
   const [pageData, setPageData] = useState<PageByRouteResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -163,7 +59,7 @@ export default function Home() {
   useEffect(() => {
     const loadPageData = async () => {
       try {
-        const data = await fetchPageByRoute("/node/7");
+        const data = await fetchHomePage();
         setPageData(data);
       } catch (error) {
         console.error("Error loading page data:", error);
@@ -622,11 +518,75 @@ export default function Home() {
     return "sectiondescription" in section && "stats" in section;
   };
 
-  // Get sections from GraphQL data (only the 3 available types)
+  // Helper functions to check section types
+  const isLocationsSection = (
+    section: HomePageSection
+  ): section is ParagraphLocationsSection => {
+    return (
+      "locationCarousel" in section && Array.isArray(section.locationCarousel)
+    );
+  };
+
+  const isTestimonialSection = (
+    section: HomePageSection
+  ): section is ParagraphTestimonialSection => {
+    return (
+      "testimonialCards" in section && Array.isArray(section.testimonialCards)
+    );
+  };
+
+  const isInsuranceSection = (
+    section: HomePageSection
+  ): section is ParagraphInsuranceSection => {
+    return "logosSection" in section && Array.isArray(section.logosSection);
+  };
+
+  const isOfferBannerSection = (
+    section: HomePageSection
+  ): section is ParagraphOfferBanner => {
+    return "price" in section && "heading" in section;
+  };
+
+  const isServicesGridSection = (
+    section: HomePageSection
+  ): section is ParagraphServicesGrid => {
+    return (
+      "sectionTitle" in section &&
+      "services" in section &&
+      Array.isArray(section.services)
+    );
+  };
+
+  // Helper to check if service is ParagraphServiceCard
+  const isServiceCard = (
+    service: ServiceItem
+  ): service is Extract<ServiceItem, { image?: any }> => {
+    return "image" in service;
+  };
+
+  // Get sections from GraphQL data
   const sections = pageData?.route?.entity?.sections || [];
   const heroSection = sections.find(isHeroSection);
   const iconCardsSection = sections.find(isIconCardsSection);
   const textImageSection = sections.find(isTextImageSection);
+  const locationsSection = sections.find(isLocationsSection);
+  const testimonialSection = sections.find(isTestimonialSection);
+  const insuranceSection = sections.find(isInsuranceSection);
+  const offerBannerSection = sections.find(isOfferBannerSection);
+  const servicesGridSection = sections.find(isServicesGridSection);
+
+  // Get dynamic locations from GraphQL data
+  const locations = locationsSection?.locationCarousel || [];
+  const totalPages = Math.max(1, Math.ceil(locations.length / CARDS_PER_PAGE));
+
+  // Get dynamic testimonials from GraphQL data and group them into pairs
+  const testimonialCards =
+    testimonialSection?.testimonialCards?.filter((card) => card.status) || [];
+  const testimonials: (typeof testimonialCards)[][] = [];
+  for (let i = 0; i < testimonialCards.length; i += 2) {
+    testimonials.push(testimonialCards.slice(i, i + 2));
+  }
+  const totalTestimonialPages = testimonials.length || 1;
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -839,185 +799,132 @@ export default function Home() {
             </div>
           </section>
         )}
-        <section className={styles.ServicesSection}>
-          <div className={styles.ServicesContainer}>
-            <div className={styles.ServicesHeader}>
-              <h2 className={styles.ServicesTitle}>Our Services</h2>
-              <p className={styles.ServicesDescription}>
-                Gentle Dental dentists provide award-winning care. From
-                cleanings and exams to more specialized services such as root
-                canals and crowns, we provide all dental services under one roof
-                saving you time and money. All Gentle Dental practices offer
-                orthodontics for both adults and children including traditional
-                braces and Invisalign® clear aligners.
-              </p>
-              <button className={styles.ViewAllServicesButton}>
-                VIEW ALL SERVICES
-              </button>
-            </div>
-            <div className={styles.ServicesGrid}>
-              <div className={styles.ServiceCard}>
-                <div className={styles.ServiceImageWrapper}>
-                  <Image
-                    src="/assets/images/preventive-dentistry-thumbnail.webp"
-                    alt="Preventive Care"
-                    width={400}
-                    height={300}
-                    className={styles.ServiceImage}
-                  />
-                  <div className={styles.ServiceOverlay}>
-                    <h3 className={styles.ServiceCardTitle}>Preventive Care</h3>
-                    <p className={styles.ServiceCardDescription}>
-                      Routine dental checkups are important for a healthy and
-                      confident smile.
-                    </p>
-                    <a href="#" className={styles.ServiceLearnMore}>
-                      LEARN MORE &gt;
-                    </a>
-                  </div>
+        {servicesGridSection &&
+          servicesGridSection.services &&
+          servicesGridSection.services.length > 0 && (
+            <section className={styles.ServicesSection}>
+              <div className={styles.ServicesContainer}>
+                <div className={styles.ServicesHeader}>
+                  <h2 className={styles.ServicesTitle}>
+                    {servicesGridSection.sectionTitle || "Our Services"}
+                  </h2>
+                  <p className={styles.ServicesDescription}>
+                    Gentle Dental dentists provide award-winning care. From
+                    cleanings and exams to more specialized services such as
+                    root canals and crowns, we provide all dental services under
+                    one roof saving you time and money. All Gentle Dental
+                    practices offer orthodontics for both adults and children
+                    including traditional braces and Invisalign® clear aligners.
+                  </p>
+                  <button className={styles.ViewAllServicesButton}>
+                    VIEW ALL SERVICES
+                  </button>
+                </div>
+                <div className={styles.ServicesGrid}>
+                  {servicesGridSection.services.map((service, index) => {
+                    if (
+                      isServiceCard(service) &&
+                      service.image?.mediaImage?.url
+                    ) {
+                      return (
+                        <div
+                          key={service.id || index}
+                          className={styles.ServiceCard}
+                        >
+                          <div className={styles.ServiceImageWrapper}>
+                            <Image
+                              src={service.image.mediaImage.url}
+                              alt={
+                                service.image.mediaImage.alt ||
+                                service.title?.value ||
+                                "Service"
+                              }
+                              width={400}
+                              height={300}
+                              className={styles.ServiceImage}
+                            />
+                            <div className={styles.ServiceOverlay}>
+                              <h3 className={styles.ServiceCardTitle}>
+                                {service.title?.value || "Service"}
+                              </h3>
+                              <p className={styles.ServiceCardDescription}>
+                                Routine dental checkups are important for a
+                                healthy and confident smile.
+                              </p>
+                              <a href="#" className={styles.ServiceLearnMore}>
+                                LEARN MORE &gt;
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    }
+                    return null;
+                  })}
                 </div>
               </div>
-              <div className={styles.ServiceCard}>
-                <div className={styles.ServiceImageWrapper}>
-                  <Image
-                    src="/assets/images/gentle-dental-patients-come-first.jpg"
-                    alt="Emergency Dental Care"
-                    width={400}
-                    height={300}
-                    className={styles.ServiceImage}
-                  />
-                  <div className={styles.ServiceOverlay}>
-                    <h3 className={styles.ServiceCardTitle}>
-                      Emergency Dental Care
-                    </h3>
-                    <p className={styles.ServiceCardDescription}>
-                      Get immediate care when you need it most. We&apos;re here
-                      for your dental emergencies.
-                    </p>
-                    <a href="#" className={styles.ServiceLearnMore}>
-                      LEARN MORE &gt;
-                    </a>
-                  </div>
-                </div>
-              </div>
-              <div className={styles.ServiceCard}>
-                <div className={styles.ServiceImageWrapper}>
-                  <Image
-                    src="/assets/images/gentle-dental-patients-come-first.jpg"
-                    alt="Orthodontics"
-                    width={400}
-                    height={300}
-                    className={styles.ServiceImage}
-                  />
-                  <div className={styles.ServiceOverlay}>
-                    <h3 className={styles.ServiceCardTitle}>Orthodontics</h3>
-                    <p className={styles.ServiceCardDescription}>
-                      Straighten your smile with traditional braces or
-                      Invisalign clear aligners.
-                    </p>
-                    <a href="#" className={styles.ServiceLearnMore}>
-                      LEARN MORE &gt;
-                    </a>
-                  </div>
-                </div>
-              </div>
-              <div className={styles.ServiceCard}>
-                <div className={styles.ServiceImageWrapper}>
-                  <Image
-                    src="/assets/images/gentle-dental-patients-come-first.jpg"
-                    alt="Oral Surgery"
-                    width={400}
-                    height={300}
-                    className={styles.ServiceImage}
-                  />
-                  <div className={styles.ServiceOverlay}>
-                    <h3 className={styles.ServiceCardTitle}>Oral Surgery</h3>
-                    <p className={styles.ServiceCardDescription}>
-                      Expert surgical procedures performed with care and
-                      precision.
-                    </p>
-                    <a href="#" className={styles.ServiceLearnMore}>
-                      LEARN MORE &gt;
-                    </a>
-                  </div>
-                </div>
-              </div>
-              <div className={styles.ServiceCard}>
-                <div className={styles.ServiceImageWrapper}>
-                  <Image
-                    src="/assets/images/gentle-dental-patients-come-first.jpg"
-                    alt="Pediatric Dentistry"
-                    width={400}
-                    height={300}
-                    className={styles.ServiceImage}
-                  />
-                  <div className={styles.ServiceOverlay}>
-                    <h3 className={styles.ServiceCardTitle}>
-                      Pediatric Dentistry
-                    </h3>
-                    <p className={styles.ServiceCardDescription}>
-                      Specialized dental care for children in a comfortable and
-                      friendly environment.
-                    </p>
-                    <a href="#" className={styles.ServiceLearnMore}>
-                      LEARN MORE &gt;
-                    </a>
-                  </div>
-                </div>
-              </div>
-              <div className={styles.ServiceCard}>
-                <div className={styles.ServiceImageWrapper}>
-                  <Image
-                    src="/assets/images/gentle-dental-patients-come-first.jpg"
-                    alt="Cosmetic Dentistry"
-                    width={400}
-                    height={300}
-                    className={styles.ServiceImage}
-                  />
-                  <div className={styles.ServiceOverlay}>
-                    <h3 className={styles.ServiceCardTitle}>
-                      Cosmetic Dentistry
-                    </h3>
-                    <p className={styles.ServiceCardDescription}>
-                      Enhance your smile with our cosmetic dental treatments and
-                      procedures.
-                    </p>
-                    <a href="#" className={styles.ServiceLearnMore}>
-                      LEARN MORE &gt;
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+            </section>
+          )}
         <section className={styles.NewPatientSection}>
           <div className={styles.NewPatientBanner}>
             <div className={styles.NewPatientLeft}>
-              <h2 className={styles.NewPatientTitle}>WELCOMING NEW PATIENTS</h2>
+              <h2 className={styles.NewPatientTitle}>
+                {offerBannerSection?.heading || "WELCOMING NEW PATIENTS"}
+              </h2>
               <p className={styles.NewPatientDescription}>
-                We&apos;re proud to always welcome patients into our practices.
-                Whether you&apos;re new to town, need to restart your dental
-                care, or are looking for a more convenient dentist, our New
-                Patient Offer is a great introduction to our practice. New
-                patients receive an exam, all necessary x-rays, a cleaning, and
-                a personalized treatment plan for $79.
+                {offerBannerSection?.description?.value ||
+                  "We're proud to always welcome patients into our practices. " +
+                    "Whether you're new to town, need to restart your dental " +
+                    "care, or are looking for a more convenient dentist, our New " +
+                    "Patient Offer is a great introduction to our practice. New " +
+                    "patients receive an exam, all necessary x-rays, a cleaning, and " +
+                    "a personalized treatment plan for $79."}
               </p>
             </div>
             <div className={styles.NewPatientRight}>
-              <div className={styles.OfferPriceContainer}>
-                <div className={styles.OfferPrice}>$79</div>
-                <div className={styles.OfferDetails}>
-                  <div className={styles.OfferDetailItem}>EXAM</div>
-                  <div className={styles.OfferDetailItem}>X-RAYS</div>
-                  <div className={styles.OfferDetailItem}>CLEANING</div>
-                  <div className={styles.OfferDetailItem}>TREATMENT PLAN</div>
+              {offerBannerSection?.price && (
+                <div className={styles.OfferPriceContainer}>
+                  <div className={styles.OfferPrice}>
+                    {offerBannerSection.price}
+                  </div>
+                  <div className={styles.OfferDetails}>
+                    <div className={styles.OfferDetailItem}>EXAM</div>
+                    <div className={styles.OfferDetailItem}>X-RAYS</div>
+                    <div className={styles.OfferDetailItem}>CLEANING</div>
+                    <div className={styles.OfferDetailItem}>TREATMENT PLAN</div>
+                  </div>
                 </div>
-              </div>
+              )}
+              {!offerBannerSection?.price && (
+                <div className={styles.OfferPriceContainer}>
+                  <div className={styles.OfferPrice}>$79</div>
+                  <div className={styles.OfferDetails}>
+                    <div className={styles.OfferDetailItem}>EXAM</div>
+                    <div className={styles.OfferDetailItem}>X-RAYS</div>
+                    <div className={styles.OfferDetailItem}>CLEANING</div>
+                    <div className={styles.OfferDetailItem}>TREATMENT PLAN</div>
+                  </div>
+                </div>
+              )}
               <div className={styles.OfferValue}>A $400+ VALUE</div>
-              <button className={styles.NewPatientLearnMoreButton}>
-                LEARN MORE
-              </button>
+              {offerBannerSection?.ctaText &&
+                (offerBannerSection.ctaLink?.url ? (
+                  <a
+                    href={offerBannerSection.ctaLink.url}
+                    className={styles.NewPatientLearnMoreButton}
+                  >
+                    {offerBannerSection.ctaText}
+                  </a>
+                ) : (
+                  <button className={styles.NewPatientLearnMoreButton}>
+                    {offerBannerSection.ctaText}
+                  </button>
+                ))}
+              {!offerBannerSection?.ctaText && (
+                <button className={styles.NewPatientLearnMoreButton}>
+                  LEARN MORE
+                </button>
+              )}
             </div>
           </div>
           <div className={styles.ViewAllOffersContainer}>
@@ -1026,119 +933,138 @@ export default function Home() {
             </button>
           </div>
         </section>
-        <section className={styles.LocationsSection}>
-          <div className={styles.LocationsContainer}>
-            <h2 className={styles.LocationsTitle}>Locations</h2>
-            <div className={styles.CarouselArrowsContainer}>
-              <button
-                className={`${styles.CarouselArrow} ${styles.CarouselArrowLeft}`}
-                onClick={handlePrev}
-                aria-label="Previous locations"
-              >
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
+        {locations.length > 0 && (
+          <section className={styles.LocationsSection}>
+            <div className={styles.LocationsContainer}>
+              <h2 className={styles.LocationsTitle}>Locations</h2>
+              <div className={styles.CarouselArrowsContainer}>
+                <button
+                  className={`${styles.CarouselArrow} ${styles.CarouselArrowLeft}`}
+                  onClick={handlePrev}
+                  aria-label="Previous locations"
                 >
-                  <path
-                    d="M15 18L9 12L15 6"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </button>
-              <button
-                className={`${styles.CarouselArrow} ${styles.CarouselArrowRight}`}
-                onClick={handleNext}
-                aria-label="Next locations"
-              >
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M15 18L9 12L15 6"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+                <button
+                  className={`${styles.CarouselArrow} ${styles.CarouselArrowRight}`}
+                  onClick={handleNext}
+                  aria-label="Next locations"
                 >
-                  <path
-                    d="M9 18L15 12L9 6"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </button>
-            </div>
-            <div className={styles.LocationsCarousel}>
-              <div className={styles.CarouselContent}>
-                <div
-                  className={styles.CarouselTrack}
-                  style={{
-                    transform: `translateX(-${currentPage * 100}%)`,
-                  }}
-                >
-                  {Array.from({ length: totalPages }).map((_, pageIndex) => (
-                    <div key={pageIndex} className={styles.CarouselPage}>
-                      {locations
-                        .slice(
-                          pageIndex * CARDS_PER_PAGE,
-                          pageIndex * CARDS_PER_PAGE + CARDS_PER_PAGE
-                        )
-                        .map((location) => (
-                          <div
-                            key={location.id}
-                            className={styles.LocationCard}
-                          >
-                            <div className={styles.LocationImageWrapper}>
-                              <Image
-                                src={location.image}
-                                alt={location.name}
-                                width={400}
-                                height={300}
-                                className={styles.LocationImage}
-                              />
-                              <div className={styles.LocationOverlay}>
-                                <h3 className={styles.LocationName}>
-                                  {location.name}
-                                </h3>
-                                <a
-                                  href="#"
-                                  className={styles.LocationLearnMore}
-                                >
-                                  LEARN MORE &gt;
-                                </a>
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M9 18L15 12L9 6"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <div className={styles.LocationsCarousel}>
+                <div className={styles.CarouselContent}>
+                  <div
+                    className={styles.CarouselTrack}
+                    style={{
+                      transform: `translateX(-${currentPage * 100}%)`,
+                    }}
+                  >
+                    {Array.from({ length: totalPages }).map((_, pageIndex) => (
+                      <div key={pageIndex} className={styles.CarouselPage}>
+                        {locations
+                          .slice(
+                            pageIndex * CARDS_PER_PAGE,
+                            pageIndex * CARDS_PER_PAGE + CARDS_PER_PAGE
+                          )
+                          .map((location, idx) => (
+                            <div
+                              key={location.locationCard || idx}
+                              className={styles.LocationCard}
+                            >
+                              <div className={styles.LocationImageWrapper}>
+                                {location.image?.mediaImage?.url && (
+                                  <Image
+                                    src={location.image.mediaImage.url}
+                                    alt={
+                                      location.image.mediaImage.alt ||
+                                      location.locationCard ||
+                                      "Location"
+                                    }
+                                    width={400}
+                                    height={300}
+                                    className={styles.LocationImage}
+                                  />
+                                )}
+                                <div className={styles.LocationOverlay}>
+                                  <h3 className={styles.LocationName}>
+                                    {location.locationCard || "Location"}
+                                  </h3>
+                                  <a
+                                    href={location.link?.url || "#"}
+                                    className={styles.LocationLearnMore}
+                                  >
+                                    LEARN MORE &gt;
+                                  </a>
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        ))}
-                    </div>
-                  ))}
+                          ))}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
+              <div className={styles.CarouselDots}>
+                {Array.from({ length: totalPages }).map((_, index) => (
+                  <button
+                    key={index}
+                    className={`${styles.Dot} ${
+                      index === currentPage ? styles.DotActive : ""
+                    }`}
+                    onClick={() => handleDotClick(index)}
+                    aria-label={`Go to page ${index + 1}`}
+                  />
+                ))}
+              </div>
+              {locationsSection?.ctaText && (
+                <div className={styles.SeeAllLocationsContainer}>
+                  {locationsSection.ctaLink?.url ? (
+                    <a
+                      href={locationsSection.ctaLink.url}
+                      className={styles.SeeAllLocationsButton}
+                    >
+                      {locationsSection.ctaText}
+                    </a>
+                  ) : (
+                    <button className={styles.SeeAllLocationsButton}>
+                      {locationsSection.ctaText}
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
-            <div className={styles.CarouselDots}>
-              {Array.from({ length: totalPages }).map((_, index) => (
-                <button
-                  key={index}
-                  className={`${styles.Dot} ${
-                    index === currentPage ? styles.DotActive : ""
-                  }`}
-                  onClick={() => handleDotClick(index)}
-                  aria-label={`Go to page ${index + 1}`}
-                />
-              ))}
-            </div>
-            <div className={styles.SeeAllLocationsContainer}>
-              <button className={styles.SeeAllLocationsButton}>
-                SEE ALL LOCATIONS
-              </button>
-            </div>
-          </div>
-        </section>
+          </section>
+        )}
         <section className={styles.DentistsSection}>
           <div className={styles.DentistsContainer}>
             <h2 className={styles.DentistsTitle}>Our Gentle Dental Dentists</h2>
@@ -1146,7 +1072,7 @@ export default function Home() {
               <div className={styles.DentistPanel}>
                 <div className={styles.DentistImageWrapper}>
                   <Image
-                    src="/assets/images/bu-logo.png"
+                    src="/assets/images/boston-university-awards.webp"
                     alt="Boston University"
                     width={200}
                     height={200}
@@ -1164,7 +1090,7 @@ export default function Home() {
               <div className={styles.DentistPanel}>
                 <div className={styles.DentistImageWrapper}>
                   <Image
-                    src="/assets/images/dentists-group-photo.jpg"
+                    src="/assets/images/top-dentist-home-page.webp"
                     alt="Gentle Dental Dentists"
                     width={400}
                     height={300}
@@ -1183,7 +1109,7 @@ export default function Home() {
               <div className={styles.DentistPanel}>
                 <div className={styles.DentistImageWrapper}>
                   <Image
-                    src="/assets/images/readers-choice-award.png"
+                    src="/assets/images/readers-choice-2020.webp"
                     alt="Readers Choice Awards"
                     width={200}
                     height={200}
@@ -1226,7 +1152,7 @@ export default function Home() {
                 <div className={styles.GumDiseaseForm}>
                   <div className={styles.EmailInputWrapper}>
                     <Image
-                      src="/assets/images/mail-icon.png"
+                      src="/assets/images/envelope.png"
                       alt="Email"
                       width={20}
                       height={20}
@@ -1244,154 +1170,207 @@ export default function Home() {
             </div>
           </div>
         </section>
-        <section className={styles.TestimonialsSection}>
-          <div className={styles.TestimonialsContainer}>
-            <h2 className={styles.TestimonialsTitle}>Hear From Our Patients</h2>
-            <div className={styles.TestimonialsCarousel}>
-              <button
-                className={`${styles.TestimonialArrow} ${styles.TestimonialArrowLeft}`}
-                onClick={handleTestimonialPrev}
-                aria-label="Previous testimonials"
-              >
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M15 18L9 12L15 6"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </button>
-              <div className={styles.TestimonialsContent}>
-                <div
-                  className={styles.TestimonialsTrack}
-                  style={{
-                    transform: `translateX(-${currentTestimonialPage * 100}%)`,
-                  }}
-                >
-                  {testimonials.map((testimonialPair, pageIndex) => (
-                    <div key={pageIndex} className={styles.TestimonialsPage}>
-                      {testimonialPair.map((testimonial) => (
+        {testimonialSection &&
+          testimonialSection.testimonialCards &&
+          testimonialSection.testimonialCards.length > 0 && (
+            <section className={styles.TestimonialsSection}>
+              <div className={styles.TestimonialsContainer}>
+                <h2 className={styles.TestimonialsTitle}>
+                  {testimonialSection.title?.value || "Hear From Our Patients"}
+                </h2>
+                <div className={styles.TestimonialsCarousel}>
+                  <button
+                    className={`${styles.TestimonialArrow} ${styles.TestimonialArrowLeft}`}
+                    onClick={handleTestimonialPrev}
+                    aria-label="Previous testimonials"
+                  >
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M15 18L9 12L15 6"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </button>
+                  <div className={styles.TestimonialsContent}>
+                    <div
+                      className={styles.TestimonialsTrack}
+                      style={{
+                        transform: `translateX(-${
+                          currentTestimonialPage * 100
+                        }%)`,
+                      }}
+                    >
+                      {testimonials.map((testimonialPair, pageIndex) => (
                         <div
-                          key={testimonial.id}
-                          className={styles.TestimonialCard}
+                          key={pageIndex}
+                          className={styles.TestimonialsPage}
                         >
-                          <h3 className={styles.TestimonialName}>
-                            {testimonial.name}
-                          </h3>
-                          <p className={styles.TestimonialLocation}>
-                            {testimonial.location}
-                          </p>
-                          <div className={styles.TestimonialStars}>
-                            {Array.from({ length: testimonial.rating }).map(
-                              (_, i) => (
-                                <span key={i} className={styles.Star}>
-                                  ★
-                                </span>
-                              )
-                            )}
-                          </div>
-                          <p className={styles.TestimonialText}>
-                            {testimonial.text}
-                          </p>
+                          {testimonialPair.map((testimonial, idx) => (
+                            <div
+                              key={`${testimonial.name}-${idx}`}
+                              className={styles.TestimonialCard}
+                            >
+                              <h3 className={styles.TestimonialName}>
+                                {testimonial.name}
+                              </h3>
+                              {testimonial.rating !== null &&
+                                testimonial.rating !== undefined && (
+                                  <div className={styles.TestimonialStars}>
+                                    {Array.from({
+                                      length: testimonial.rating,
+                                    }).map((_, i) => (
+                                      <span key={i} className={styles.Star}>
+                                        ★
+                                      </span>
+                                    ))}
+                                  </div>
+                                )}
+                              <p className={styles.TestimonialText}>
+                                {testimonial.review}
+                              </p>
+                            </div>
+                          ))}
                         </div>
                       ))}
                     </div>
+                  </div>
+                  <button
+                    className={`${styles.TestimonialArrow} ${styles.TestimonialArrowRight}`}
+                    onClick={handleTestimonialNext}
+                    aria-label="Next testimonials"
+                  >
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M9 18L15 12L9 6"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </button>
+                </div>
+                {totalTestimonialPages > 1 && (
+                  <div className={styles.TestimonialDots}>
+                    {Array.from({ length: totalTestimonialPages }).map(
+                      (_, index) => (
+                        <button
+                          key={index}
+                          className={`${styles.TestimonialDot} ${
+                            index === currentTestimonialPage
+                              ? styles.TestimonialDotActive
+                              : ""
+                          }`}
+                          onClick={() => handleTestimonialDotClick(index)}
+                          aria-label={`Go to testimonial page ${index + 1}`}
+                        />
+                      )
+                    )}
+                  </div>
+                )}
+              </div>
+            </section>
+          )}
+        {insuranceSection &&
+          insuranceSection.logosSection &&
+          insuranceSection.logosSection.length > 0 && (
+            <section className={styles.InsuranceSection}>
+              <div className={styles.InsuranceContainer}>
+                <h2 className={styles.InsuranceTitle}>Insurances Accepted</h2>
+                <div className={styles.InsuranceIconsGrid}>
+                  {insuranceSection.logosSection
+                    .reduce<InsuranceLogo[][]>((rows, logo, index) => {
+                      let rowIndex: number;
+                      if (index < 5) {
+                        // First row: 5 icons (indices 0-4)
+                        rowIndex = 0;
+                      } else if (index < 10) {
+                        // Second row: 5 icons (indices 5-9)
+                        rowIndex = 1;
+                      } else {
+                        // Third row and beyond: remaining icons
+                        rowIndex = 2;
+                      }
+                      if (!rows[rowIndex]) {
+                        rows[rowIndex] = [];
+                      }
+                      rows[rowIndex].push(logo);
+                      return rows;
+                    }, [])
+                    .map((row, rowIndex) => (
+                      <div key={rowIndex} className={styles.InsuranceRow}>
+                        {row.map((logoItem, idx) => (
+                          <div
+                            key={logoItem.logo.name || idx}
+                            className={styles.InsuranceIcon}
+                          >
+                            {logoItem.logo.mediaImage?.url ? (
+                              <Image
+                                src={logoItem.logo.mediaImage.url}
+                                alt={
+                                  logoItem.logo.mediaImage.alt ||
+                                  logoItem.logo.name ||
+                                  "Insurance Logo"
+                                }
+                                width={150}
+                                height={80}
+                                style={{
+                                  objectFit: "contain",
+                                  maxWidth: "100%",
+                                  height: "auto",
+                                }}
+                              />
+                            ) : (
+                              <div className={styles.InsuranceIconPlaceholder}>
+                                {logoItem.logo.name ||
+                                  `Icon ${
+                                    rowIndex < 2
+                                      ? rowIndex * 5 + idx + 1
+                                      : 10 + idx + 1
+                                  }`}
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    ))}
+                </div>
+                {insuranceSection.description?.value && (
+                  <p className={styles.InsuranceDescription}>
+                    {insuranceSection.description.value}
+                  </p>
+                )}
+                {insuranceSection.ctaText &&
+                  (insuranceSection.ctaLink?.url ? (
+                    <a
+                      href={insuranceSection.ctaLink.url}
+                      className={styles.InsuranceLearnMoreButton}
+                    >
+                      {insuranceSection.ctaText}
+                    </a>
+                  ) : (
+                    <button className={styles.InsuranceLearnMoreButton}>
+                      {insuranceSection.ctaText}
+                    </button>
                   ))}
-                </div>
               </div>
-              <button
-                className={`${styles.TestimonialArrow} ${styles.TestimonialArrowRight}`}
-                onClick={handleTestimonialNext}
-                aria-label="Next testimonials"
-              >
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M9 18L15 12L9 6"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </button>
-            </div>
-            <div className={styles.TestimonialDots}>
-              {Array.from({ length: totalTestimonialPages }).map((_, index) => (
-                <button
-                  key={index}
-                  className={`${styles.TestimonialDot} ${
-                    index === currentTestimonialPage
-                      ? styles.TestimonialDotActive
-                      : ""
-                  }`}
-                  onClick={() => handleTestimonialDotClick(index)}
-                  aria-label={`Go to testimonial page ${index + 1}`}
-                />
-              ))}
-            </div>
-          </div>
-        </section>
-        <section className={styles.InsuranceSection}>
-          <div className={styles.InsuranceContainer}>
-            <h2 className={styles.InsuranceTitle}>Insurances Accepted</h2>
-            <div className={styles.InsuranceIconsGrid}>
-              <div className={styles.InsuranceRow}>
-                <div className={styles.InsuranceIcon}>
-                  <div className={styles.InsuranceIconPlaceholder}>Icon 1</div>
-                </div>
-                <div className={styles.InsuranceIcon}>
-                  <div className={styles.InsuranceIconPlaceholder}>Icon 2</div>
-                </div>
-                <div className={styles.InsuranceIcon}>
-                  <div className={styles.InsuranceIconPlaceholder}>Icon 3</div>
-                </div>
-                <div className={styles.InsuranceIcon}>
-                  <div className={styles.InsuranceIconPlaceholder}>Icon 4</div>
-                </div>
-              </div>
-              <div className={styles.InsuranceRow}>
-                <div className={styles.InsuranceIcon}>
-                  <div className={styles.InsuranceIconPlaceholder}>Icon 5</div>
-                </div>
-                <div className={styles.InsuranceIcon}>
-                  <div className={styles.InsuranceIconPlaceholder}>Icon 6</div>
-                </div>
-                <div className={styles.InsuranceIcon}>
-                  <div className={styles.InsuranceIconPlaceholder}>Icon 7</div>
-                </div>
-                <div className={styles.InsuranceIcon}>
-                  <div className={styles.InsuranceIconPlaceholder}>Icon 8</div>
-                </div>
-              </div>
-              <div className={styles.InsuranceRow}>
-                <div className={styles.InsuranceIcon}>
-                  <div className={styles.InsuranceIconPlaceholder}>Icon 9</div>
-                </div>
-              </div>
-            </div>
-            <p className={styles.InsuranceDescription}>
-              We are in-network providers with most major dental insurance
-              companies. Call us to confirm coverage.
-            </p>
-            <button className={styles.InsuranceLearnMoreButton}>
-              LEARN MORE
-            </button>
-          </div>
-        </section>
+            </section>
+          )}
       </main>
       <div className={styles.MobileStickySection}>
         <div className={styles.MobileStickyDivider}></div>

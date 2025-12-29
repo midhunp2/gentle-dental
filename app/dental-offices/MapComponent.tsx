@@ -7,7 +7,7 @@ import {
   Marker,
   InfoWindow,
 } from "@react-google-maps/api";
-import type { DentalOffice } from "../lib/dentalOffices";
+import type { DentalOffice } from "./page";
 import { getGoogleMapsApiKey } from "../lib/config";
 import { SkeletonBox } from "../components/Ui/Skeleton/Skeleton";
 import styles from "./dental-offices.module.css";

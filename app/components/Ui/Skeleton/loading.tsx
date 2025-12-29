@@ -1,5 +1,5 @@
-import Navbar from "./components/Navbar/page";
-import Footer from "./components/Footer/page";
+import Navbar from "../../Navbar/page";
+import Footer from "../../Footer/page";
 import {
   HeroBannerSkeleton,
   FeaturesSkeleton,
@@ -10,7 +10,7 @@ import {
   GumDiseaseSkeleton,
   TestimonialsSkeleton,
   InsuranceSkeleton,
-} from "./components/Ui/Skeleton/Skeleton";
+} from "./Skeleton";
 import styles from "./home.module.css";
 
 export default function Loading() {

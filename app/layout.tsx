@@ -4,6 +4,7 @@ import "./globals.css";
 import Script from "next/script";
 import { Suspense } from "react";
 import SkipLink from "./components/SkipLink/SkipLink";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -125,6 +126,7 @@ export default function RootLayout({
             style={{ display: "none", visibility: "hidden" }}
           />
         </noscript>
+        <SpeedInsights />
       </body>
     </html>
   );

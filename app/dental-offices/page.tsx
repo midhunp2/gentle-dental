@@ -764,17 +764,19 @@ function DentalOfficesContent() {
                   </div>
                 )}
               </div>
-              <select
-                value={radius}
-                onChange={(e) => setRadius(Number(e.target.value))}
-                className={styles.radiusSelect}
-              >
-                <option value={5}>5 Miles</option>
-                <option value={10}>10 Miles</option>
-                <option value={15}>15 Miles</option>
-                <option value={25}>25 Miles</option>
-                <option value={50}>50 Miles</option>
-              </select>
+              <div className={styles.radiusSelectWrapper}>
+                <select
+                  value={radius}
+                  onChange={(e) => setRadius(Number(e.target.value))}
+                  className={styles.radiusSelect}
+                >
+                  <option value={5}>5 Miles</option>
+                  <option value={10}>10 Miles</option>
+                  <option value={15}>15 Miles</option>
+                  <option value={25}>25 Miles</option>
+                  <option value={50}>50 Miles</option>
+                </select>
+              </div>
             </div>
             <button
               onClick={handleSearch}
@@ -833,18 +835,25 @@ function DentalOfficesContent() {
                   >
                     <h3 className={styles.officeName}>{office.name}</h3>
                     <p className={styles.officeAddress}>{office.address}</p>
-                    <a
-                      href={`tel:${office.phone}`}
-                      className={styles.officePhone}
-                    >
-                      {office.phone}
-                    </a>
-                    {office.distance !== undefined && (
-                      <p className={styles.officeDistance}>
-                        {office.distance.toFixed(1)} miles away
-                      </p>
-                    )}
-                    <button className={styles.bookNowButton}>Book Now</button>
+                    <div>
+                      <a
+                        href={`tel:${office.phone}`}
+                        className={styles.officePhone}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        {office.phone}
+                      </a>
+                      <a
+                        href="#"
+                        className={styles.bookNowLink}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                        }}
+                      >
+                        Book Now
+                      </a>
+                    </div>
                   </div>
                 ))}
               </>

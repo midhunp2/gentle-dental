@@ -40,6 +40,7 @@ interface MapComponentProps {
   offices: DentalOffice[];
   selectedOffice: string | null;
   onOfficeSelect: (id: string) => void;
+  onMapLoaded?: () => void;
 }
 
 const MapComponent = ({
@@ -47,6 +48,7 @@ const MapComponent = ({
   offices,
   selectedOffice,
   onOfficeSelect,
+  onMapLoaded,
 }: MapComponentProps) => {
   const [infoWindowOffice, setInfoWindowOffice] = useState<string | null>(null);
   const [isMapLoaded, setIsMapLoaded] = useState(false);
@@ -75,10 +77,14 @@ const MapComponent = ({
       // Small delay to ensure smooth transition and prevent flickering
       const timer = setTimeout(() => {
         setShowSkeleton(false);
+        // Notify parent that map is loaded
+        if (onMapLoaded) {
+          onMapLoaded();
+        }
       }, 300);
       return () => clearTimeout(timer);
     }
-  }, [isMapLoaded, scriptLoaded]);
+  }, [isMapLoaded, scriptLoaded, onMapLoaded]);
 
   // Detect mobile for optimized map options
   const [isMobile, setIsMobile] = useState(false);

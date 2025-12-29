@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense, useRef, useCallback, useMemo } from "react";
+import { useState, useEffect, Suspense, useRef, useCallback, useMemo, lazy } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Navbar from "../components/Navbar/page";
 import Footer from "../components/Footer/page";
@@ -629,6 +629,24 @@ function DentalOfficesContent() {
   const officeCardRefs = useRef<Map<string, HTMLDivElement>>(new Map());
   const observerRef = useRef<IntersectionObserver | null>(null);
 
+  // Section loading states - track when each section is ready
+  const [sectionsLoaded, setSectionsLoaded] = useState({
+    searchSection: false,
+    officeList: false,
+    map: false,
+    officesGrid: false,
+  });
+
+  // Check if all sections are loaded
+  const allSectionsLoaded = useMemo(() => {
+    return Object.values(sectionsLoaded).every(loaded => loaded === true);
+  }, [sectionsLoaded]);
+
+  // Mark section as loaded
+  const markSectionLoaded = useCallback((section: keyof typeof sectionsLoaded) => {
+    setSectionsLoaded(prev => ({ ...prev, [section]: true }));
+  }, []);
+
   // Update suggestions as user types
   useEffect(() => {
     if (searchQuery.trim().length > 0) {
@@ -640,6 +658,15 @@ function DentalOfficesContent() {
       setShowSuggestions(false);
     }
   }, [searchQuery]);
+
+  // Mark search section as loaded after initial render
+  useEffect(() => {
+    // Small delay to simulate loading
+    const timer = setTimeout(() => {
+      markSectionLoaded("searchSection");
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [markSectionLoaded]);
 
   // Initialize from URL params
   useEffect(() => {
@@ -662,14 +689,17 @@ function DentalOfficesContent() {
 
   // Initialize visible offices - fewer on mobile for better performance
   useEffect(() => {
-    if (filteredOffices.length > 0) {
-      const initialCount = isMobile ? 3 : 5;
-      const initialVisible = new Set(
-        filteredOffices.slice(0, initialCount).map((office) => office.id)
-      );
-      setVisibleOffices(initialVisible);
-    }
-  }, [filteredOffices.length, isMobile]);
+    const initialCount = isMobile ? 3 : 5;
+    const initialVisible = new Set(
+      filteredOffices.slice(0, initialCount).map((office) => office.id)
+    );
+    setVisibleOffices(initialVisible);
+    // Mark office list as loaded when offices are ready (even if empty, the section is ready)
+    const timer = setTimeout(() => {
+      markSectionLoaded("officeList");
+    }, 200);
+    return () => clearTimeout(timer);
+  }, [filteredOffices, isMobile, markSectionLoaded]);
 
   // Intersection Observer for lazy loading office cards
   // Optimized settings for mobile performance
@@ -716,6 +746,11 @@ function DentalOfficesContent() {
     };
   }, [filteredOffices, isMobile]);
 
+  // Callback for when map is loaded
+  const handleMapLoaded = useCallback(() => {
+    markSectionLoaded("map");
+  }, [markSectionLoaded]);
+
   // Intersection Observer for lazy loading offices grid section
   // Delay map loading on mobile for better initial performance
   useEffect(() => {
@@ -739,6 +774,10 @@ function DentalOfficesContent() {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             setShowOfficesGrid(true);
+            // Mark offices grid as loaded when it becomes visible
+            setTimeout(() => {
+              markSectionLoaded("officesGrid");
+            }, 300);
             observer.disconnect();
           }
         });
@@ -756,7 +795,7 @@ function DentalOfficesContent() {
     return () => {
       observer.disconnect();
     };
-  }, [isMobile]);
+  }, [isMobile, markSectionLoaded]);
 
   const handleSearchFromURL = async (location: string, miles: number) => {
     setIsLoading(true);
@@ -901,12 +940,131 @@ function DentalOfficesContent() {
     updateURL(office.name, radius);
   };
 
+  // Skeleton loader for search section
+  const SearchSectionSkeleton = () => (
+    <div className={styles.searchSection}>
+      <SkeletonBox
+        height={20}
+        width="90%"
+        className={styles.skeletonSearchTitle}
+      />
+      <div className={styles.searchInputs}>
+        <div className={styles.inputWrapper}>
+          <SkeletonBox
+            height={48}
+            width="100%"
+            className={styles.skeletonInput}
+          />
+        </div>
+        <SkeletonBox
+          height={48}
+          width="100%"
+          className={styles.skeletonSelect}
+        />
+      </div>
+      <SkeletonBox
+        height={48}
+        width="40%"
+        className={styles.skeletonSubmitButton}
+      />
+    </div>
+  );
+
+  // Skeleton loader for office list
+  const OfficeListSkeleton = () => (
+    <div className={styles.officeList}>
+      <div className={styles.officeListSkeleton}>
+        {Array.from({ length: 3 }).map((_, index) => (
+          <div key={index} className={styles.officeCardSkeleton}>
+            <SkeletonBox
+              height={24}
+              width="70%"
+              className={styles.skeletonOfficeName}
+            />
+            <SkeletonText
+              lines={2}
+              height={16}
+              className={styles.skeletonOfficeAddress}
+            />
+            <SkeletonBox
+              height={20}
+              width="40%"
+              className={styles.skeletonOfficePhone}
+            />
+            <SkeletonBox
+              height={48}
+              width="100%"
+              className={styles.skeletonBookButton}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  // Skeleton loader for map
+  const MapSkeleton = () => (
+    <div className={styles.rightPanel}>
+      <div className={styles.mapLoadingSkeleton}>
+        <SkeletonBox
+          height="100%"
+          width="100%"
+          className={styles.skeletonMap}
+        />
+      </div>
+    </div>
+  );
+
+  // Skeleton loader for offices grid section
+  const OfficesGridSectionSkeleton = () => (
+    <div className={styles.officesListSection}>
+      <SkeletonBox
+        height={20}
+        width="200px"
+        className={styles.skeletonBreadcrumb}
+      />
+      <SkeletonBox
+        height={32}
+        width="300px"
+        className={styles.skeletonOfficesTitle}
+      />
+      <SkeletonBox
+        height={20}
+        width="400px"
+        className={styles.skeletonOfficesSubtitle}
+      />
+      <div className={styles.filterTabsSkeleton}>
+        {[1, 2, 3].map((i) => (
+          <SkeletonBox
+            key={i}
+            height={48}
+            width="120px"
+            className={styles.skeletonFilterTab}
+          />
+        ))}
+      </div>
+      <div className={styles.officesGridSkeleton}>
+        {Array.from({ length: 9 }).map((_, i) => (
+          <SkeletonBox
+            key={i}
+            height={24}
+            width="100%"
+            className={styles.skeletonOfficeListItem}
+          />
+        ))}
+      </div>
+    </div>
+  );
+
   return (
     <main className={styles.mainContainer} id="main-content">
       <div className={styles.contentWrapper}>
         {/* Left Panel - Search & List */}
         <div className={styles.leftPanel}>
-          <div className={styles.searchSection} role="search" aria-label="Find dental office">
+          {!sectionsLoaded.searchSection ? (
+            <SearchSectionSkeleton />
+          ) : (
+            <div className={styles.searchSection} role="search" aria-label="Find dental office">
             <h2 className={styles.searchTitle}>
               Enter your ZIP code or location to locate a practice nearest to
               you
@@ -1013,8 +1171,12 @@ function DentalOfficesContent() {
               {isLoading ? "SEARCHING..." : "SUBMIT"}
             </button>
           </div>
+          )}
 
           {/* Office List */}
+          {!sectionsLoaded.officeList ? (
+            <OfficeListSkeleton />
+          ) : (
           <div className={styles.officeList} role="list" aria-label="Dental offices list">
             {isLoading ? (
               <div className={styles.officeListSkeleton}>
@@ -1148,6 +1310,7 @@ function DentalOfficesContent() {
               </div>
             )}
           </div>
+          )}
         </div>
 
         {/* Right Panel - Map */}
@@ -1158,6 +1321,7 @@ function DentalOfficesContent() {
               offices={filteredOffices}
               selectedOffice={selectedOffice}
               onOfficeSelect={setSelectedOffice}
+              onMapLoaded={handleMapLoaded}
             />
           ) : (
             <div className={styles.mapLoadingSkeleton}>
@@ -1172,6 +1336,9 @@ function DentalOfficesContent() {
       </div>
 
       {/* Offices List Section */}
+      {!sectionsLoaded.officesGrid ? (
+        <OfficesGridSectionSkeleton />
+      ) : (
       <div className={styles.officesListSection} ref={officesGridRef}>
         <div className={styles.breadcrumbs}>
           <span>Gentle Dental</span>
@@ -1237,6 +1404,7 @@ function DentalOfficesContent() {
 
         <p className={styles.sundayNote}>*Open on Sundays</p>
       </div>
+      )}
     </main>
   );
 }

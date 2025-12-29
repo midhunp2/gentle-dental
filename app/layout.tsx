@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
 import { Suspense } from "react";
+import SkipLink from "./components/SkipLink/SkipLink";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,11 +34,19 @@ export default function RootLayout({
         {/* Resource hints for Jarvis scheduler - improves performance */}
         <link rel="dns-prefetch" href="https://schedule.jarvisanalytics.com" />
         <link rel="preconnect" href="https://schedule.jarvisanalytics.com" crossOrigin="anonymous" />
+        {/* Resource hints for Google Maps - improves map loading performance */}
+        <link rel="dns-prefetch" href="https://maps.googleapis.com" />
+        <link rel="preconnect" href="https://maps.googleapis.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://maps.gstatic.com" />
+        <link rel="preconnect" href="https://maps.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <Suspense fallback={null}>
-          {children}
-        </Suspense>
+        <SkipLink />
+        <div id="main-content" tabIndex={-1} style={{ outline: "none" }}>
+          <Suspense fallback={null}>
+            {children}
+          </Suspense>
+        </div>
 
         {/* Initialize dataLayer immediately */}
         <script

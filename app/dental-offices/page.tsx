@@ -705,26 +705,31 @@ function DentalOfficesContent() {
   };
 
   return (
-    <main className={styles.mainContainer}>
+    <main className={styles.mainContainer} id="main-content">
       <div className={styles.contentWrapper}>
         {/* Left Panel - Search & List */}
         <div className={styles.leftPanel}>
-          <div className={styles.searchSection}>
+          <div className={styles.searchSection} role="search" aria-label="Find dental office">
             <h2 className={styles.searchTitle}>
               Enter your ZIP code or location to locate a practice nearest to
               you
             </h2>
             <div className={styles.searchInputs}>
               <div className={styles.inputWrapper}>
+                <label htmlFor="location-search" className="sr-only">
+                  Search by City, State or ZIP code
+                </label>
                 <Image
                   src="https://www.gentledental.com/themes/custom/gentledentaldptheme/images/location.svg"
-                  alt="Location"
+                  alt=""
                   className={styles.locationIcon}
                   width={20}
                   height={20}
                   unoptimized
+                  aria-hidden="true"
                 />
                 <input
+                  id="location-search"
                   type="text"
                   value={searchQuery}
                   onChange={(e) => {
@@ -743,15 +748,33 @@ function DentalOfficesContent() {
                   onKeyPress={handleKeyPress}
                   placeholder="Search by City, State or ZIP code"
                   className={styles.locationInput}
+                  aria-label="Search by City, State or ZIP code"
+                  aria-autocomplete="list"
+                  aria-expanded={showSuggestions && suggestions.length > 0}
+                  aria-controls="location-suggestions"
                 />
                 {showSuggestions && suggestions.length > 0 && (
-                  <div className={styles.suggestionsDropdown}>
+                  <div 
+                    className={styles.suggestionsDropdown}
+                    id="location-suggestions"
+                    role="listbox"
+                    aria-label="Location suggestions"
+                  >
                     {suggestions.slice(0, 5).map((office) => (
                       <div
                         key={office.id}
                         className={styles.suggestionItem}
                         onClick={() => handleSuggestionClick(office)}
                         onMouseDown={(e) => e.preventDefault()}
+                        role="option"
+                        tabIndex={0}
+                        onKeyPress={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            handleSuggestionClick(office);
+                          }
+                        }}
+                        aria-label={`${office.name}, ${office.address}`}
                       >
                         <div className={styles.suggestionName}>
                           {office.name}
@@ -765,10 +788,15 @@ function DentalOfficesContent() {
                 )}
               </div>
               <div className={styles.radiusSelectWrapper}>
+                <label htmlFor="radius-select" className="sr-only">
+                  Search radius in miles
+                </label>
                 <select
+                  id="radius-select"
                   value={radius}
                   onChange={(e) => setRadius(Number(e.target.value))}
                   className={styles.radiusSelect}
+                  aria-label="Search radius in miles"
                 >
                   <option value={5}>5 Miles</option>
                   <option value={10}>10 Miles</option>
@@ -782,13 +810,14 @@ function DentalOfficesContent() {
               onClick={handleSearch}
               className={styles.submitButton}
               disabled={isLoading}
+              aria-label={isLoading ? "Searching for offices" : "Search for dental offices"}
             >
               {isLoading ? "SEARCHING..." : "SUBMIT"}
             </button>
           </div>
 
           {/* Office List */}
-          <div className={styles.officeList}>
+          <div className={styles.officeList} role="list" aria-label="Dental offices list">
             {isLoading ? (
               <div className={styles.officeListSkeleton}>
                 {Array.from({ length: 3 }).map((_, index) => (
@@ -819,19 +848,29 @@ function DentalOfficesContent() {
             ) : filteredOffices.length > 0 ? (
               <>
                 {hasSearched && (
-                  <div className={styles.resultsCount}>
+                  <div className={styles.resultsCount} role="status" aria-live="polite">
                     Found {filteredOffices.length} office
                     {filteredOffices.length !== 1 ? "s" : ""} within {radius}{" "}
                     mile{radius !== 1 ? "s" : ""}
                   </div>
                 )}
                 {filteredOffices.map((office) => (
-                  <div
+                  <article
                     key={office.id}
                     className={`${styles.officeCard} ${
                       selectedOffice === office.id ? styles.selected : ""
                     }`}
                     onClick={() => setSelectedOffice(office.id)}
+                    role="listitem"
+                    tabIndex={0}
+                    onKeyPress={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        setSelectedOffice(office.id);
+                      }
+                    }}
+                    aria-label={`${office.name}, ${office.address}, Phone: ${office.phone}`}
+                    aria-pressed={selectedOffice === office.id}
                   >
                     <h3 className={styles.officeName}>{office.name}</h3>
                     <p className={styles.officeAddress}>{office.address}</p>
@@ -840,6 +879,7 @@ function DentalOfficesContent() {
                         href={`tel:${office.phone}`}
                         className={styles.officePhone}
                         onClick={(e) => e.stopPropagation()}
+                        aria-label={`Call ${office.name} at ${office.phone}`}
                       >
                         {office.phone}
                       </a>
@@ -850,15 +890,16 @@ function DentalOfficesContent() {
                           e.preventDefault();
                           e.stopPropagation();
                         }}
+                        aria-label={`Book appointment at ${office.name}`}
                       >
                         Book Now
                       </a>
                     </div>
-                  </div>
+                  </article>
                 ))}
               </>
             ) : (
-              <div className={styles.noResults}>
+              <div className={styles.noResults} role="status" aria-live="polite">
                 <p>No offices found in this area.</p>
                 <p>
                   Try expanding your search radius or searching a different
@@ -870,7 +911,7 @@ function DentalOfficesContent() {
         </div>
 
         {/* Right Panel - Map */}
-        <div className={styles.rightPanel}>
+        <div className={styles.rightPanel} aria-label="Map showing dental office locations">
           <MapComponent
             center={mapCenter}
             offices={filteredOffices}
@@ -893,12 +934,15 @@ function DentalOfficesContent() {
           49 Convenient Locations throughout Massachusetts and New Hampshire
         </p>
 
-        <div className={styles.filterTabs}>
+        <div className={styles.filterTabs} role="tablist" aria-label="Filter offices by state">
           <button
             className={`${styles.filterTab} ${
               locationFilter === "all" ? styles.active : ""
             }`}
             onClick={() => setLocationFilter("all")}
+            role="tab"
+            aria-selected={locationFilter === "all"}
+            aria-controls="offices-grid"
           >
             All Offices
           </button>
@@ -907,6 +951,9 @@ function DentalOfficesContent() {
               locationFilter === "ma" ? styles.active : ""
             }`}
             onClick={() => setLocationFilter("ma")}
+            role="tab"
+            aria-selected={locationFilter === "ma"}
+            aria-controls="offices-grid"
           >
             Massachusetts
           </button>
@@ -915,12 +962,15 @@ function DentalOfficesContent() {
               locationFilter === "nh" ? styles.active : ""
             }`}
             onClick={() => setLocationFilter("nh")}
+            role="tab"
+            aria-selected={locationFilter === "nh"}
+            aria-controls="offices-grid"
           >
             New Hampshire
           </button>
         </div>
 
-        <div className={styles.officesGrid}>
+        <div className={styles.officesGrid} id="offices-grid" role="tabpanel" aria-labelledby="filter-tabs">
           {(() => {
             const filtered =
               locationFilter === "all"

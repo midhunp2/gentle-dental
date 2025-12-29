@@ -4,43 +4,43 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className={styles.footer}>
+    <footer className={styles.footer} role="contentinfo" aria-label="Site footer">
       <div className={styles.footerContent}>
-        <div className={styles.footerSection}>
+        <nav className={styles.footerSection} aria-label="Footer navigation">
           <h3 className={styles.sectionTitle}>Locations</h3>
-          <ul className={styles.linkList}>
-            <li>
+          <ul className={styles.linkList} role="list">
+            <li role="listitem">
               <Link href="/services" className={styles.footerLink}>
                 Dental Services
               </Link>
             </li>
-            <li>
+            <li role="listitem">
               <Link href="/payment" className={styles.footerLink}>
                 Payment Options
               </Link>
             </li>
-            <li>
+            <li role="listitem">
               <Link href="/resources" className={styles.footerLink}>
                 Patient Resources
               </Link>
             </li>
-            <li>
+            <li role="listitem">
               <Link href="/about" className={styles.footerLink}>
                 About Us
               </Link>
             </li>
-            <li>
+            <li role="listitem">
               <Link href="/health-safety" className={styles.footerLink}>
                 Health & Safety
               </Link>
             </li>
           </ul>
-        </div>
+        </nav>
 
-        <div className={styles.footerSection}>
+        <div className={styles.footerSection} aria-label="Partners and associations">
           <h3 className={styles.sectionTitle}>Partners and Associations</h3>
-          <div className={styles.partnerLogos}>
-            <div className={styles.logoWrapper}>
+          <div className={styles.partnerLogos} role="list" aria-label="Partner logos">
+            <div className={styles.logoWrapper} role="listitem">
               <Image
                 src="/assets/images/ada-footer-logo.png"
                 alt="American Dental Association"
@@ -51,7 +51,7 @@ export default function Footer() {
                 style={{ width: "auto", height: "auto" }}
               />
             </div>
-            <div className={styles.logoWrapper}>
+            <div className={styles.logoWrapper} role="listitem">
               <Image
                 src="/assets/images/invisalign-logo.png"
                 alt="Invisalign"
@@ -62,10 +62,10 @@ export default function Footer() {
                 style={{ width: "auto", height: "auto" }}
               />
             </div>
-            <div className={styles.logoWrapper}>
+            <div className={styles.logoWrapper} role="listitem">
               <Image
                 src="/assets/images/mds-footer-logos.png"
-                alt="MDS"
+                alt="MDS Massachusetts Dental Society"
                 width={120}
                 height={60}
                 className={styles.partnerLogo}
@@ -76,15 +76,16 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className={styles.footerSection}>
+        <div className={styles.footerSection} aria-label="Social media links">
           <h3 className={styles.sectionTitle}>Follow Us</h3>
-          <div className={styles.socialIcons}>
+          <div className={styles.socialIcons} role="list" aria-label="Social media">
             <a
               href="https://www.facebook.com"
               target="_blank"
               rel="noopener noreferrer"
               className={styles.socialIcon}
-              aria-label="Facebook"
+              aria-label="Follow us on Facebook (opens in new tab)"
+              role="listitem"
             >
               <svg
                 width="24"
@@ -92,6 +93,7 @@ export default function Footer() {
                 viewBox="0 0 24 24"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
               >
                 <path
                   d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"
@@ -108,7 +110,8 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               className={styles.socialIcon}
-              aria-label="Twitter"
+              aria-label="Follow us on Twitter (opens in new tab)"
+              role="listitem"
             >
               <svg
                 width="24"
@@ -116,6 +119,7 @@ export default function Footer() {
                 viewBox="0 0 24 24"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
               >
                 <path
                   d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"
@@ -128,9 +132,10 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               className={styles.socialIcon}
-              aria-label="YouTube"
+              aria-label="Follow us on YouTube (opens in new tab)"
+              role="listitem"
             >
-              <i className="fa fa-youtube-play"></i>
+              <i className="fa fa-youtube-play" aria-hidden="true"></i>
             </a>
           </div>
         </div>
@@ -146,25 +151,25 @@ export default function Footer() {
             and operated by licensed dentists.
           </p>
         </div>
-        <div className={styles.bottomRight}>
-          <div className={styles.legalLinks}>
-            <Link href="/sitemap" className={styles.legalLink}>
+        <nav className={styles.bottomRight} aria-label="Legal links">
+          <div className={styles.legalLinks} role="list">
+            <Link href="/sitemap" className={styles.legalLink} role="listitem">
               Sitemap
             </Link>
-            <span className={styles.separator}>|</span>
-            <Link href="/privacy" className={styles.legalLink}>
+            <span className={styles.separator} aria-hidden="true">|</span>
+            <Link href="/privacy" className={styles.legalLink} role="listitem">
               Privacy Policy
             </Link>
-            <span className={styles.separator}>|</span>
-            <Link href="/disclaimer" className={styles.legalLink}>
+            <span className={styles.separator} aria-hidden="true">|</span>
+            <Link href="/disclaimer" className={styles.legalLink} role="listitem">
               Disclaimer
             </Link>
-            <span className={styles.separator}>|</span>
-            <Link href="/terms" className={styles.legalLink}>
+            <span className={styles.separator} aria-hidden="true">|</span>
+            <Link href="/terms" className={styles.legalLink} role="listitem">
               Terms of Use
             </Link>
           </div>
-        </div>
+        </nav>
       </div>
     </footer>
   );

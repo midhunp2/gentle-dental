@@ -627,7 +627,7 @@ export default function Home() {
   return (
     <>
       <Navbar />
-      <main>
+      <main id="main-content">
         {heroSection && (
           <section
             className={styles.BannerWrapper}
@@ -639,6 +639,7 @@ export default function Home() {
               backgroundPosition: "center center",
               backgroundRepeat: "no-repeat",
             }}
+            aria-label="Hero banner"
           >
             <div className={styles.BannerContent}>
               <h1 className={styles.BannerTitle}>
@@ -661,17 +662,22 @@ export default function Home() {
                       })
                   : "Right Around the corner"}
               </p>
-              <div className={styles.SearchBar}>
+              <div className={styles.SearchBar} role="search" aria-label="Find a dental office">
                 <div className={styles.SearchInputWrapper}>
+                  <label htmlFor="hero-location-search" className="sr-only">
+                    Search by City, State or ZIP code
+                  </label>
                   <Image
                     src="https://www.gentledental.com/themes/custom/gentledentaldptheme/images/location.svg"
-                    alt="Location"
+                    alt=""
                     className={styles.LocationIcon}
                     width={100}
                     height={100}
                     unoptimized
+                    aria-hidden="true"
                   />
                   <input
+                    id="hero-location-search"
                     type="text"
                     value={searchLocation}
                     onChange={(e) => setSearchLocation(e.target.value)}
@@ -685,11 +691,13 @@ export default function Home() {
                       "Search by City, State or ZIP code"
                     }
                     className={styles.SearchInput}
+                    aria-label="Search by City, State or ZIP code"
                   />
                 </div>
                 <button
                   className={styles.SearchButton}
                   onClick={handleSearchClick}
+                  aria-label="Search for dental offices"
                 >
                   {heroSection.ctaText || "SEARCH"}
                 </button>
@@ -700,20 +708,21 @@ export default function Home() {
         {iconCardsSection &&
           iconCardsSection.cards &&
           iconCardsSection.cards.length > 0 && (
-            <section className={styles.FeaturesSection}>
-              <div className={styles.FeaturesContainer}>
+            <section className={styles.FeaturesSection} aria-label="Features">
+              <div className={styles.FeaturesContainer} role="list">
                 {iconCardsSection.cards.map((card, index) => (
-                  <div
+                  <article
                     key={card.icontitle || index}
                     className={index === 0 ? styles.FeatureCardWrapper : ""}
+                    role="listitem"
                   >
                     <div className={styles.FeatureCard}>
                       <h2 className={styles.FeatureTitle}>{card.icontitle}</h2>
                       {card.icon?.mediaImage?.url && (
-                        <div className={styles.FeatureIcon}>
+                        <div className={styles.FeatureIcon} aria-hidden="true">
                           <Image
                             src={card.icon.mediaImage.url}
-                            alt={card.icon.mediaImage.alt || card.icontitle}
+                            alt=""
                             width={100}
                             height={100}
                             className={styles.IconImage}
@@ -726,13 +735,13 @@ export default function Home() {
                         {card.icondescription}
                       </p>
                     </div>
-                  </div>
+                  </article>
                 ))}
               </div>
             </section>
           )}
         {textImageSection && (
-          <section className={styles.DifferenceSection}>
+          <section className={styles.DifferenceSection} aria-labelledby="difference-heading">
             <div className={styles.DifferenceContainer}>
               {textImageSection.image?.mediaImage?.url && (
                 <div className={styles.DifferenceImage}>
@@ -740,7 +749,8 @@ export default function Home() {
                     src={textImageSection.image.mediaImage.url}
                     alt={
                       textImageSection.image.mediaImage.alt ||
-                      textImageSection.heading
+                      textImageSection.heading ||
+                      "Patient care illustration"
                     }
                     width={400}
                     height={600}
@@ -751,7 +761,7 @@ export default function Home() {
                 </div>
               )}
               <div className={styles.DifferenceContent}>
-                <h2 className={styles.DifferenceTitle}>
+                <h2 id="difference-heading" className={styles.DifferenceTitle}>
                   {textImageSection.heading || "Patients Come First"}
                 </h2>
                 {textImageSection.sectiondescription && (
@@ -769,10 +779,10 @@ export default function Home() {
                 )}
                 {textImageSection.stats &&
                   textImageSection.stats.length > 0 && (
-                    <div className={styles.StatisticsContainer}>
+                    <div className={styles.StatisticsContainer} role="list" aria-label="Statistics">
                       {textImageSection.stats.map((stat, index) => (
-                        <div key={index} className={styles.Statistic}>
-                          <div className={styles.StatisticNumber}>
+                        <div key={index} className={styles.Statistic} role="listitem">
+                          <div className={styles.StatisticNumber} aria-label={stat.number}>
                             {stat.number}
                           </div>
                           <div className={styles.StatisticLabel}>
@@ -783,11 +793,12 @@ export default function Home() {
                     </div>
                   )}
                 {textImageSection.ctaText && (
-                  <button className={styles.LearnMoreButton}>
+                  <button className={styles.LearnMoreButton} aria-label={textImageSection.ctaText}>
                     {textImageSection.ctaLink?.url ? (
                       <a
                         href={textImageSection.ctaLink.url}
                         style={{ textDecoration: "none", color: "inherit" }}
+                        aria-label={textImageSection.ctaLink.title || textImageSection.ctaText}
                       >
                         {textImageSection.ctaText}
                       </a>
@@ -803,10 +814,10 @@ export default function Home() {
         {servicesGridSection &&
           servicesGridSection.services &&
           servicesGridSection.services.length > 0 && (
-            <section className={styles.ServicesSection}>
+            <section className={styles.ServicesSection} aria-labelledby="services-heading">
               <div className={styles.ServicesContainer}>
                 <div className={styles.ServicesHeader}>
-                  <h2 className={styles.ServicesTitle}>
+                  <h2 id="services-heading" className={styles.ServicesTitle}>
                     {servicesGridSection.sectionTitle || "Our Services"}
                   </h2>
                   <p className={styles.ServicesDescription}>
@@ -857,7 +868,7 @@ export default function Home() {
                                 Routine dental checkups are important for a
                                 healthy and confident smile.
                               </p>
-                              <a href="#" className={styles.ServiceLearnMore}>
+                              <a href="#" className={styles.ServiceLearnMore} aria-label={`Learn more about ${service.title?.value || "service"}`}>
                                 LEARN MORE &gt;
                               </a>
                             </div>
@@ -871,10 +882,10 @@ export default function Home() {
               </div>
             </section>
           )}
-        <section className={styles.NewPatientSection}>
+        <section className={styles.NewPatientSection} aria-labelledby="new-patient-heading">
           <div className={styles.NewPatientBanner}>
             <div className={styles.NewPatientLeft}>
-              <h2 className={styles.NewPatientTitle}>
+              <h2 id="new-patient-heading" className={styles.NewPatientTitle}>
                 {offerBannerSection?.heading || "WELCOMING NEW PATIENTS"}
               </h2>
               <p className={styles.NewPatientDescription}>
@@ -918,31 +929,32 @@ export default function Home() {
                   <a
                     href={offerBannerSection.ctaLink.url}
                     className={styles.NewPatientLearnMoreButton}
+                    aria-label={offerBannerSection.ctaLink.title || offerBannerSection.ctaText}
                   >
                     {offerBannerSection.ctaText}
                   </a>
                 ) : (
-                  <button className={styles.NewPatientLearnMoreButton}>
+                  <button className={styles.NewPatientLearnMoreButton} aria-label={offerBannerSection.ctaText}>
                     {offerBannerSection.ctaText}
                   </button>
                 ))}
               {!offerBannerSection?.ctaText && (
-                <button className={styles.NewPatientLearnMoreButton}>
+                <button className={styles.NewPatientLearnMoreButton} aria-label="Learn more about new patient offer">
                   LEARN MORE
                 </button>
               )}
             </div>
           </div>
           <div className={styles.ViewAllOffersContainer}>
-            <button className={styles.ViewAllOffersButton}>
+            <button className={styles.ViewAllOffersButton} aria-label="View all special offers">
               VIEW ALL OFFERS
             </button>
           </div>
         </section>
         {locations.length > 0 && (
-          <section className={styles.LocationsSection}>
+          <section className={styles.LocationsSection} aria-labelledby="locations-heading">
             <div className={styles.LocationsContainer}>
-              <h2 className={styles.LocationsTitle}>Locations</h2>
+              <h2 id="locations-heading" className={styles.LocationsTitle}>Locations</h2>
               <div className={styles.CarouselArrowsContainer}>
                 <button
                   className={`${styles.CarouselArrow} ${styles.CarouselArrowLeft}`}
@@ -987,13 +999,16 @@ export default function Home() {
                   </svg>
                 </button>
               </div>
-              <div className={styles.LocationsCarousel}>
+              <div className={styles.LocationsCarousel} role="region" aria-label="Locations carousel">
                 <div className={styles.CarouselContent}>
                   <div
                     className={styles.CarouselTrack}
                     style={{
                       transform: `translateX(-${currentPage * 100}%)`,
                     }}
+                    role="list"
+                    aria-live="polite"
+                    aria-atomic="false"
                   >
                     {Array.from({ length: totalPages }).map((_, pageIndex) => (
                       <div key={pageIndex} className={styles.CarouselPage}>
@@ -1003,9 +1018,10 @@ export default function Home() {
                             pageIndex * CARDS_PER_PAGE + CARDS_PER_PAGE
                           )
                           .map((location, idx) => (
-                            <div
+                            <article
                               key={location.locationCard || idx}
                               className={styles.LocationCard}
+                              role="listitem"
                             >
                               <div className={styles.LocationImageWrapper}>
                                 {location.image?.mediaImage?.url && (
@@ -1028,19 +1044,20 @@ export default function Home() {
                                   <a
                                     href={location.link?.url || "#"}
                                     className={styles.LocationLearnMore}
+                                    aria-label={`Learn more about ${location.locationCard || "location"}`}
                                   >
                                     LEARN MORE &gt;
                                   </a>
                                 </div>
                               </div>
-                            </div>
+                            </article>
                           ))}
                       </div>
                     ))}
                   </div>
                 </div>
               </div>
-              <div className={styles.CarouselDots}>
+              <div className={styles.CarouselDots} role="tablist" aria-label="Location carousel pages">
                 {Array.from({ length: totalPages }).map((_, index) => (
                   <button
                     key={index}
@@ -1048,7 +1065,9 @@ export default function Home() {
                       index === currentPage ? styles.DotActive : ""
                     }`}
                     onClick={() => handleDotClick(index)}
-                    aria-label={`Go to page ${index + 1}`}
+                    aria-label={`Go to page ${index + 1} of ${totalPages}`}
+                    aria-selected={index === currentPage}
+                    role="tab"
                   />
                 ))}
               </div>
@@ -1058,11 +1077,12 @@ export default function Home() {
                     <a
                       href={locationsSection.ctaLink.url}
                       className={styles.SeeAllLocationsButton}
+                      aria-label={locationsSection.ctaLink.title || locationsSection.ctaText}
                     >
                       {locationsSection.ctaText}
                     </a>
                   ) : (
-                    <button className={styles.SeeAllLocationsButton}>
+                    <button className={styles.SeeAllLocationsButton} aria-label={locationsSection.ctaText}>
                       {locationsSection.ctaText}
                     </button>
                   )}
@@ -1071,15 +1091,15 @@ export default function Home() {
             </div>
           </section>
         )}
-        <section className={styles.DentistsSection}>
+        <section className={styles.DentistsSection} aria-labelledby="dentists-heading">
           <div className={styles.DentistsContainer}>
-            <h2 className={styles.DentistsTitle}>Our Gentle Dental Dentists</h2>
-            <div className={styles.DentistsGrid}>
-              <div className={styles.DentistPanel}>
+            <h2 id="dentists-heading" className={styles.DentistsTitle}>Our Gentle Dental Dentists</h2>
+            <div className={styles.DentistsGrid} role="list">
+              <article className={styles.DentistPanel} role="listitem">
                 <div className={styles.DentistImageWrapper}>
                   <Image
                     src="/assets/images/boston-university-awards.webp"
-                    alt="Boston University"
+                    alt="Boston University dental school awards"
                     width={200}
                     height={200}
                     className={styles.DentistImage}
@@ -1092,12 +1112,12 @@ export default function Home() {
                   Dentists at Gentle Dental are graduates of top universities
                   including Harvard, Tufts, Boston University, and UCONN.
                 </p>
-              </div>
-              <div className={styles.DentistPanel}>
+              </article>
+              <article className={styles.DentistPanel} role="listitem">
                 <div className={styles.DentistImageWrapper}>
                   <Image
                     src="/assets/images/top-dentist-home-page.webp"
-                    alt="Gentle Dental Dentists"
+                    alt="Gentle Dental dentists recognized as Top Dentists"
                     width={400}
                     height={300}
                     className={styles.DentistImage}
@@ -1111,12 +1131,12 @@ export default function Home() {
                   &quot;Top Dentist&quot; distinctions than any other dental
                   practice.
                 </p>
-              </div>
-              <div className={styles.DentistPanel}>
+              </article>
+              <article className={styles.DentistPanel} role="listitem">
                 <div className={styles.DentistImageWrapper}>
                   <Image
                     src="/assets/images/readers-choice-2020.webp"
-                    alt="Readers Choice Awards"
+                    alt="Readers Choice Awards 2020"
                     width={200}
                     height={200}
                     className={styles.DentistImage}
@@ -1130,7 +1150,7 @@ export default function Home() {
                   Office&quot; in their towns and regions by Readers Choice
                   Awards.
                 </p>
-              </div>
+              </article>
             </div>
           </div>
         </section>
@@ -1409,13 +1429,14 @@ export default function Home() {
       </div>
       <Footer />
       {showScrollToTop && (
-        <button
-          onClick={scrollToTop}
-          className={styles.scrollToTop}
-          aria-label="Scroll to top"
-        >
-          <i className="fa fa-chevron-up"></i>
-        </button>
+          <button
+            onClick={scrollToTop}
+            className={styles.scrollToTop}
+            aria-label="Scroll to top of page"
+            title="Scroll to top"
+          >
+            <i className="fa fa-chevron-up" aria-hidden="true"></i>
+          </button>
       )}
       {/* Jarvis Scheduler Container - Hidden by default */}
       <div
@@ -1431,16 +1452,16 @@ export default function Home() {
         }}
       />
       {jarvisError && (
-        <div className={styles.jarvisErrorMessage}>
+        <div className={styles.jarvisErrorMessage} role="alert" aria-live="assertive">
           <strong>Unable to load appointment scheduler</strong>
           <br />
           {jarvisError}
         </div>
       )}
       {!jarvisError && showManualTrigger && (
-        <div className={styles.jarvisManualTrigger}>
+        <div className={styles.jarvisManualTrigger} role="status" aria-live="polite">
           <p>The scheduler is ready but may need to be opened manually.</p>
-          <button onClick={handleManualTrigger}>
+          <button onClick={handleManualTrigger} aria-label="Open appointment scheduler">
             Open Appointment Scheduler
           </button>
         </div>

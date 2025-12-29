@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useCallback } from "react";
+import { useMemo, useState, useCallback, useEffect } from "react";
 import {
   GoogleMap,
   useLoadScript,
@@ -49,7 +49,8 @@ const MapComponent = ({
   onOfficeSelect,
 }: MapComponentProps) => {
   const [infoWindowOffice, setInfoWindowOffice] = useState<string | null>(null);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [isMapLoaded, setIsMapLoaded] = useState(false);
+  const [showSkeleton, setShowSkeleton] = useState(true);
 
   // Get API key using config helper (handles env var and fallback)
   const apiKey = getGoogleMapsApiKey();
@@ -67,6 +68,17 @@ const MapComponent = ({
           libraries: libraries,
         }
   );
+
+  // Hide skeleton after map is loaded with a smooth transition
+  useEffect(() => {
+    if (isMapLoaded && scriptLoaded) {
+      // Small delay to ensure smooth transition and prevent flickering
+      const timer = setTimeout(() => {
+        setShowSkeleton(false);
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [isMapLoaded, scriptLoaded]);
 
   const mapOptions = useMemo(
     () => ({
@@ -95,8 +107,6 @@ const MapComponent = ({
 
   const handleMapLoad = useCallback(
     (map: google.maps.Map) => {
-      setIsLoaded(true);
-
       // Fit bounds to show all markers if there are offices
       if (offices.length > 0) {
         try {
@@ -109,6 +119,8 @@ const MapComponent = ({
           console.error("Error fitting bounds:", error);
         }
       }
+      // Mark map as loaded
+      setIsMapLoaded(true);
     },
     [offices]
   );
@@ -184,18 +196,8 @@ const MapComponent = ({
     );
   }
 
-  // Show skeleton loader while script is loading
-  if (!scriptLoaded) {
-    return (
-      <div className={styles.mapLoadingSkeleton}>
-        <SkeletonBox
-          height="100%"
-          width="100%"
-          className={styles.skeletonMap}
-        />
-      </div>
-    );
-  }
+  // Show skeleton loader while script is loading OR map is not loaded
+  const isLoading = !scriptLoaded || !isMapLoaded || showSkeleton;
 
   // Show error state
   if (loadError) {
@@ -224,9 +226,13 @@ const MapComponent = ({
 
   // Render map with skeleton overlay until map is fully loaded
   return (
-    <div style={{ position: "relative", width: "100%", height: "100%" }}>
-      {/* Skeleton overlay - only visible until map is loaded */}
-      {!isLoaded && (
+    <div 
+      style={{ position: "relative", width: "100%", height: "100%", minHeight: "500px" }}
+      role="application"
+      aria-label="Interactive map showing dental office locations"
+    >
+      {/* Skeleton overlay - visible until map is fully loaded */}
+      {isLoading && (
         <div
           className={styles.mapLoadingSkeleton}
           style={{
@@ -235,9 +241,12 @@ const MapComponent = ({
             left: 0,
             right: 0,
             bottom: 0,
-            zIndex: 1,
+            zIndex: 2,
             pointerEvents: "none",
+            opacity: showSkeleton ? 1 : 0,
+            transition: "opacity 0.3s ease-out",
           }}
+          aria-hidden="true"
         >
           <SkeletonBox
             height="100%"
@@ -246,70 +255,75 @@ const MapComponent = ({
           />
         </div>
       )}
-      {/* Map component - rendered but may be hidden behind skeleton until loaded */}
-      <div
-        style={{
-          opacity: isLoaded ? 1 : 0,
-          transition: "opacity 0.3s ease-in",
-          width: "100%",
-          height: "100%",
-        }}
-      >
-        <GoogleMap
-          options={mapOptions}
-          zoom={offices.length > 0 ? 11 : 8}
-          center={center}
-          mapContainerStyle={{
+      
+      {/* Map component - rendered but hidden until loaded */}
+      {scriptLoaded && (
+        <div
+          style={{
+            opacity: isMapLoaded && !showSkeleton ? 1 : 0,
+            transition: "opacity 0.4s ease-in",
             width: "100%",
             height: "100%",
+            position: "relative",
+            zIndex: 1,
           }}
-          onLoad={handleMapLoad}
         >
-          {offices.map((office) => (
-            <Marker
-              key={office.id}
-              position={{ lat: office.lat, lng: office.lng }}
-              onClick={() => handleMarkerClick(office.id)}
-              animation={
-                selectedOffice === office.id &&
-                typeof window !== "undefined" &&
-                window.google
-                  ? window.google.maps.Animation.BOUNCE
-                  : undefined
-              }
-            >
-              {infoWindowOffice === office.id && (
-                <InfoWindow onCloseClick={handleInfoWindowClose}>
-                  <div style={{ padding: "8px" }}>
-                    <h3
-                      style={{
-                        margin: "0 0 8px 0",
-                        fontSize: "16px",
-                        fontWeight: "600",
-                      }}
-                    >
-                      {office.name}
-                    </h3>
-                    <p style={{ margin: "0 0 4px 0", fontSize: "14px" }}>
-                      {office.address}
-                    </p>
-                    <a
-                      href={`tel:${office.phone}`}
-                      style={{
-                        color: "#145091",
-                        textDecoration: "none",
-                        fontSize: "14px",
-                      }}
-                    >
-                      {office.phone}
-                    </a>
-                  </div>
-                </InfoWindow>
-              )}
-            </Marker>
-          ))}
-        </GoogleMap>
-      </div>
+          <GoogleMap
+            options={mapOptions}
+            zoom={offices.length > 0 ? 11 : 8}
+            center={center}
+            mapContainerStyle={{
+              width: "100%",
+              height: "100%",
+            }}
+            onLoad={handleMapLoad}
+          >
+            {offices.map((office) => (
+              <Marker
+                key={office.id}
+                position={{ lat: office.lat, lng: office.lng }}
+                onClick={() => handleMarkerClick(office.id)}
+                animation={
+                  selectedOffice === office.id &&
+                  typeof window !== "undefined" &&
+                  window.google
+                    ? window.google.maps.Animation.BOUNCE
+                    : undefined
+                }
+              >
+                {infoWindowOffice === office.id && (
+                  <InfoWindow onCloseClick={handleInfoWindowClose}>
+                    <div style={{ padding: "8px" }}>
+                      <h3
+                        style={{
+                          margin: "0 0 8px 0",
+                          fontSize: "16px",
+                          fontWeight: "600",
+                        }}
+                      >
+                        {office.name}
+                      </h3>
+                      <p style={{ margin: "0 0 4px 0", fontSize: "14px" }}>
+                        {office.address}
+                      </p>
+                      <a
+                        href={`tel:${office.phone}`}
+                        style={{
+                          color: "#145091",
+                          textDecoration: "none",
+                          fontSize: "14px",
+                        }}
+                      >
+                        {office.phone}
+                      </a>
+                    </div>
+                  </InfoWindow>
+                )}
+              </Marker>
+            ))}
+          </GoogleMap>
+        </div>
+      )}
     </div>
   );
 };

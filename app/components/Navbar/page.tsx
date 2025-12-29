@@ -39,9 +39,9 @@ export default function Navbar() {
   };
 
   return (
-    <nav className={styles.navbar}>
+    <nav className={styles.navbar} role="navigation" aria-label="Main navigation">
       <div className={styles.container}>
-        <Link href="/" className={styles.logo}>
+        <Link href="/" className={styles.logo} aria-label="Gentle Dental Home">
           <Image
             src="/assets/images/gentleDentalLogo.svg"
             alt="Gentle Dental Logo"
@@ -56,44 +56,53 @@ export default function Navbar() {
 
         <ul
           className={`${styles.navLinks} ${isSearchOpen ? styles.hidden : ""}`}
+          role="menubar"
         >
-          <li>
-            <Link href="/locations" className={styles.navLink}>
+          <li role="none">
+            <Link href="/locations" className={styles.navLink} role="menuitem">
               LOCATIONS
             </Link>
           </li>
-          <li>
-            <Link href="/services" className={styles.navLink}>
+          <li role="none">
+            <Link href="/services" className={styles.navLink} role="menuitem">
               DENTAL SERVICES
             </Link>
           </li>
-          <li>
-            <Link href="/payment" className={styles.navLink}>
+          <li role="none">
+            <Link href="/payment" className={styles.navLink} role="menuitem">
               PAYMENT OPTIONS
             </Link>
           </li>
           <li
             className={styles.dropdownContainer}
+            role="none"
             onMouseEnter={() => setIsDropdownOpen(true)}
             onMouseLeave={() => setIsDropdownOpen(false)}
           >
             <button
               className={styles.navLink}
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              aria-expanded={isDropdownOpen}
+              aria-haspopup="true"
+              aria-label="Patient Resources menu"
+              role="menuitem"
             >
               PATIENT RESOURCES
             </button>
             {isDropdownOpen && (
               <ul 
                 className={styles.dropdownMenu}
+                role="menu"
+                aria-label="Patient Resources submenu"
                 onMouseEnter={() => setIsDropdownOpen(true)}
                 onMouseLeave={() => setIsDropdownOpen(false)}
               >
-                <li>
+                <li role="none">
                   <Link
                     href="/patient-resources/articles"
                     className={styles.dropdownLink}
                     onClick={() => setIsDropdownOpen(false)}
+                    role="menuitem"
                   >
                     Articles
                   </Link>
@@ -101,8 +110,8 @@ export default function Navbar() {
               </ul>
             )}
           </li>
-          <li>
-            <Link href="/about" className={styles.navLink}>
+          <li role="none">
+            <Link href="/about" className={styles.navLink} role="menuitem">
               ABOUT US
             </Link>
           </li>
@@ -112,14 +121,21 @@ export default function Navbar() {
           className={`${styles.searchBar} ${
             isSearchOpen ? styles.searchBarOpen : ""
           }`}
+          role="search"
+          aria-label="Site search"
         >
+          <label htmlFor="search-input" className="sr-only">
+            Search
+          </label>
           <input
-            type="text"
+            id="search-input"
+            type="search"
             placeholder="Search"
             className={styles.searchInput}
             autoFocus
+            aria-label="Search site"
           />
-          <button className={styles.applyBtn}>Apply</button>
+          <button className={styles.applyBtn} aria-label="Apply search">Apply</button>
           <button
             className={styles.closeBtn}
             onClick={handleCloseSearch}
@@ -177,6 +193,7 @@ export default function Navbar() {
                 (window as any).openJarvisScheduler();
               }
             }}
+            aria-label="Book an appointment"
           >
             BOOK NOW
           </button>
@@ -186,10 +203,12 @@ export default function Navbar() {
           className={styles.menuToggle}
           onClick={handleMenuToggle}
           aria-label="Toggle menu"
+          aria-expanded={isMenuOpen}
+          aria-controls="mobile-menu"
         >
-          <span></span>
-          <span></span>
-          <span></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
         </button>
       </div>
 
@@ -199,10 +218,15 @@ export default function Navbar() {
           isMenuOpen ? styles.mobileMenuOpen : ""
         }`}
         onClick={handleCloseMenu}
+        aria-hidden={!isMenuOpen}
       >
         <div
           className={styles.mobileMenuContent}
           onClick={(e) => e.stopPropagation()}
+          id="mobile-menu"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Mobile navigation menu"
         >
           <button
             className={styles.mobileMenuClose}
@@ -225,45 +249,51 @@ export default function Navbar() {
               />
             </svg>
           </button>
-          <ul className={styles.mobileNavLinks}>
-            <li>
+          <ul className={styles.mobileNavLinks} role="menu">
+            <li role="none">
               <Link
                 href="/locations"
                 className={styles.mobileNavLink}
                 onClick={handleCloseMenu}
+                role="menuitem"
               >
                 LOCATIONS
               </Link>
             </li>
-            <li>
+            <li role="none">
               <Link
                 href="/services"
                 className={styles.mobileNavLink}
                 onClick={handleCloseMenu}
+                role="menuitem"
               >
                 DENTAL SERVICES
               </Link>
             </li>
-            <li>
+            <li role="none">
               <Link
                 href="/payment"
                 className={styles.mobileNavLink}
                 onClick={handleCloseMenu}
+                role="menuitem"
               >
                 PAYMENT OPTIONS
               </Link>
             </li>
-            <li>
+            <li role="none">
               <div className={styles.mobileDropdownContainer}>
                 <button
                   className={styles.mobileNavLink}
                   onClick={() => setIsMobileDropdownOpen(!isMobileDropdownOpen)}
+                  aria-expanded={isMobileDropdownOpen}
+                  aria-haspopup="true"
+                  role="menuitem"
                 >
                   PATIENT RESOURCES
                 </button>
                 {isMobileDropdownOpen && (
-                  <ul className={styles.mobileDropdownMenu}>
-                    <li>
+                  <ul className={styles.mobileDropdownMenu} role="menu" aria-label="Patient Resources submenu">
+                    <li role="none">
                       <Link
                         href="/patient-resources/articles"
                         className={styles.mobileDropdownLink}
@@ -271,6 +301,7 @@ export default function Navbar() {
                           setIsMobileDropdownOpen(false);
                           handleCloseMenu();
                         }}
+                        role="menuitem"
                       >
                         Articles
                       </Link>
@@ -279,11 +310,12 @@ export default function Navbar() {
                 )}
               </div>
             </li>
-            <li>
+            <li role="none">
               <Link
                 href="/about"
                 className={styles.mobileNavLink}
                 onClick={handleCloseMenu}
+                role="menuitem"
               >
                 ABOUT US
               </Link>

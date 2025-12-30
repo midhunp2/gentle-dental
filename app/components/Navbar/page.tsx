@@ -1,15 +1,53 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import styles from "./navbar.module.css";
 import Image from "next/image";
+import { useSearchStore } from "@/app/store/useSearchStore";
+import { performGlobalSearch } from "@/app/lib/search/searchUtils";
+import SearchResults from "@/app/components/SearchResults/SearchResults";
+
+// Debounce hook
+function useDebounce<T>(value: T, delay: number): T {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+}
 
 export default function Navbar() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMobileDropdownOpen, setIsMobileDropdownOpen] = useState(false);
+  const [localSearchQuery, setLocalSearchQuery] = useState("");
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const searchBarRef = useRef<HTMLDivElement>(null);
+
+  // Zustand store
+  const {
+    query,
+    results,
+    isSearching,
+    setQuery,
+    setResults,
+    setIsSearching,
+    setIsOpen,
+    clearSearch,
+  } = useSearchStore();
+
+  // Debounce search query
+  const debouncedQuery = useDebounce(localSearchQuery, 300);
 
   useEffect(() => {
     if (isMenuOpen) {
@@ -22,12 +60,100 @@ export default function Navbar() {
     };
   }, [isMenuOpen]);
 
+  // Perform search when debounced query changes
+  useEffect(() => {
+    const search = async () => {
+      if (debouncedQuery.trim()) {
+        setIsSearching(true);
+        setQuery(debouncedQuery);
+        try {
+          const searchResults = await performGlobalSearch(debouncedQuery);
+          setResults(searchResults);
+          setIsOpen(true);
+        } catch (error) {
+          console.error("Search error:", error);
+          setResults([]);
+        } finally {
+          setIsSearching(false);
+        }
+      } else {
+        setResults([]);
+        setIsOpen(false);
+        setQuery("");
+      }
+    };
+
+    if (isSearchOpen) {
+      search();
+    }
+  }, [debouncedQuery, isSearchOpen, setQuery, setResults, setIsSearching, setIsOpen]);
+
+  // Close search results when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        searchBarRef.current &&
+        !searchBarRef.current.contains(event.target as Node) &&
+        !(event.target as HTMLElement).closest('[class*="searchResults"]')
+      ) {
+        // Don't close if clicking on search results
+        const target = event.target as HTMLElement;
+        if (!target.closest('[class*="searchResults"]')) {
+          setIsOpen(false);
+        }
+      }
+    };
+
+    if (isSearchOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }
+  }, [isSearchOpen, setIsOpen]);
+
+  // Handle ESC key to close search
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && isSearchOpen) {
+        handleCloseSearch();
+      }
+    };
+
+    if (isSearchOpen) {
+      document.addEventListener("keydown", handleEscape);
+      return () => {
+        document.removeEventListener("keydown", handleEscape);
+      };
+    }
+  }, [isSearchOpen]);
+
   const handleSearchClick = () => {
     setIsSearchOpen(true);
+    setIsOpen(true);
+    // Focus input after state update
+    setTimeout(() => {
+      searchInputRef.current?.focus();
+    }, 100);
   };
 
   const handleCloseSearch = () => {
     setIsSearchOpen(false);
+    setLocalSearchQuery("");
+    clearSearch();
+    setIsOpen(false);
+  };
+
+  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setLocalSearchQuery(e.target.value);
+  };
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (localSearchQuery.trim() && results.length > 0) {
+      // Navigate to first result
+      window.location.href = results[0].url;
+    }
   };
 
   const handleMenuToggle = () => {
@@ -118,45 +244,104 @@ export default function Navbar() {
         </ul>
 
         <div
+          ref={searchBarRef}
           className={`${styles.searchBar} ${
             isSearchOpen ? styles.searchBarOpen : ""
           }`}
           role="search"
           aria-label="Site search"
         >
-          <label htmlFor="search-input" className="sr-only">
-            Search
-          </label>
-          <input
-            id="search-input"
-            type="search"
-            placeholder="Search"
-            className={styles.searchInput}
-            autoFocus
-            aria-label="Search site"
-          />
-          <button className={styles.applyBtn} aria-label="Apply search">Apply</button>
-          <button
-            className={styles.closeBtn}
-            onClick={handleCloseSearch}
-            aria-label="Close search"
-          >
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M18 6L6 18M6 6L18 18"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
+          <div className={styles.searchBarInner}>
+            <form onSubmit={handleSearchSubmit} className={styles.searchForm}>
+              <label htmlFor="search-input" className="sr-only">
+                Search
+              </label>
+              <input
+                ref={searchInputRef}
+                id="search-input"
+                type="search"
+                placeholder="Search locations, articles, pages..."
+                className={styles.searchInput}
+                value={localSearchQuery}
+                onChange={handleSearchInputChange}
+                autoFocus
+                aria-label="Search site"
+                aria-busy={isSearching}
               />
-            </svg>
-          </button>
+              {isSearching && (
+                <div className={styles.searchSpinner} aria-label="Searching">
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className={styles.spinner}
+                  >
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                      strokeLinecap="round"
+                      strokeDasharray="32"
+                      strokeDashoffset="32"
+                    >
+                      <animate
+                        attributeName="stroke-dasharray"
+                        dur="2s"
+                        values="0 32;16 16;0 32;0 32"
+                        repeatCount="indefinite"
+                      />
+                      <animate
+                        attributeName="stroke-dashoffset"
+                        dur="2s"
+                        values="0;-16;-32;-32"
+                        repeatCount="indefinite"
+                      />
+                    </circle>
+                  </svg>
+                </div>
+              )}
+              <button
+                type="submit"
+                className={styles.applyBtn}
+                aria-label="Apply search"
+                disabled={isSearching}
+              >
+                Search
+              </button>
+            </form>
+            <button
+              className={styles.closeBtn}
+              onClick={handleCloseSearch}
+              aria-label="Close search"
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M18 6L6 18M6 6L18 18"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+          </div>
+          {isSearchOpen && localSearchQuery.trim() && (
+            <SearchResults
+              results={results}
+              onResultClick={handleCloseSearch}
+              isLoading={isSearching}
+            />
+          )}
         </div>
 
         <div

@@ -61,6 +61,17 @@ export default function Home() {
   const insuranceRef = useRef<HTMLElement | null>(null);
   const dentistsRef = useRef<HTMLElement | null>(null);
 
+  // Track if animations have already been triggered (once behavior)
+  const hasAnimatedFeatures = useRef(false);
+  const hasAnimatedServices = useRef(false);
+  const hasAnimatedStats = useRef(false);
+  const hasAnimatedDifferenceImage = useRef(false);
+  const hasAnimatedDifferenceContent = useRef(false);
+  const hasAnimatedNewPatient = useRef(false);
+  const hasAnimatedTestimonials = useRef(false);
+  const hasAnimatedInsurance = useRef(false);
+  const hasAnimatedDentists = useRef(false);
+
   useEffect(() => {
     const handleScroll = () => {
       setShowScrollToTop(window.scrollY > 30);
@@ -687,10 +698,12 @@ export default function Home() {
     }
 
     // Animate Features Section (Icon Cards)
-    if (featuresRef.current) {
+    if (featuresRef.current && !hasAnimatedFeatures.current) {
       onScroll({
         target: featuresRef.current,
         onEnter: () => {
+          if (hasAnimatedFeatures.current) return;
+          hasAnimatedFeatures.current = true;
           const cards = featuresRef.current?.querySelectorAll("article");
           if (cards && cards.length > 0) {
             animate(cards, {
@@ -707,10 +720,12 @@ export default function Home() {
     }
 
     // Animate Services Grid
-    if (servicesRef.current) {
+    if (servicesRef.current && !hasAnimatedServices.current) {
       onScroll({
         target: servicesRef.current,
         onEnter: () => {
+          if (hasAnimatedServices.current) return;
+          hasAnimatedServices.current = true;
           const grid = servicesRef.current?.querySelector('[class*="ServicesGrid"]');
           const serviceCards = grid?.querySelectorAll("div[class*='ServiceCard']");
           if (serviceCards && serviceCards.length > 0) {
@@ -728,10 +743,12 @@ export default function Home() {
     }
 
     // Animate Stats Section
-    if (statsRef.current) {
+    if (statsRef.current && !hasAnimatedStats.current) {
       onScroll({
         target: statsRef.current,
         onEnter: () => {
+          if (hasAnimatedStats.current) return;
+          hasAnimatedStats.current = true;
           const stats = statsRef.current?.querySelectorAll("div[role='listitem']");
           if (stats && stats.length > 0) {
             animate(Array.from(stats), {
@@ -748,11 +765,13 @@ export default function Home() {
     }
 
     // Animate Difference Section Image
-    if (differenceImageRef.current) {
+    if (differenceImageRef.current && !hasAnimatedDifferenceImage.current) {
       const differenceImage = differenceImageRef.current;
       onScroll({
         target: differenceImage,
         onEnter: () => {
+          if (hasAnimatedDifferenceImage.current) return;
+          hasAnimatedDifferenceImage.current = true;
           animate(differenceImage, {
             opacity: [0, 1],
             translateX: [-50, 0],
@@ -765,11 +784,13 @@ export default function Home() {
     }
 
     // Animate Difference Section Content
-    if (differenceContentRef.current) {
+    if (differenceContentRef.current && !hasAnimatedDifferenceContent.current) {
       const differenceContent = differenceContentRef.current;
       onScroll({
         target: differenceContent,
         onEnter: () => {
+          if (hasAnimatedDifferenceContent.current) return;
+          hasAnimatedDifferenceContent.current = true;
           animate(differenceContent, {
             opacity: [0, 1],
             translateX: [50, 0],
@@ -782,11 +803,13 @@ export default function Home() {
     }
 
     // Animate New Patient Section
-    if (newPatientRef.current) {
+    if (newPatientRef.current && !hasAnimatedNewPatient.current) {
       const newPatient = newPatientRef.current;
       onScroll({
         target: newPatient,
         onEnter: () => {
+          if (hasAnimatedNewPatient.current) return;
+          hasAnimatedNewPatient.current = true;
           animate(newPatient, {
             opacity: [0, 1],
             translateY: [30, 0],
@@ -799,10 +822,12 @@ export default function Home() {
     }
 
     // Animate Testimonials Section
-    if (testimonialsRef.current) {
+    if (testimonialsRef.current && !hasAnimatedTestimonials.current) {
       onScroll({
         target: testimonialsRef.current,
         onEnter: () => {
+          if (hasAnimatedTestimonials.current) return;
+          hasAnimatedTestimonials.current = true;
           const testimonialCards = testimonialsRef.current?.querySelectorAll("div[class*='TestimonialCard']");
           if (testimonialCards && testimonialCards.length > 0) {
             animate(Array.from(testimonialCards), {
@@ -819,10 +844,12 @@ export default function Home() {
     }
 
     // Animate Insurance Logos
-    if (insuranceRef.current) {
+    if (insuranceRef.current && !hasAnimatedInsurance.current) {
       onScroll({
         target: insuranceRef.current,
         onEnter: () => {
+          if (hasAnimatedInsurance.current) return;
+          hasAnimatedInsurance.current = true;
           const logos = insuranceRef.current?.querySelectorAll("div[class*='InsuranceIcon']");
           if (logos && logos.length > 0) {
             animate(Array.from(logos), {
@@ -839,10 +866,12 @@ export default function Home() {
     }
 
     // Animate Dentists Section
-    if (dentistsRef.current) {
+    if (dentistsRef.current && !hasAnimatedDentists.current) {
       onScroll({
         target: dentistsRef.current,
         onEnter: () => {
+          if (hasAnimatedDentists.current) return;
+          hasAnimatedDentists.current = true;
           const panels = dentistsRef.current?.querySelectorAll("article");
           if (panels && panels.length > 0) {
             animate(Array.from(panels), {

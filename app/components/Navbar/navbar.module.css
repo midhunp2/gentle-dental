@@ -268,18 +268,34 @@
   opacity: 0;
   visibility: hidden;
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  flex-direction: column;
+  gap: 0;
   background-color: #ffffff;
   border: 1px solid #d1d5db;
   border-radius: 6px;
-  padding: 0.5rem 1rem;
+  padding: 0;
   min-width: 400px;
   max-width: 600px;
   width: 100%;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: transform 0.4s ease, opacity 0.4s ease, visibility 0.4s ease;
   z-index: 10;
+  overflow: visible;
+}
+
+.searchBarInner {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+}
+
+.searchForm {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
 }
 
 .searchBarOpen {
@@ -296,6 +312,27 @@
   color: #333333;
   background: transparent;
   padding: 0.5rem 0;
+  min-width: 0;
+}
+
+.searchSpinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ab4399;
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .searchInput::placeholder {
@@ -315,8 +352,13 @@
   white-space: nowrap;
 }
 
-.applyBtn:hover {
-  background-color: #ab4399;
+.applyBtn:hover:not(:disabled) {
+  background-color: #8b3579;
+}
+
+.applyBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .closeBtn {

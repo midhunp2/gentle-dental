@@ -8,6 +8,7 @@ import Image from "next/image";
 import styles from "./home.module.css";
 import AnimatedNumber from "./components/Ui/AnimatedNumber/AnimatedNumber";
 import { fetchHomePage } from "./lib/queries/query";
+import { onScroll, animate, stagger, set } from "animejs";
 import type {
   PageByRouteResponse,
   ParagraphHeroSection,
@@ -48,6 +49,17 @@ export default function Home() {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [jarvisError, setJarvisError] = useState<string | null>(null);
   const [showManualTrigger, setShowManualTrigger] = useState(false);
+
+  // Animation refs
+  const featuresRef = useRef<HTMLElement | null>(null);
+  const servicesRef = useRef<HTMLElement | null>(null);
+  const statsRef = useRef<HTMLDivElement | null>(null);
+  const differenceImageRef = useRef<HTMLDivElement | null>(null);
+  const differenceContentRef = useRef<HTMLDivElement | null>(null);
+  const newPatientRef = useRef<HTMLElement | null>(null);
+  const testimonialsRef = useRef<HTMLElement | null>(null);
+  const insuranceRef = useRef<HTMLElement | null>(null);
+  const dentistsRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -620,6 +632,230 @@ export default function Home() {
     setCurrentTestimonialPage(index);
   };
 
+  // Set up scroll animations
+  useEffect(() => {
+    if (loading) return;
+
+    // Set initial states for animated elements
+    if (featuresRef.current) {
+      const cards = featuresRef.current.querySelectorAll("article");
+      set(cards, { opacity: 0, translateY: 50 });
+    }
+
+    if (servicesRef.current) {
+      const grid = servicesRef.current.querySelector('[class*="ServicesGrid"]');
+      const serviceCards = grid?.querySelectorAll("div[class*='ServiceCard']");
+      if (serviceCards) {
+        set(Array.from(serviceCards), { opacity: 0, scale: 0.8 });
+      }
+    }
+
+    if (statsRef.current) {
+      const stats = statsRef.current.querySelectorAll("div[role='listitem']");
+      set(Array.from(stats), { opacity: 0, translateX: -30 });
+    }
+
+    if (differenceImageRef.current) {
+      set(differenceImageRef.current, { opacity: 0, translateX: -50 });
+    }
+
+    if (differenceContentRef.current) {
+      set(differenceContentRef.current, { opacity: 0, translateX: 50 });
+    }
+
+    if (newPatientRef.current) {
+      set(newPatientRef.current, { opacity: 0, translateY: 30 });
+    }
+
+    if (testimonialsRef.current) {
+      const testimonialCards = testimonialsRef.current.querySelectorAll("div[class*='TestimonialCard']");
+      if (testimonialCards) {
+        set(Array.from(testimonialCards), { opacity: 0, translateY: 40 });
+      }
+    }
+
+    if (insuranceRef.current) {
+      const logos = insuranceRef.current.querySelectorAll("div[class*='InsuranceIcon']");
+      if (logos) {
+        set(Array.from(logos), { opacity: 0, scale: 0.8 });
+      }
+    }
+
+    if (dentistsRef.current) {
+      const panels = dentistsRef.current.querySelectorAll("article");
+      set(Array.from(panels), { opacity: 0, translateY: 50 });
+    }
+
+    // Animate Features Section (Icon Cards)
+    if (featuresRef.current) {
+      onScroll({
+        target: featuresRef.current,
+        onEnter: () => {
+          const cards = featuresRef.current?.querySelectorAll("article");
+          if (cards && cards.length > 0) {
+            animate(cards, {
+              opacity: [0, 1],
+              translateY: [50, 0],
+              duration: 800,
+              delay: stagger(100),
+              easing: "easeOutQuad",
+            });
+          }
+        },
+        once: true,
+      });
+    }
+
+    // Animate Services Grid
+    if (servicesRef.current) {
+      onScroll({
+        target: servicesRef.current,
+        onEnter: () => {
+          const grid = servicesRef.current?.querySelector('[class*="ServicesGrid"]');
+          const serviceCards = grid?.querySelectorAll("div[class*='ServiceCard']");
+          if (serviceCards && serviceCards.length > 0) {
+            animate(Array.from(serviceCards), {
+              opacity: [0, 1],
+              scale: [0.8, 1],
+              duration: 600,
+              delay: stagger(100),
+              easing: "easeOutBack",
+            });
+          }
+        },
+        once: true,
+      });
+    }
+
+    // Animate Stats Section
+    if (statsRef.current) {
+      onScroll({
+        target: statsRef.current,
+        onEnter: () => {
+          const stats = statsRef.current?.querySelectorAll("div[role='listitem']");
+          if (stats && stats.length > 0) {
+            animate(Array.from(stats), {
+              opacity: [0, 1],
+              translateX: [-30, 0],
+              duration: 700,
+              delay: stagger(150),
+              easing: "easeOutCubic",
+            });
+          }
+        },
+        once: true,
+      });
+    }
+
+    // Animate Difference Section Image
+    if (differenceImageRef.current) {
+      onScroll({
+        target: differenceImageRef.current,
+        onEnter: () => {
+          animate(differenceImageRef.current, {
+            opacity: [0, 1],
+            translateX: [-50, 0],
+            duration: 900,
+            easing: "easeOutCubic",
+          });
+        },
+        once: true,
+      });
+    }
+
+    // Animate Difference Section Content
+    if (differenceContentRef.current) {
+      onScroll({
+        target: differenceContentRef.current,
+        onEnter: () => {
+          animate(differenceContentRef.current, {
+            opacity: [0, 1],
+            translateX: [50, 0],
+            duration: 900,
+            easing: "easeOutCubic",
+          });
+        },
+        once: true,
+      });
+    }
+
+    // Animate New Patient Section
+    if (newPatientRef.current) {
+      onScroll({
+        target: newPatientRef.current,
+        onEnter: () => {
+          animate(newPatientRef.current, {
+            opacity: [0, 1],
+            translateY: [30, 0],
+            duration: 800,
+            easing: "easeOutQuad",
+          });
+        },
+        once: true,
+      });
+    }
+
+    // Animate Testimonials Section
+    if (testimonialsRef.current) {
+      onScroll({
+        target: testimonialsRef.current,
+        onEnter: () => {
+          const testimonialCards = testimonialsRef.current?.querySelectorAll("div[class*='TestimonialCard']");
+          if (testimonialCards && testimonialCards.length > 0) {
+            animate(Array.from(testimonialCards), {
+              opacity: [0, 1],
+              translateY: [40, 0],
+              duration: 700,
+              delay: stagger(150),
+              easing: "easeOutQuad",
+            });
+          }
+        },
+        once: true,
+      });
+    }
+
+    // Animate Insurance Logos
+    if (insuranceRef.current) {
+      onScroll({
+        target: insuranceRef.current,
+        onEnter: () => {
+          const logos = insuranceRef.current?.querySelectorAll("div[class*='InsuranceIcon']");
+          if (logos && logos.length > 0) {
+            animate(Array.from(logos), {
+              opacity: [0, 1],
+              scale: [0.8, 1],
+              duration: 500,
+              delay: stagger(50),
+              easing: "easeOutBack",
+            });
+          }
+        },
+        once: true,
+      });
+    }
+
+    // Animate Dentists Section
+    if (dentistsRef.current) {
+      onScroll({
+        target: dentistsRef.current,
+        onEnter: () => {
+          const panels = dentistsRef.current?.querySelectorAll("article");
+          if (panels && panels.length > 0) {
+            animate(Array.from(panels), {
+              opacity: [0, 1],
+              translateY: [50, 0],
+              duration: 800,
+              delay: stagger(150),
+              easing: "easeOutQuad",
+            });
+          }
+        },
+        once: true,
+      });
+    }
+  }, [loading]);
+
   // Don't render content while loading - Next.js will show loading.tsx automatically
   if (loading) {
     return null;
@@ -710,7 +946,7 @@ export default function Home() {
         {iconCardsSection &&
           iconCardsSection.cards &&
           iconCardsSection.cards.length > 0 && (
-            <section className={styles.FeaturesSection} aria-label="Features">
+            <section ref={featuresRef} className={styles.FeaturesSection} aria-label="Features">
               <div className={styles.FeaturesContainer} role="list">
                 {iconCardsSection.cards.map((card, index) => (
                   <article
@@ -746,7 +982,7 @@ export default function Home() {
           <section className={styles.DifferenceSection} aria-labelledby="difference-heading">
             <div className={styles.DifferenceContainer}>
               {textImageSection.image?.mediaImage?.url && (
-                <div className={styles.DifferenceImage}>
+                <div ref={differenceImageRef} className={styles.DifferenceImage}>
                   <Image
                     src={textImageSection.image.mediaImage.url}
                     alt={
@@ -762,7 +998,7 @@ export default function Home() {
                   />
                 </div>
               )}
-              <div className={styles.DifferenceContent}>
+              <div ref={differenceContentRef} className={styles.DifferenceContent}>
                 <h2 id="difference-heading" className={styles.DifferenceTitle}>
                   {textImageSection.heading || "Patients Come First"}
                 </h2>
@@ -781,7 +1017,7 @@ export default function Home() {
                 )}
                 {textImageSection.stats &&
                   textImageSection.stats.length > 0 && (
-                    <div className={styles.StatisticsContainer} role="list" aria-label="Statistics">
+                    <div ref={statsRef} className={styles.StatisticsContainer} role="list" aria-label="Statistics">
                       {textImageSection.stats.map((stat, index) => (
                         <div key={index} className={styles.Statistic} role="listitem">
                           <div className={styles.StatisticNumber} aria-label={stat.number}>
@@ -816,7 +1052,7 @@ export default function Home() {
         {servicesGridSection &&
           servicesGridSection.services &&
           servicesGridSection.services.length > 0 && (
-            <section className={styles.ServicesSection} aria-labelledby="services-heading">
+            <section ref={servicesRef} className={styles.ServicesSection} aria-labelledby="services-heading">
               <div className={styles.ServicesContainer}>
                 <div className={styles.ServicesHeader}>
                   <h2 id="services-heading" className={styles.ServicesTitle}>
@@ -885,7 +1121,7 @@ export default function Home() {
               </div>
             </section>
           )}
-        <section className={styles.NewPatientSection} aria-labelledby="new-patient-heading">
+        <section ref={newPatientRef} className={styles.NewPatientSection} aria-labelledby="new-patient-heading">
           <div className={styles.NewPatientBanner}>
             <div className={styles.NewPatientLeft}>
               <h2 id="new-patient-heading" className={styles.NewPatientTitle}>
@@ -1097,7 +1333,7 @@ export default function Home() {
             </div>
           </section>
         )}
-        <section className={styles.DentistsSection} aria-labelledby="dentists-heading">
+        <section ref={dentistsRef} className={styles.DentistsSection} aria-labelledby="dentists-heading">
           <div className={styles.DentistsContainer}>
             <h2 id="dentists-heading" className={styles.DentistsTitle}>Our Gentle Dental Dentists</h2>
             <div className={styles.DentistsGrid} role="list">
@@ -1210,7 +1446,7 @@ export default function Home() {
         {testimonialSection &&
           testimonialSection.testimonialCards &&
           testimonialSection.testimonialCards.length > 0 && (
-            <section className={styles.TestimonialsSection}>
+            <section ref={testimonialsRef} className={styles.TestimonialsSection}>
               <div className={styles.TestimonialsContainer}>
                 <h2 className={styles.TestimonialsTitle}>
                   {testimonialSection.title?.value || "Hear From Our Patients"}
@@ -1326,7 +1562,7 @@ export default function Home() {
         {insuranceSection &&
           insuranceSection.logosSection &&
           insuranceSection.logosSection.length > 0 && (
-            <section className={styles.InsuranceSection}>
+            <section ref={insuranceRef} className={styles.InsuranceSection}>
               <div className={styles.InsuranceContainer}>
                 <h2 className={styles.InsuranceTitle}>Insurances Accepted</h2>
                 <div className={styles.InsuranceIconsGrid}>

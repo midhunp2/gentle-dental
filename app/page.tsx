@@ -703,7 +703,7 @@ export default function Home() {
           }
         },
         once: true,
-      });
+      } as any);
     }
 
     // Animate Services Grid
@@ -724,7 +724,7 @@ export default function Home() {
           }
         },
         once: true,
-      });
+      } as any);
     }
 
     // Animate Stats Section
@@ -744,15 +744,16 @@ export default function Home() {
           }
         },
         once: true,
-      });
+      } as any);
     }
 
     // Animate Difference Section Image
     if (differenceImageRef.current) {
+      const differenceImage = differenceImageRef.current;
       onScroll({
-        target: differenceImageRef.current,
+        target: differenceImage,
         onEnter: () => {
-          animate(differenceImageRef.current, {
+          animate(differenceImage, {
             opacity: [0, 1],
             translateX: [-50, 0],
             duration: 900,
@@ -760,15 +761,16 @@ export default function Home() {
           });
         },
         once: true,
-      });
+      } as any);
     }
 
     // Animate Difference Section Content
     if (differenceContentRef.current) {
+      const differenceContent = differenceContentRef.current;
       onScroll({
-        target: differenceContentRef.current,
+        target: differenceContent,
         onEnter: () => {
-          animate(differenceContentRef.current, {
+          animate(differenceContent, {
             opacity: [0, 1],
             translateX: [50, 0],
             duration: 900,
@@ -776,15 +778,16 @@ export default function Home() {
           });
         },
         once: true,
-      });
+      } as any);
     }
 
     // Animate New Patient Section
     if (newPatientRef.current) {
+      const newPatient = newPatientRef.current;
       onScroll({
-        target: newPatientRef.current,
+        target: newPatient,
         onEnter: () => {
-          animate(newPatientRef.current, {
+          animate(newPatient, {
             opacity: [0, 1],
             translateY: [30, 0],
             duration: 800,
@@ -792,7 +795,7 @@ export default function Home() {
           });
         },
         once: true,
-      });
+      } as any);
     }
 
     // Animate Testimonials Section
@@ -812,7 +815,7 @@ export default function Home() {
           }
         },
         once: true,
-      });
+      } as any);
     }
 
     // Animate Insurance Logos
@@ -832,7 +835,7 @@ export default function Home() {
           }
         },
         once: true,
-      });
+      } as any);
     }
 
     // Animate Dentists Section
@@ -852,7 +855,7 @@ export default function Home() {
           }
         },
         once: true,
-      });
+      } as any);
     }
   }, [loading]);
 

@@ -6,6 +6,7 @@ import Navbar from "./components/Navbar/page";
 import Footer from "./components/Footer/page";
 import Image from "next/image";
 import styles from "./home.module.css";
+import AnimatedNumber from "./components/Ui/AnimatedNumber/AnimatedNumber";
 import { fetchHomePage } from "./lib/queries/query";
 import type {
   PageByRouteResponse,
@@ -673,6 +674,7 @@ export default function Home() {
                     className={styles.LocationIcon}
                     width={100}
                     height={100}
+                    quality={95}
                     unoptimized
                     aria-hidden="true"
                   />
@@ -783,7 +785,7 @@ export default function Home() {
                       {textImageSection.stats.map((stat, index) => (
                         <div key={index} className={styles.Statistic} role="listitem">
                           <div className={styles.StatisticNumber} aria-label={stat.number}>
-                            {stat.number}
+                            <AnimatedNumber value={stat.number} />
                           </div>
                           <div className={styles.StatisticLabel}>
                             {stat.label}
@@ -854,6 +856,7 @@ export default function Home() {
                               width={400}
                               height={300}
                               className={styles.ServiceImage}
+                              quality={95}
                             />
                             <div className={styles.ServiceBottomOverlay}>
                               <h3 className={styles.ServiceCardTitle}>
@@ -902,7 +905,7 @@ export default function Home() {
               {offerBannerSection?.price && (
                 <div className={styles.OfferPriceContainer}>
                   <div className={styles.OfferPrice}>
-                    {offerBannerSection.price}
+                    <AnimatedNumber value={offerBannerSection.price} startValue="$100" />
                   </div>
                   <div className={styles.OfferDetails}>
                     <div className={styles.OfferDetailItem}>EXAM</div>
@@ -914,7 +917,9 @@ export default function Home() {
               )}
               {!offerBannerSection?.price && (
                 <div className={styles.OfferPriceContainer}>
-                  <div className={styles.OfferPrice}>$79</div>
+                  <div className={styles.OfferPrice}>
+                    <AnimatedNumber value="$79" startValue="$100" />
+                  </div>
                   <div className={styles.OfferDetails}>
                     <div className={styles.OfferDetailItem}>EXAM</div>
                     <div className={styles.OfferDetailItem}>X-RAYS</div>
@@ -1035,6 +1040,7 @@ export default function Home() {
                                     width={400}
                                     height={300}
                                     className={styles.LocationImage}
+                                    quality={95}
                                   />
                                 )}
                                 <div className={styles.LocationOverlay}>
@@ -1103,6 +1109,7 @@ export default function Home() {
                     width={200}
                     height={200}
                     className={styles.DentistImage}
+                    quality={95}
                     onError={(e) => {
                       e.currentTarget.style.display = "none";
                     }}
@@ -1121,6 +1128,7 @@ export default function Home() {
                     width={400}
                     height={300}
                     className={styles.DentistImage}
+                    quality={95}
                     onError={(e) => {
                       e.currentTarget.style.display = "none";
                     }}
@@ -1140,6 +1148,7 @@ export default function Home() {
                     width={200}
                     height={200}
                     className={styles.DentistImage}
+                    quality={95}
                     onError={(e) => {
                       e.currentTarget.style.display = "none";
                     }}
@@ -1163,6 +1172,7 @@ export default function Home() {
                 width={100}
                 height={100}
                 className={styles.GumDiseaseBookImage}
+                quality={95}
               />
             </div>
             <div className={styles.GumDiseaseRight}>
@@ -1183,6 +1193,7 @@ export default function Home() {
                       width={20}
                       height={20}
                       className={styles.MailIcon}
+                      quality={95}
                     />
                     <input
                       type="email"
@@ -1355,6 +1366,7 @@ export default function Home() {
                                 }
                                 width={150}
                                 height={80}
+                                quality={95}
                                 style={{
                                   objectFit: "contain",
                                   maxWidth: "100%",

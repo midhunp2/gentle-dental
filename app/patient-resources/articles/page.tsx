@@ -210,6 +210,7 @@ const Articles = () => {
               alt={articlesData.bannerImageAlt || "Articles Banner"} 
               fill
               priority
+              quality={95}
               className={styles.BannerImage}
               style={{ objectFit: 'cover' }}
             />
@@ -238,6 +239,7 @@ const Articles = () => {
                         alt={article.imageAlt || article.title} 
                         width={400} 
                         height={300}
+                        quality={95}
                         className={styles.ArticleImage}
                       />
                     </div>

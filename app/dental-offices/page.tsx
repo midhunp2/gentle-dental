@@ -628,7 +628,9 @@ function DentalOfficesContent() {
                   className={styles.locationIcon}
                   width={20}
                   height={20}
+                  quality={95}
                   priority
+                  unoptimized
                   aria-hidden="true"
                 />
                 <input

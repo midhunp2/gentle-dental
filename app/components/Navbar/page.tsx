@@ -7,6 +7,26 @@ import Image from "next/image";
 import { useSearchStore } from "@/app/store/useSearchStore";
 import { performGlobalSearch } from "@/app/lib/search/searchUtils";
 import SearchResults from "@/app/components/SearchResults/SearchResults";
+import { fetchNavbar } from "@/app/lib/queries/query";
+import { Skeleton } from "@/app/components/Ui/Skeleton/Skeleton";
+
+interface MenuItem {
+  route?: {
+    url?: string;
+  } | null;
+  title: string;
+  children?: Array<{
+    title: string;
+    url: string;
+  }>;
+}
+
+interface MenuData {
+  menu: {
+    id: string;
+    items: MenuItem[];
+  };
+}
 
 // Debounce hook
 function useDebounce<T>(value: T, delay: number): T {
@@ -28,9 +48,10 @@ function useDebounce<T>(value: T, delay: number): T {
 export default function Navbar() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isMobileDropdownOpen, setIsMobileDropdownOpen] = useState(false);
+  const [openDropdowns, setOpenDropdowns] = useState<Record<string, boolean>>({});
+  const [openMobileDropdowns, setOpenMobileDropdowns] = useState<Record<string, boolean>>({});
   const [localSearchQuery, setLocalSearchQuery] = useState("");
+  const [menuData, setMenuData] = useState<MenuData | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const searchBarRef = useRef<HTMLDivElement>(null);
 
@@ -48,6 +69,19 @@ export default function Navbar() {
 
   // Debounce search query
   const debouncedQuery = useDebounce(localSearchQuery, 300);
+
+  // Fetch menu data
+  useEffect(() => {
+    const loadMenuData = async () => {
+      try {
+        const data = await fetchNavbar();
+        setMenuData(data);
+      } catch (error) {
+        console.error("Error loading menu data:", error);
+      }
+    };
+    loadMenuData();
+  }, []);
 
   useEffect(() => {
     if (isMenuOpen) {
@@ -162,6 +196,29 @@ export default function Navbar() {
 
   const handleCloseMenu = () => {
     setIsMenuOpen(false);
+    setOpenMobileDropdowns({});
+  };
+
+  const toggleDropdown = (itemTitle: string) => {
+    setOpenDropdowns((prev) => ({
+      ...prev,
+      [itemTitle]: !prev[itemTitle],
+    }));
+  };
+
+  const toggleMobileDropdown = (itemTitle: string) => {
+    setOpenMobileDropdowns((prev) => ({
+      ...prev,
+      [itemTitle]: !prev[itemTitle],
+    }));
+  };
+
+  const getMenuUrl = (item: MenuItem): string => {
+    return item.route?.url || "#";
+  };
+
+  const formatMenuTitle = (title: string): string => {
+    return title.toUpperCase();
   };
 
   return (
@@ -184,63 +241,79 @@ export default function Navbar() {
           className={`${styles.navLinks} ${isSearchOpen ? styles.hidden : ""}`}
           role="menubar"
         >
-          <li role="none">
-            <Link href="/locations" className={styles.navLink} role="menuitem">
-              LOCATIONS
-            </Link>
-          </li>
-          <li role="none">
-            <Link href="/services" className={styles.navLink} role="menuitem">
-              DENTAL SERVICES
-            </Link>
-          </li>
-          <li role="none">
-            <Link href="/payment" className={styles.navLink} role="menuitem">
-              PAYMENT OPTIONS
-            </Link>
-          </li>
-          <li
-            className={styles.dropdownContainer}
-            role="none"
-            onMouseEnter={() => setIsDropdownOpen(true)}
-            onMouseLeave={() => setIsDropdownOpen(false)}
-          >
-            <button
-              className={styles.navLink}
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              aria-expanded={isDropdownOpen}
-              aria-haspopup="true"
-              aria-label="Patient Resources menu"
-              role="menuitem"
-            >
-              PATIENT RESOURCES
-            </button>
-            {isDropdownOpen && (
-              <ul 
-                className={styles.dropdownMenu}
-                role="menu"
-                aria-label="Patient Resources submenu"
-                onMouseEnter={() => setIsDropdownOpen(true)}
-                onMouseLeave={() => setIsDropdownOpen(false)}
-              >
-                <li role="none">
-                  <Link
-                    href="/patient-resources/articles"
-                    className={styles.dropdownLink}
-                    onClick={() => setIsDropdownOpen(false)}
-                    role="menuitem"
+          {!menuData ? (
+            // Skeleton loaders for desktop navlinks
+            [80, 100, 90, 85, 95].map((width, index) => (
+              <li key={index} role="none" className={styles.skeletonNavLinkItem}>
+                <Skeleton
+                  variant="text"
+                  width={width}
+                  height="1.5rem"
+                  className={styles.skeletonNavLink}
+                />
+              </li>
+            ))
+          ) : (
+            menuData?.menu?.items?.map((item, index) => {
+              const hasChildren = item.children && item.children.length > 0;
+              const itemTitle = item.title;
+              const isDropdownOpen = openDropdowns[itemTitle] || false;
+              const menuUrl = getMenuUrl(item);
+
+              if (hasChildren) {
+                return (
+                  <li
+                    key={index}
+                    className={styles.dropdownContainer}
+                    role="none"
+                    onMouseEnter={() => setOpenDropdowns((prev) => ({ ...prev, [itemTitle]: true }))}
+                    onMouseLeave={() => setOpenDropdowns((prev) => ({ ...prev, [itemTitle]: false }))}
                   >
-                    Articles
+                    <button
+                      className={styles.navLink}
+                      onClick={() => toggleDropdown(itemTitle)}
+                      aria-expanded={isDropdownOpen}
+                      aria-haspopup="true"
+                      aria-label={`${itemTitle} menu`}
+                      role="menuitem"
+                    >
+                      {formatMenuTitle(itemTitle)}
+                    </button>
+                    {isDropdownOpen && (
+                      <ul 
+                        className={styles.dropdownMenu}
+                        role="menu"
+                        aria-label={`${itemTitle} submenu`}
+                        onMouseEnter={() => setOpenDropdowns((prev) => ({ ...prev, [itemTitle]: true }))}
+                        onMouseLeave={() => setOpenDropdowns((prev) => ({ ...prev, [itemTitle]: false }))}
+                      >
+                        {item.children.map((child, childIndex) => (
+                          <li key={childIndex} role="none">
+                            <Link
+                              href={child.url}
+                              className={styles.dropdownLink}
+                              onClick={() => setOpenDropdowns((prev) => ({ ...prev, [itemTitle]: false }))}
+                              role="menuitem"
+                            >
+                              {child.title}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </li>
+                );
+              }
+
+              return (
+                <li key={index} role="none">
+                  <Link href={menuUrl} className={styles.navLink} role="menuitem">
+                    {formatMenuTitle(itemTitle)}
                   </Link>
                 </li>
-              </ul>
-            )}
-          </li>
-          <li role="none">
-            <Link href="/about" className={styles.navLink} role="menuitem">
-              ABOUT US
-            </Link>
-          </li>
+              );
+            })
+          )}
         </ul>
 
         <div
@@ -435,76 +508,76 @@ export default function Navbar() {
             </svg>
           </button>
           <ul className={styles.mobileNavLinks} role="menu">
-            <li role="none">
-              <Link
-                href="/locations"
-                className={styles.mobileNavLink}
-                onClick={handleCloseMenu}
-                role="menuitem"
-              >
-                LOCATIONS
-              </Link>
-            </li>
-            <li role="none">
-              <Link
-                href="/services"
-                className={styles.mobileNavLink}
-                onClick={handleCloseMenu}
-                role="menuitem"
-              >
-                DENTAL SERVICES
-              </Link>
-            </li>
-            <li role="none">
-              <Link
-                href="/payment"
-                className={styles.mobileNavLink}
-                onClick={handleCloseMenu}
-                role="menuitem"
-              >
-                PAYMENT OPTIONS
-              </Link>
-            </li>
-            <li role="none">
-              <div className={styles.mobileDropdownContainer}>
-                <button
-                  className={styles.mobileNavLink}
-                  onClick={() => setIsMobileDropdownOpen(!isMobileDropdownOpen)}
-                  aria-expanded={isMobileDropdownOpen}
-                  aria-haspopup="true"
-                  role="menuitem"
-                >
-                  PATIENT RESOURCES
-                </button>
-                {isMobileDropdownOpen && (
-                  <ul className={styles.mobileDropdownMenu} role="menu" aria-label="Patient Resources submenu">
-                    <li role="none">
-                      <Link
-                        href="/patient-resources/articles"
-                        className={styles.mobileDropdownLink}
-                        onClick={() => {
-                          setIsMobileDropdownOpen(false);
-                          handleCloseMenu();
-                        }}
-                        role="menuitem"
-                      >
-                        Articles
-                      </Link>
+            {!menuData ? (
+              // Skeleton loaders for mobile navlinks
+              Array.from({ length: 5 }).map((_, index) => (
+                <li key={index} role="none" className={styles.skeletonMobileNavLinkItem}>
+                  <Skeleton
+                    variant="text"
+                    width="80%"
+                    height="1.5rem"
+                    className={styles.skeletonMobileNavLink}
+                  />
+                </li>
+              ))
+            ) : (
+              menuData?.menu?.items?.map((item, index) => {
+                const hasChildren = item.children && item.children.length > 0;
+                const itemTitle = item.title;
+                const isMobileDropdownOpen = openMobileDropdowns[itemTitle] || false;
+                const menuUrl = getMenuUrl(item);
+
+                if (hasChildren) {
+                  return (
+                    <li key={index} role="none">
+                      <div className={styles.mobileDropdownContainer}>
+                        <button
+                          className={styles.mobileNavLink}
+                          onClick={() => toggleMobileDropdown(itemTitle)}
+                          aria-expanded={isMobileDropdownOpen}
+                          aria-haspopup="true"
+                          role="menuitem"
+                        >
+                          {formatMenuTitle(itemTitle)}
+                        </button>
+                        {isMobileDropdownOpen && (
+                          <ul className={styles.mobileDropdownMenu} role="menu" aria-label={`${itemTitle} submenu`}>
+                            {item.children.map((child, childIndex) => (
+                              <li key={childIndex} role="none">
+                                <Link
+                                  href={child.url}
+                                  className={styles.mobileDropdownLink}
+                                  onClick={() => {
+                                    setOpenMobileDropdowns((prev) => ({ ...prev, [itemTitle]: false }));
+                                    handleCloseMenu();
+                                  }}
+                                  role="menuitem"
+                                >
+                                  {child.title}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
                     </li>
-                  </ul>
-                )}
-              </div>
-            </li>
-            <li role="none">
-              <Link
-                href="/about"
-                className={styles.mobileNavLink}
-                onClick={handleCloseMenu}
-                role="menuitem"
-              >
-                ABOUT US
-              </Link>
-            </li>
+                  );
+                }
+
+                return (
+                  <li key={index} role="none">
+                    <Link
+                      href={menuUrl}
+                      className={styles.mobileNavLink}
+                      onClick={handleCloseMenu}
+                      role="menuitem"
+                    >
+                      {formatMenuTitle(itemTitle)}
+                    </Link>
+                  </li>
+                );
+              })
+            )}
           </ul>
         </div>
       </div>

@@ -12,6 +12,15 @@ export interface BackgroundImage {
 export interface ParagraphHeroSection {
   id: string;
   backgroundImage: BackgroundImage;
+  homepageBannerVideo?: {
+    url: string;
+    name?: string;
+    description?: string | null;
+  };
+  mobileBannerImage?: {
+    url: string;
+    alt?: string;
+  };
   headingLarge: string;
   headingSmall: string;
   searchPlaceholder: string;

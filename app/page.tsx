@@ -27,8 +27,8 @@ import type {
 
 // Dev-only logging
 const isDev = process.env.NODE_ENV === "development";
-const log = isDev ? console.log : () => {};
-const logError = isDev ? console.error : () => {};
+const log = isDev ? console.log : () => { };
+const logError = isDev ? console.error : () => { };
 
 const CARDS_PER_PAGE = 4;
 
@@ -901,7 +901,7 @@ export default function Home() {
           <section
             className={styles.BannerWrapper}
             style={{
-              backgroundImage: heroSection.backgroundImage?.mediaImage?.url
+              backgroundImage: !heroSection.homepageBannerVideo?.url && !heroSection.mobileBannerImage?.url && heroSection.backgroundImage?.mediaImage?.url
                 ? `url(${heroSection.backgroundImage.mediaImage.url})`
                 : undefined,
               backgroundSize: "cover",
@@ -910,6 +910,31 @@ export default function Home() {
             }}
             aria-label="Hero banner"
           >
+            {heroSection.homepageBannerVideo?.url && (
+              <video
+                className={styles.BannerVideo}
+                autoPlay
+                loop
+                muted
+                playsInline
+                aria-hidden="true"
+              >
+                <source src={heroSection.homepageBannerVideo.url} type="video/mp4" />
+              </video>
+            )}
+            {heroSection.mobileBannerImage?.url && (
+              <Image
+                src={heroSection.mobileBannerImage.url}
+                alt={heroSection.mobileBannerImage.alt || "Mobile banner"}
+                className={styles.MobileBannerImage}
+                fill
+                quality={95}
+                aria-hidden="true"
+              />
+            )}
+            {heroSection.homepageBannerVideo?.url && (
+              <div className={styles.BannerOverlay} aria-hidden="true"></div>
+            )}
             <div className={styles.BannerContent}>
               <h1 className={styles.BannerTitle}>
                 {heroSection.headingSmall || "Quality Dental Care is"}
@@ -917,18 +942,18 @@ export default function Home() {
               <p className={styles.BannerSubtitle}>
                 {heroSection.headingLarge
                   ? heroSection.headingLarge
-                      .replace(/\s+/g, " ")
-                      .split(" ")
-                      .map((word, index, array) => {
-                        const midPoint = Math.floor(array.length / 2);
-                        return (
-                          <span key={index}>
-                            {word}
-                            {index < array.length - 1 && " "}
-                            {index === midPoint - 1 && <br />}
-                          </span>
-                        );
-                      })
+                    .replace(/\s+/g, " ")
+                    .split(" ")
+                    .map((word, index, array) => {
+                      const midPoint = Math.floor(array.length / 2);
+                      return (
+                        <span key={index}>
+                          {word}
+                          {index < array.length - 1 && " "}
+                          {index === midPoint - 1 && <br />}
+                        </span>
+                      );
+                    })
                   : "Right Around the corner"}
               </p>
               <div className={styles.SearchBar} role="search" aria-label="Find a dental office">
@@ -1162,11 +1187,11 @@ export default function Home() {
               <p className={styles.NewPatientDescription}>
                 {offerBannerSection?.description?.value ||
                   "We're proud to always welcome patients into our practices. " +
-                    "Whether you're new to town, need to restart your dental " +
-                    "care, or are looking for a more convenient dentist, our New " +
-                    "Patient Offer is a great introduction to our practice. New " +
-                    "patients receive an exam, all necessary x-rays, a cleaning, and " +
-                    "a personalized treatment plan for $79."}
+                  "Whether you're new to town, need to restart your dental " +
+                  "care, or are looking for a more convenient dentist, our New " +
+                  "Patient Offer is a great introduction to our practice. New " +
+                  "patients receive an exam, all necessary x-rays, a cleaning, and " +
+                  "a personalized treatment plan for $79."}
               </p>
             </div>
             <div className={styles.NewPatientRight}>
@@ -1335,9 +1360,8 @@ export default function Home() {
                 {Array.from({ length: totalPages }).map((_, index) => (
                   <button
                     key={index}
-                    className={`${styles.Dot} ${
-                      index === currentPage ? styles.DotActive : ""
-                    }`}
+                    className={`${styles.Dot} ${index === currentPage ? styles.DotActive : ""
+                      }`}
                     onClick={() => handleDotClick(index)}
                     aria-label={`Go to page ${index + 1} of ${totalPages}`}
                     aria-selected={index === currentPage}
@@ -1509,9 +1533,8 @@ export default function Home() {
                     <div
                       className={styles.TestimonialsTrack}
                       style={{
-                        transform: `translateX(-${
-                          currentTestimonialPage * 100
-                        }%)`,
+                        transform: `translateX(-${currentTestimonialPage * 100
+                          }%)`,
                       }}
                     >
                       {testimonials.map((testimonialPair, pageIndex) => (
@@ -1576,11 +1599,10 @@ export default function Home() {
                       (_, index) => (
                         <button
                           key={index}
-                          className={`${styles.TestimonialDot} ${
-                            index === currentTestimonialPage
+                          className={`${styles.TestimonialDot} ${index === currentTestimonialPage
                               ? styles.TestimonialDotActive
                               : ""
-                          }`}
+                            }`}
                           onClick={() => handleTestimonialDotClick(index)}
                           aria-label={`Go to testimonial page ${index + 1}`}
                         />
@@ -1644,10 +1666,9 @@ export default function Home() {
                             ) : (
                               <div className={styles.InsuranceIconPlaceholder}>
                                 {logoItem.logo.name ||
-                                  `Icon ${
-                                    rowIndex < 2
-                                      ? rowIndex * 5 + idx + 1
-                                      : 10 + idx + 1
+                                  `Icon ${rowIndex < 2
+                                    ? rowIndex * 5 + idx + 1
+                                    : 10 + idx + 1
                                   }`}
                               </div>
                             )}
@@ -1709,14 +1730,14 @@ export default function Home() {
       </div> */}
       <Footer />
       {showScrollToTop && (
-          <button
-            onClick={scrollToTop}
-            className={styles.scrollToTop}
-            aria-label="Scroll to top of page"
-            title="Scroll to top"
-          >
-            <i className="fa fa-chevron-up" aria-hidden="true"></i>
-          </button>
+        <button
+          onClick={scrollToTop}
+          className={styles.scrollToTop}
+          aria-label="Scroll to top of page"
+          title="Scroll to top"
+        >
+          <i className="fa fa-chevron-up" aria-hidden="true"></i>
+        </button>
       )}
       {/* Jarvis Scheduler Container - Hidden by default */}
       <div

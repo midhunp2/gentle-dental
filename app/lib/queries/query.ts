@@ -24,6 +24,14 @@ export const HomePageQuery = gql`
                     url
                   }
                 }
+                homepageBannerVideo {
+                  url
+                  name
+                }
+                mobileBannerImage {
+                  url
+                  alt
+                }
                 headingLarge
                 headingSmall
                 searchPlaceholder
@@ -301,6 +309,39 @@ export async function fetchArticles() {
     return data;
   } catch (error) {
     console.error("Error fetching articles:", error);
+    throw error;
+  }
+}
+
+export const NavbarQuery = gql`
+  query Navbar {
+    menu(name: GD_MENU) {
+      id
+      items {
+        route {
+          ... on RouteExternal {
+            url
+          }
+          ... on RouteInternal {
+            url
+          }
+        }
+        title
+        children {
+          title
+          url
+        }
+      }
+    }
+  }
+`;
+
+export async function fetchNavbar() {
+  try {
+    const data = await client.request(NavbarQuery);
+    return data;
+  } catch (error) {
+    console.error("Error fetching navbar:", error);
     throw error;
   }
 }

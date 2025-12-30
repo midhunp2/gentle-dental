@@ -280,14 +280,14 @@ export default function Navbar() {
                       {formatMenuTitle(itemTitle)}
                     </button>
                     {isDropdownOpen && (
-                      <ul 
+                      <ul
                         className={styles.dropdownMenu}
                         role="menu"
                         aria-label={`${itemTitle} submenu`}
                         onMouseEnter={() => setOpenDropdowns((prev) => ({ ...prev, [itemTitle]: true }))}
                         onMouseLeave={() => setOpenDropdowns((prev) => ({ ...prev, [itemTitle]: false }))}
                       >
-                        {item.children.map((child, childIndex) => (
+                        {item.children?.map((child, childIndex) => (
                           <li key={childIndex} role="none">
                             <Link
                               href={child.url}
@@ -318,9 +318,8 @@ export default function Navbar() {
 
         <div
           ref={searchBarRef}
-          className={`${styles.searchBar} ${
-            isSearchOpen ? styles.searchBarOpen : ""
-          }`}
+          className={`${styles.searchBar} ${isSearchOpen ? styles.searchBarOpen : ""
+            }`}
           role="search"
           aria-label="Site search"
         >
@@ -418,9 +417,8 @@ export default function Navbar() {
         </div>
 
         <div
-          className={`${styles.rightActions} ${
-            isSearchOpen ? styles.hidden : ""
-          }`}
+          className={`${styles.rightActions} ${isSearchOpen ? styles.hidden : ""
+            }`}
         >
           <button
             className={styles.searchBtn}
@@ -444,7 +442,7 @@ export default function Navbar() {
               />
             </svg>
           </button>
-          <button 
+          <button
             className={styles.bookNowBtn}
             onClick={() => {
               if (typeof window !== "undefined" && (window as any).openJarvisScheduler) {
@@ -472,9 +470,8 @@ export default function Navbar() {
 
       {/* Mobile Menu Overlay */}
       <div
-        className={`${styles.mobileMenuOverlay} ${
-          isMenuOpen ? styles.mobileMenuOpen : ""
-        }`}
+        className={`${styles.mobileMenuOverlay} ${isMenuOpen ? styles.mobileMenuOpen : ""
+          }`}
         onClick={handleCloseMenu}
         aria-hidden={!isMenuOpen}
       >
@@ -542,7 +539,7 @@ export default function Navbar() {
                         </button>
                         {isMobileDropdownOpen && (
                           <ul className={styles.mobileDropdownMenu} role="menu" aria-label={`${itemTitle} submenu`}>
-                            {item.children.map((child, childIndex) => (
+                            {item.children?.map((child, childIndex) => (
                               <li key={childIndex} role="none">
                                 <Link
                                   href={child.url}

@@ -1294,7 +1294,12 @@ export default function Home() {
                               pageIndex * SERVICES_PER_PAGE_MOBILE,
                               pageIndex * SERVICES_PER_PAGE_MOBILE + SERVICES_PER_PAGE_MOBILE
                             )
-                            .map((service, idx) => (
+                            .map((service, idx) => {
+                              // Type guard: ensure service has image property
+                              if (!isServiceCard(service) || !service.image?.mediaImage?.url) {
+                                return null;
+                              }
+                              return (
                               <div
                                 key={service.id || idx}
                                 className={styles.ServiceCard}
@@ -1332,7 +1337,8 @@ export default function Home() {
                                   </div>
                                 </div>
                               </div>
-                            ))}
+                              );
+                            })}
                         </div>
                       ))}
                     </div>

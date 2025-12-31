@@ -195,3 +195,4 @@ export const performGlobalSearch = async (query: string): Promise<SearchResult[]
   return sortedResults.slice(0, 20);
 };
 
+

@@ -929,6 +929,7 @@ export default function Home() {
                 className={styles.MobileBannerImage}
                 fill
                 quality={95}
+                priority
                 aria-hidden="true"
               />
             )}
@@ -1600,8 +1601,8 @@ export default function Home() {
                         <button
                           key={index}
                           className={`${styles.TestimonialDot} ${index === currentTestimonialPage
-                              ? styles.TestimonialDotActive
-                              : ""
+                            ? styles.TestimonialDotActive
+                            : ""
                             }`}
                           onClick={() => handleTestimonialDotClick(index)}
                           aria-label={`Go to testimonial page ${index + 1}`}

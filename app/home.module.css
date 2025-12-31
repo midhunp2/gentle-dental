@@ -67,7 +67,7 @@
 .BannerSubtitle {
   font-size: 54px;
   font-weight: 600;
-  color: #ffffff;
+  color: #ffffff !important;
   text-transform: uppercase;
 }
 
@@ -2544,7 +2544,7 @@
   .BannerSubtitle {
     font-size: 28px;
     font-weight: 700;
-    color: #ffffff;
+    color: #ffffff !important;
     text-transform: uppercase;
     text-align: left;
     line-height: 1.1;

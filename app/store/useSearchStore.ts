@@ -37,3 +37,4 @@ export const useSearchStore = create<SearchState>((set) => ({
   clearSearch: () => set({ query: '', results: [], isSearching: false }),
 }));
 
+

@@ -36,6 +36,7 @@ export default function Home() {
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(0);
   const [currentTestimonialPage, setCurrentTestimonialPage] = useState(0);
+  const [currentServicePage, setCurrentServicePage] = useState(0);
   const [showScrollToTop, setShowScrollToTop] = useState(false);
   const [pageData, setPageData] = useState<PageByRouteResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -628,12 +629,26 @@ export default function Home() {
   }
   const totalTestimonialPages = testimonials.length || 1;
 
+  // Services carousel data
+  const services = servicesGridSection?.services?.filter(
+    (service) => isServiceCard(service) && service.image?.mediaImage?.url
+  ) || [];
+  const SERVICES_PER_PAGE_MOBILE = 1;
+  const totalServicePages = Math.max(1, Math.ceil(services.length / SERVICES_PER_PAGE_MOBILE));
+
   // Ensure current page is valid when layout changes
   useEffect(() => {
     if (currentTestimonialPage >= totalTestimonialPages && totalTestimonialPages > 0) {
       setCurrentTestimonialPage(0);
     }
   }, [totalTestimonialPages, currentTestimonialPage]);
+
+  // Ensure service page is valid when services change
+  useEffect(() => {
+    if (currentServicePage >= totalServicePages && totalServicePages > 0) {
+      setCurrentServicePage(0);
+    }
+  }, [totalServicePages, currentServicePage]);
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -663,6 +678,19 @@ export default function Home() {
 
   const handleTestimonialDotClick = (index: number) => {
     setCurrentTestimonialPage(index);
+  };
+
+  // Services carousel handlers
+  const handleServiceNext = () => {
+    setCurrentServicePage((prev) => (prev + 1) % totalServicePages);
+  };
+
+  const handleServicePrev = () => {
+    setCurrentServicePage((prev) => (prev - 1 + totalServicePages) % totalServicePages);
+  };
+
+  const handleServiceDotClick = (index: number) => {
+    setCurrentServicePage(index);
   };
 
   // Set up scroll animations
@@ -950,12 +978,13 @@ export default function Home() {
                 alt={heroSection.mobileBannerImage.alt || "Mobile banner"}
                 className={styles.MobileBannerImage}
                 fill
-                quality={95}
+                quality={85}
                 priority
                 fetchPriority="high"
                 loading="eager"
                 sizes="100vw"
                 aria-hidden="true"
+                unoptimized={false}
               />
             )}
             {heroSection.homepageBannerVideo?.url && (
@@ -1153,6 +1182,7 @@ export default function Home() {
                     VIEW ALL SERVICES
                   </button>
                 </div>
+                {/* Desktop Grid */}
                 <div className={styles.ServicesGrid}>
                   {servicesGridSection.services.map((service, index) => {
                     if (
@@ -1200,6 +1230,126 @@ export default function Home() {
                     }
                     return null;
                   })}
+                </div>
+                {/* Mobile Carousel */}
+                <div className={styles.ServicesCarousel} role="region" aria-label="Services carousel">
+                  <div className={styles.ServicesCarouselArrowsContainer}>
+                    <button
+                      className={`${styles.ServicesCarouselArrow} ${styles.ServicesCarouselArrowLeft}`}
+                      onClick={handleServicePrev}
+                      aria-label="Previous services"
+                    >
+                      <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M15 18L9 12L15 6"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </button>
+                    <button
+                      className={`${styles.ServicesCarouselArrow} ${styles.ServicesCarouselArrowRight}`}
+                      onClick={handleServiceNext}
+                      aria-label="Next services"
+                    >
+                      <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M9 18L15 12L9 6"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                  <div className={styles.ServicesCarouselContent}>
+                    <div
+                      className={styles.ServicesCarouselTrack}
+                      style={{
+                        transform: `translateX(-${currentServicePage * 100}%)`,
+                      }}
+                      role="list"
+                      aria-live="polite"
+                      aria-atomic="false"
+                    >
+                      {Array.from({ length: totalServicePages }).map((_, pageIndex) => (
+                        <div key={pageIndex} className={styles.ServicesCarouselPage}>
+                          {services
+                            .slice(
+                              pageIndex * SERVICES_PER_PAGE_MOBILE,
+                              pageIndex * SERVICES_PER_PAGE_MOBILE + SERVICES_PER_PAGE_MOBILE
+                            )
+                            .map((service, idx) => (
+                              <div
+                                key={service.id || idx}
+                                className={styles.ServiceCard}
+                                role="listitem"
+                              >
+                                <div className={styles.ServiceImageWrapper}>
+                                  <Image
+                                    src={service.image.mediaImage.url}
+                                    alt={
+                                      service.image.mediaImage.alt ||
+                                      service.title?.value ||
+                                      "Service"
+                                    }
+                                    width={400}
+                                    height={300}
+                                    className={styles.ServiceImage}
+                                    quality={95}
+                                  />
+                                  <div className={styles.ServiceBottomOverlay}>
+                                    <h3 className={styles.ServiceCardTitle}>
+                                      {service.title?.value || "Service"}
+                                    </h3>
+                                  </div>
+                                  <div className={styles.ServiceOverlay}>
+                                    <h3 className={styles.ServiceCardTitle}>
+                                      {service.title?.value || "Service"}
+                                    </h3>
+                                    <p className={styles.ServiceCardDescription}>
+                                      Routine dental checkups are important for a
+                                      healthy and confident smile.
+                                    </p>
+                                    <a href="#" className={styles.ServiceLearnMore} aria-label={`Learn more about ${service.title?.value || "service"}`}>
+                                      LEARN MORE &gt;
+                                    </a>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div className={styles.ServicesCarouselDots} role="tablist" aria-label="Services carousel pages">
+                    {Array.from({ length: totalServicePages }).map((_, index) => (
+                      <button
+                        key={index}
+                        className={`${styles.ServicesDot} ${index === currentServicePage ? styles.ServicesDotActive : ""
+                          }`}
+                        onClick={() => handleServiceDotClick(index)}
+                        aria-label={`Go to page ${index + 1} of ${totalServicePages}`}
+                        aria-selected={index === currentServicePage}
+                        role="tab"
+                      />
+                    ))}
+                  </div>
                 </div>
               </div>
             </section>

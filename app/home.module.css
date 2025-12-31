@@ -335,8 +335,47 @@
   }
 
   .ServicesGrid {
-    grid-template-columns: 1fr;
-    gap: 15px;
+    display: none;
+  }
+
+  .ServicesCarousel {
+    display: block;
+  }
+
+  .ServicesCarouselArrowsContainer {
+    padding: 0;
+    max-width: 100%;
+    margin-bottom: 15px;
+  }
+
+  .ServicesCarouselArrow {
+    width: 35px;
+    height: 35px;
+  }
+
+  .ServicesCarouselArrowLeft {
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .ServicesCarouselArrowRight {
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .ServicesCarouselContent {
+    width: 100%;
+  }
+
+  .ServicesCarouselPage {
+    width: 100%;
+  }
+
+  .ServicesCarouselPage .ServiceCard {
+    width: 100%;
+    flex: 0 0 100%;
   }
 
   .ServiceImage {
@@ -476,8 +515,47 @@
   }
 
   .ServicesGrid {
-    grid-template-columns: 1fr;
-    gap: 20px;
+    display: none;
+  }
+
+  .ServicesCarousel {
+    display: block;
+  }
+
+  .ServicesCarouselArrowsContainer {
+    padding: 0;
+    max-width: 100%;
+    margin-bottom: 15px;
+  }
+
+  .ServicesCarouselArrow {
+    width: 38px;
+    height: 38px;
+  }
+
+  .ServicesCarouselArrowLeft {
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .ServicesCarouselArrowRight {
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .ServicesCarouselContent {
+    width: 100%;
+  }
+
+  .ServicesCarouselPage {
+    width: 100%;
+  }
+
+  .ServicesCarouselPage .ServiceCard {
+    width: 100%;
+    flex: 0 0 100%;
   }
 
   .NewPatientSection {
@@ -889,6 +967,136 @@
 
 .ServiceLearnMore:hover {
   color: #ab4399;
+}
+
+/* Services Carousel Styles */
+.ServicesCarousel {
+  display: none;
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0;
+}
+
+.ServicesCarouselArrowsContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 100%;
+  width: 100%;
+  padding: 0;
+  position: relative;
+  margin-bottom: 0;
+}
+
+.ServicesCarouselArrow {
+  background-color: rgba(0, 0, 0, 0.6);
+  border: none;
+  width: 40px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #d3d3d3;
+  transition: color 0.3s ease;
+  flex-shrink: 0;
+  z-index: 2;
+  position: absolute;
+  overflow: hidden;
+}
+
+.ServicesCarouselArrow::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 0;
+  background-color: #ab4399;
+  transition: height 0.3s ease;
+  z-index: -1;
+}
+
+.ServicesCarouselArrowLeft {
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.ServicesCarouselArrowRight {
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.ServicesCarousel:hover .ServicesCarouselArrow {
+  color: #ffffff;
+}
+
+.ServicesCarouselArrow:hover::before {
+  height: 100%;
+}
+
+.ServicesCarouselContent {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  margin-top: 0;
+}
+
+.ServicesCarouselTrack {
+  display: flex;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+.ServicesCarouselPage {
+  display: flex;
+  flex: 0 0 100%;
+  min-width: 0;
+  gap: 3px;
+}
+
+.ServicesCarouselDots {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.ServicesDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: none;
+  background-color: #d3d3d3;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  padding: 0;
+}
+
+.ServicesDotActive {
+  background-color: #ab4399;
+}
+
+.ServicesDot:hover {
+  background-color: #ab4399;
+}
+
+/* Desktop: Hide carousel, show grid */
+@media (min-width: 768px) {
+  .ServicesCarousel {
+    display: none;
+  }
+
+  .ServicesGrid {
+    display: grid;
+  }
 }
 
 .NewPatientSection {
@@ -2632,8 +2840,47 @@
   }
 
   .ServicesGrid {
-    grid-template-columns: 1fr !important;
-    gap: 15px;
+    display: none !important;
+  }
+
+  .ServicesCarousel {
+    display: block;
+  }
+
+  .ServicesCarouselArrowsContainer {
+    padding: 0;
+    max-width: 100%;
+    margin-bottom: 15px;
+  }
+
+  .ServicesCarouselArrow {
+    width: 35px;
+    height: 35px;
+  }
+
+  .ServicesCarouselArrowLeft {
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .ServicesCarouselArrowRight {
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .ServicesCarouselContent {
+    width: 100%;
+  }
+
+  .ServicesCarouselPage {
+    width: 100%;
+  }
+
+  .ServicesCarouselPage .ServiceCard {
+    width: 100%;
+    flex: 0 0 100%;
   }
 
 

@@ -71,6 +71,10 @@
   text-transform: uppercase;
 }
 
+.BannerSubtitle span {
+  color: #ffffff !important;
+}
+
 .SearchBar {
   display: flex;
   align-items: center;
@@ -276,10 +280,6 @@
     height: 100px;
   }
 
-  .DifferenceSection {
-    padding: 40px 0;
-  }
-
   .PatientImage {
     width: 100%;
     height: auto;
@@ -424,10 +424,6 @@
     max-width: 100%;
   }
 
-  .DifferenceSection {
-    padding: 50px 0;
-  }
-
   .PatientImage {
     width: 100%;
     height: auto;
@@ -443,8 +439,13 @@
     gap: 20px;
   }
 
+  .ServicesHeader {
+    text-align: center;
+    justify-content: center;
+  }
+
   .ServicesSection {
-    padding: 50px 1rem;
+    padding: 25px 16px !important;
   }
 
   .ServicesContainer {
@@ -545,9 +546,6 @@
     margin: 0 auto;
   }
 
-  .DifferenceSection {
-    padding: 60px 0;
-  }
 
   .PatientImage {
     width: 100%;
@@ -612,7 +610,7 @@
 .DifferenceSection {
   background-color: #ffffff;
   width: 100%;
-  
+
 }
 
 .DifferenceContainer {
@@ -804,7 +802,7 @@
   left: 0;
   right: 0;
   background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
-  padding: 20px 12px;  
+  padding: 20px 12px;
   display: flex;
   align-items: center;
   z-index: 1;
@@ -1960,7 +1958,7 @@
   z-index: 1;
 }
 
-.TestimonialArrow > * {
+.TestimonialArrow>* {
   position: relative;
   z-index: 2;
 }
@@ -2270,7 +2268,8 @@
 
 .InsuranceRow {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);  width: 100%;
+  grid-template-columns: repeat(5, 1fr);
+  width: 100%;
   justify-items: center;
   align-items: center;
 }
@@ -2574,7 +2573,7 @@
     margin: 0;
     background-color: #0f3f7e;
     border-radius: 4px;
-    padding: 14px 16px;
+    padding: 0px 26px;
     min-height: 50px;
   }
 
@@ -2711,8 +2710,10 @@
   .TestimonialArrow,
   .Dot,
   .TestimonialDot {
-    min-height: 48px; /* Accessibility: minimum touch target */
-    min-width: 48px; /* Accessibility: minimum touch target */
+    min-height: 48px;
+    /* Accessibility: minimum touch target */
+    min-width: 48px;
+    /* Accessibility: minimum touch target */
   }
 
   /* Better focus states for mobile */
@@ -2750,9 +2751,11 @@
   /* Improve form field accessibility */
   .SearchInput,
   .EmailInput {
-    font-size: 16px !important; /* Prevent zoom on iOS */
+    font-size: 16px !important;
+    /* Prevent zoom on iOS */
     padding: 14px 16px;
-    min-height: 48px; /* Accessibility: minimum touch target */
+    min-height: 48px;
+    /* Accessibility: minimum touch target */
   }
 
   .SearchInput:focus,
@@ -2768,6 +2771,7 @@
 
   .DifferenceContent {
     padding: 1rem 1rem;
+    text-align: center;
   }
 
   .CarouselArrowLeft {
@@ -2797,7 +2801,7 @@
   visibility: hidden;
 }
 
-.jarvisSchedulerWrapper > * {
+.jarvisSchedulerWrapper>* {
   pointer-events: auto;
 }
 

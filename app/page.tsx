@@ -605,13 +605,35 @@ export default function Home() {
   const totalPages = Math.max(1, Math.ceil(locations.length / CARDS_PER_PAGE));
 
   // Get dynamic testimonials from GraphQL data and group them into pairs
+  const [cardsPerPage, setCardsPerPage] = useState(2);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setCardsPerPage(window.innerWidth < 768 ? 1 : 2);
+    };
+
+    // Initial check
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Get dynamic testimonials from GraphQL data and group them into pairs
   const testimonialCards =
     testimonialSection?.testimonialCards?.filter((card) => card.status) || [];
   const testimonials: TestimonialCard[][] = [];
-  for (let i = 0; i < testimonialCards.length; i += 2) {
-    testimonials.push(testimonialCards.slice(i, i + 2));
+  for (let i = 0; i < testimonialCards.length; i += cardsPerPage) {
+    testimonials.push(testimonialCards.slice(i, i + cardsPerPage));
   }
   const totalTestimonialPages = testimonials.length || 1;
+
+  // Ensure current page is valid when layout changes
+  useEffect(() => {
+    if (currentTestimonialPage >= totalTestimonialPages && totalTestimonialPages > 0) {
+      setCurrentTestimonialPage(0);
+    }
+  }, [totalTestimonialPages, currentTestimonialPage]);
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -1624,62 +1646,35 @@ export default function Home() {
               <div className={styles.InsuranceContainer}>
                 <h2 className={styles.InsuranceTitle}>Insurances Accepted</h2>
                 <div className={styles.InsuranceIconsGrid}>
-                  {insuranceSection.logosSection
-                    .reduce<InsuranceLogo[][]>((rows, logo, index) => {
-                      let rowIndex: number;
-                      if (index < 5) {
-                        // First row: 5 icons (indices 0-4)
-                        rowIndex = 0;
-                      } else if (index < 10) {
-                        // Second row: 5 icons (indices 5-9)
-                        rowIndex = 1;
-                      } else {
-                        // Third row and beyond: remaining icons
-                        rowIndex = 2;
-                      }
-                      if (!rows[rowIndex]) {
-                        rows[rowIndex] = [];
-                      }
-                      rows[rowIndex].push(logo);
-                      return rows;
-                    }, [])
-                    .map((row, rowIndex) => (
-                      <div key={rowIndex} className={styles.InsuranceRow}>
-                        {row.map((logoItem, idx) => (
-                          <div
-                            key={logoItem.logo.name || idx}
-                            className={styles.InsuranceIcon}
-                          >
-                            {logoItem.logo.mediaImage?.url ? (
-                              <Image
-                                src={logoItem.logo.mediaImage.url}
-                                alt={
-                                  logoItem.logo.mediaImage.alt ||
-                                  logoItem.logo.name ||
-                                  "Insurance Logo"
-                                }
-                                width={150}
-                                height={80}
-                                quality={95}
-                                style={{
-                                  objectFit: "contain",
-                                  maxWidth: "100%",
-                                  height: "auto",
-                                }}
-                              />
-                            ) : (
-                              <div className={styles.InsuranceIconPlaceholder}>
-                                {logoItem.logo.name ||
-                                  `Icon ${rowIndex < 2
-                                    ? rowIndex * 5 + idx + 1
-                                    : 10 + idx + 1
-                                  }`}
-                              </div>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    ))}
+                  {insuranceSection.logosSection.map((logoItem, idx) => (
+                    <div
+                      key={logoItem.logo.name || idx}
+                      className={styles.InsuranceIcon}
+                    >
+                      {logoItem.logo.mediaImage?.url ? (
+                        <Image
+                          src={logoItem.logo.mediaImage.url}
+                          alt={
+                            logoItem.logo.mediaImage.alt ||
+                            logoItem.logo.name ||
+                            "Insurance Logo"
+                          }
+                          width={150}
+                          height={80}
+                          quality={95}
+                          style={{
+                            objectFit: "contain",
+                            maxWidth: "100%",
+                            height: "auto",
+                          }}
+                        />
+                      ) : (
+                        <div className={styles.InsuranceIconPlaceholder}>
+                          {logoItem.logo.name || `Icon ${idx + 1}`}
+                        </div>
+                      )}
+                    </div>
+                  ))}
                 </div>
                 {insuranceSection.description?.value && (
                   <p className={styles.InsuranceDescription}>

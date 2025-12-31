@@ -1,4 +1,4 @@
-@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css");
+/* Font Awesome moved to layout.tsx to prevent render blocking */
 
 * {
   margin: 0;
@@ -21,6 +21,7 @@ body {
 
 /* Mobile Accessibility Improvements */
 @media (max-width: 767.98px) {
+
   /* Ensure minimum touch target sizes (44x44px) */
   button,
   a,
@@ -139,10 +140,10 @@ body {
   }
 
   /* Better spacing between interactive elements */
-  button + button,
-  a + a,
-  button + a,
-  a + button {
+  button+button,
+  a+a,
+  button+a,
+  a+button {
     margin-left: 12px;
   }
 }

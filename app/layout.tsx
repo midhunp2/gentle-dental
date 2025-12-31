@@ -40,6 +40,8 @@ export default function RootLayout({
         <link rel="preconnect" href="https://maps.googleapis.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://maps.gstatic.com" />
         <link rel="preconnect" href="https://maps.gstatic.com" crossOrigin="anonymous" />
+        {/* Font Awesome - Loaded via link to avoid render blocking from CSS @import */}
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         {/* Remove Next.js loading bar */}

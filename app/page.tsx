@@ -930,6 +930,9 @@ export default function Home() {
                 fill
                 quality={95}
                 priority
+                fetchPriority="high"
+                loading="eager"
+                sizes="100vw"
                 aria-hidden="true"
               />
             )}

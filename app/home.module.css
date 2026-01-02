@@ -2050,12 +2050,13 @@
 
   .EmailInputWrapper {
     max-width: 100%;
-    width: 100%;
+    max-width: 82vw;
     max-height: 60px;
   }
 
   .DownloadButton {
     width: 100%;
+    max-width: 82vw;
   }
 }
 

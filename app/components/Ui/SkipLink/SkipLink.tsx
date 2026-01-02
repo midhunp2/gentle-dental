@@ -1,56 +1,38 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
 import styles from "./skipLink.module.css";
 
 export default function SkipLink() {
-  const skipLinkRef = useRef<HTMLAnchorElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Show skip link when Tab is pressed
-      if (e.key === "Tab" && skipLinkRef.current) {
-        skipLinkRef.current.classList.add(styles.visible);
+      // Show skip link when Tab is pressed (keyboard navigation)
+      if (e.key === "Tab" && !e.shiftKey) {
+        setIsVisible(true);
       }
     };
 
     const handleClick = () => {
-      // Hide skip link after clicking
-      if (skipLinkRef.current) {
-        setTimeout(() => {
-          skipLinkRef.current?.classList.remove(styles.visible);
-        }, 100);
-      }
+      setIsVisible(false);
     };
 
     window.addEventListener("keydown", handleKeyDown);
-    const skipLink = skipLinkRef.current;
-    if (skipLink) {
-      skipLink.addEventListener("click", handleClick);
-    }
+    window.addEventListener("click", handleClick);
 
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
-      if (skipLink) {
-        skipLink.removeEventListener("click", handleClick);
-      }
+      window.removeEventListener("click", handleClick);
     };
   }, []);
 
+  if (!isVisible) return null;
+
   return (
-    <a
-      href="#main-content"
-      ref={skipLinkRef}
-      className={styles.skipLink}
-      aria-label="Skip to main content"
-    >
+    <a href="#main-content" className={styles.skipLink}>
       Skip to main content
     </a>
   );
 }
-
-
-
-
-
 

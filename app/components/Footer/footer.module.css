@@ -12,6 +12,11 @@
   margin-bottom: 40px;
 }
 
+/* Hide bottomRightSection on desktop (it should be in footerBottom) */
+.bottomRightSection {
+  display: none;
+}
+
 .footerSection {
   flex: 1;
 }
@@ -191,16 +196,25 @@
 @media (max-width: 767.98px) {
   .footer {
     padding: 40px 20px 20px;
+    display: flex;
+    flex-direction: column;
   }
 
   .footerContent {
     flex-direction: column;
     gap: 40px;
+    display: flex;
   }
 
   .footerBottom {
     flex-direction: column;
     gap: 20px;
+    display: flex;
+  }
+
+  /* Hide bottomRight in footerBottom on mobile (use bottomRightSection instead) */
+  .footerBottom .bottomRight {
+    display: none;
   }
 
   .bottomRight {
@@ -245,17 +259,34 @@
     min-height: 44px; /* Accessibility: minimum touch target */
   }
 
-  /* Reorder sections on mobile: Locations first, Partners second, Follow Us last */
+  /* Reorder sections on mobile: Locations first, then Bottom Right, Partners, Social Icons, and Bottom Left at end */
   .locationsSection {
     order: 1;
   }
 
-  .partnersSection {
+  .bottomRightSection {
     order: 2;
   }
 
-  .socialSection {
+  .partnersSection {
     order: 3;
+  }
+
+  .socialSection {
+    order: 4;
+  }
+
+  .footerBottom {
+    order: 5;
+  }
+
+  /* Show bottomRightSection on mobile and hide section title */
+  .bottomRightSection {
+    display: block;
+  }
+
+  .bottomRightSection .sectionTitle {
+    display: none;
   }
 }
 

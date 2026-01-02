@@ -139,6 +139,25 @@ export default function Footer() {
             </a>
           </div>
         </div>
+        <nav className={`${styles.footerSection} ${styles.bottomRightSection} ${styles.bottomRight}`} aria-label="Legal links">
+          <div className={styles.legalLinks} role="list">
+            <Link href="/sitemap" className={styles.legalLink} role="listitem">
+              Sitemap
+            </Link>
+            <span className={styles.separator} aria-hidden="true">|</span>
+            <Link href="/privacy" className={styles.legalLink} role="listitem">
+              Privacy Policy
+            </Link>
+            <span className={styles.separator} aria-hidden="true">|</span>
+            <Link href="/disclaimer" className={styles.legalLink} role="listitem">
+              Disclaimer
+            </Link>
+            <span className={styles.separator} aria-hidden="true">|</span>
+            <Link href="/terms" className={styles.legalLink} role="listitem">
+              Terms of Use
+            </Link>
+          </div>
+        </nav>
       </div>
 
       <div className={styles.footerBottom}>

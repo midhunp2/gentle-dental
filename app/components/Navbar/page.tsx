@@ -291,16 +291,35 @@ export default function Navbar() {
                     onMouseEnter={() => setOpenDropdowns((prev) => ({ ...prev, [itemTitle]: true }))}
                     onMouseLeave={() => setOpenDropdowns((prev) => ({ ...prev, [itemTitle]: false }))}
                   >
-                    <button
-                      className={styles.navLink}
-                      onClick={() => toggleDropdown(itemTitle)}
-                      aria-expanded={isDropdownOpen}
-                      aria-haspopup="true"
-                      aria-label={`${itemTitle} menu`}
-                      role="menuitem"
-                    >
-                      {formatMenuTitle(itemTitle)}
-                    </button>
+                    {menuUrl && menuUrl !== "#" ? (
+                      <Link
+                        href={menuUrl}
+                        className={styles.navLink}
+                        onClick={() => setOpenDropdowns((prev) => ({ ...prev, [itemTitle]: false }))}
+                        aria-expanded={isDropdownOpen}
+                        aria-haspopup="true"
+                        aria-label={`${itemTitle} menu`}
+                        role="menuitem"
+                      >
+                        {formatMenuTitle(itemTitle)}
+                      </Link>
+                    ) : (
+                      <button
+                        type="button"
+                        className={styles.navLink}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          toggleDropdown(itemTitle);
+                        }}
+                        aria-expanded={isDropdownOpen}
+                        aria-haspopup="true"
+                        aria-label={`${itemTitle} menu`}
+                        role="menuitem"
+                      >
+                        {formatMenuTitle(itemTitle)}
+                      </button>
+                    )}
                     {isDropdownOpen && (
                       <ul
                         className={styles.dropdownMenu}
@@ -581,8 +600,13 @@ export default function Navbar() {
                     <li key={index} role="none">
                       <div className={styles.mobileDropdownContainer}>
                         <button
+                          type="button"
                           className={styles.mobileNavLink}
-                          onClick={() => toggleMobileDropdown(itemTitle)}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            toggleMobileDropdown(itemTitle);
+                          }}
                           aria-expanded={isMobileDropdownOpen}
                           aria-haspopup="true"
                           role="menuitem"

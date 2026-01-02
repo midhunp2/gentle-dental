@@ -27,6 +27,13 @@ const nextConfig: NextConfig = {
   env: {
     NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
   },
+  // Compiler optimizations to reduce bundle size and improve loading
+  compiler: {
+    // Remove console logs in production (helps with bundle size)
+    removeConsole: process.env.NODE_ENV === "production" ? {
+      exclude: ["error", "warn"],
+    } : false,
+  },
 };
 
 export default nextConfig;

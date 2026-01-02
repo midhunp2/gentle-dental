@@ -30,7 +30,7 @@ const isDev = process.env.NODE_ENV === "development";
 const log = isDev ? console.log : () => { };
 const logError = isDev ? console.error : () => { };
 
-const CARDS_PER_PAGE = 4;
+const CARDS_PER_PAGE = 4; //Locations section
 
 export default function Home() {
   const router = useRouter();
@@ -99,6 +99,47 @@ export default function Home() {
     };
     loadPageData();
   }, []);
+
+  // Preload mobile banner image to reduce LCP resource load delay
+  useEffect(() => {
+    if (!pageData) return;
+    
+    const sections = pageData?.route?.entity?.sections || [];
+    // Find hero section by checking for hero-specific properties
+    const heroSection = sections.find((section: any) => 
+      "headingLarge" in section && "headingSmall" in section
+    ) as ParagraphHeroSection | undefined;
+    
+    const mobileBannerUrl = heroSection?.mobileBannerImage?.url;
+    
+    if (mobileBannerUrl) {
+      // Remove existing preload link if it exists
+      const existingPreload = document.querySelector('link[rel="preload"][as="image"][data-mobile-banner]');
+      if (existingPreload) {
+        existingPreload.remove();
+      }
+      
+      // Create and add preload link with media query for mobile only
+      const preloadLink = document.createElement('link');
+      preloadLink.rel = 'preload';
+      preloadLink.as = 'image';
+      preloadLink.href = mobileBannerUrl;
+      preloadLink.setAttribute('fetchpriority', 'high');
+      preloadLink.setAttribute('media', '(max-width: 699px)');
+      preloadLink.setAttribute('data-mobile-banner', 'true');
+      document.head.appendChild(preloadLink);
+      
+      log('Mobile banner image preloaded:', mobileBannerUrl);
+    }
+    
+    // Cleanup function
+    return () => {
+      const preloadLink = document.querySelector('link[rel="preload"][as="image"][data-mobile-banner]');
+      if (preloadLink) {
+        preloadLink.remove();
+      }
+    };
+  }, [pageData]);
 
   const getContainer = useCallback(() => {
     return (

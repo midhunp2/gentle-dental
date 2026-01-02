@@ -110,10 +110,8 @@ body {
   }
 
   /* Better form field spacing */
-  input[type="text"],
   input[type="email"],
   input[type="tel"],
-  input[type="search"],
   textarea,
   select {
     padding: 14px 16px;

@@ -41,6 +41,10 @@ export default function Home() {
   const [pageData, setPageData] = useState<PageByRouteResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [searchLocation, setSearchLocation] = useState("");
+  const [isDesktop, setIsDesktop] = useState(false);
+  const [shouldLoadVideo, setShouldLoadVideo] = useState(false);
+  const [videoLoaded, setVideoLoaded] = useState(false);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
 
   // Jarvis scheduler refs and state
   const scriptLoadedRef = useRef(false);
@@ -601,6 +605,58 @@ export default function Home() {
   const offerBannerSection = sections.find(isOfferBannerSection);
   const servicesGridSection = sections.find(isServicesGridSection);
 
+  // Detect desktop and handle video loading optimization
+  useEffect(() => {
+    if (!heroSection?.homepageBannerVideo?.url) {
+      setShouldLoadVideo(false);
+      return;
+    }
+
+    const checkIsDesktop = () => {
+      const desktop = window.innerWidth >= 700;
+      setIsDesktop(desktop);
+      // Only load video on desktop
+      setShouldLoadVideo(desktop);
+    };
+
+    // Initial check
+    checkIsDesktop();
+
+    // Listen for resize events
+    window.addEventListener("resize", checkIsDesktop);
+    return () => window.removeEventListener("resize", checkIsDesktop);
+  }, [heroSection?.homepageBannerVideo?.url]);
+
+  // Intersection Observer for lazy loading video (only when in viewport)
+  useEffect(() => {
+    if (!shouldLoadVideo || !videoRef.current) return;
+
+    const video = videoRef.current;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            // Video is in viewport, start loading
+            if (video.readyState === 0) {
+              video.load();
+            }
+            observer.disconnect();
+          }
+        });
+      },
+      {
+        rootMargin: "50px", // Start loading 50px before entering viewport
+        threshold: 0.1,
+      }
+    );
+
+    observer.observe(video);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [shouldLoadVideo]);
+
   // Get dynamic locations from GraphQL data
   const locations = locationsSection?.locationCarousel || [];
   const totalPages = Math.max(1, Math.ceil(locations.length / CARDS_PER_PAGE));
@@ -960,14 +1016,44 @@ export default function Home() {
             }}
             aria-label="Hero banner"
           >
-            {heroSection.homepageBannerVideo?.url && (
+            {heroSection.homepageBannerVideo?.url && shouldLoadVideo && (
               <video
+                ref={videoRef}
                 className={styles.BannerVideo}
                 autoPlay
                 loop
                 muted
                 playsInline
+                preload="metadata"
+                poster={
+                  heroSection.backgroundImage?.mediaImage?.url ||
+                  undefined
+                }
                 aria-hidden="true"
+                onLoadedMetadata={(e) => {
+                  // Video metadata loaded, can start playing
+                  const video = e.currentTarget;
+                  setVideoLoaded(true);
+                  if (video.readyState >= 2) {
+                    video.play().catch(() => {
+                      // Autoplay failed, will retry on user interaction
+                    });
+                  }
+                }}
+                onCanPlay={(e) => {
+                  // Video is ready to play
+                  setVideoLoaded(true);
+                  const video = e.currentTarget;
+                  video.play().catch(() => {
+                    // Autoplay failed, will retry on user interaction
+                  });
+                }}
+                onError={(e) => {
+                  // Fallback to background image if video fails to load
+                  console.error("Video failed to load:", e);
+                  setShouldLoadVideo(false);
+                  setVideoLoaded(false);
+                }}
               >
                 <source src={heroSection.homepageBannerVideo.url} type="video/mp4" />
               </video>
@@ -987,7 +1073,7 @@ export default function Home() {
                 unoptimized={false}
               />
             )}
-            {heroSection.homepageBannerVideo?.url && (
+            {heroSection.homepageBannerVideo?.url && shouldLoadVideo && (
               <div className={styles.BannerOverlay} aria-hidden="true"></div>
             )}
             <div className={styles.BannerContent}>

@@ -157,14 +157,19 @@
   left: 0;
   background-color: #ffffff;
   list-style: none;
-  padding: 0.5rem 0;
+  padding: 1rem 0;
   margin: 0;
-  min-width: 200px;
+  min-width: 500px;
+  max-width: 600px;
+  width: max-content;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   border-radius: 4px;
   z-index: 1000;
   pointer-events: auto;
   margin-top: 0.5rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: 2rem;
 }
 
 /* Create invisible hover bridge between button and dropdown */
@@ -180,18 +185,49 @@
 
 .dropdownLink {
   display: block;
-  padding: 0.75rem 1.5rem;
+  padding: 0.5rem 1.5rem;
   text-decoration: none;
   color: #333333;
   font-weight: 500;
   font-size: 0.9rem;
   text-transform: none;
   transition: background-color 0.3s ease, color 0.3s ease;
+  white-space: nowrap;
 }
 
 .dropdownLink:hover {
   background-color: #f3f4f6;
   color: #ab4399;
+}
+
+/* Nested Dropdown Styles */
+.nestedDropdownContainer {
+  position: relative;
+}
+
+.nestedChildrenList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  margin-top: 0.25rem;
+}
+
+.nestedDropdownLink {
+  display: block;
+  padding: 0.4rem 1.5rem;
+  padding-left: 2.5rem;
+  text-decoration: none;
+  color: #6b7280;
+  font-weight: 400;
+  font-size: 0.85rem;
+  text-transform: none;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  white-space: nowrap;
+}
+
+.nestedDropdownLink:hover {
+  color: #ab4399;
+  background-color: #f3f4f6;
 }
 
 /* Mobile Dropdown Styles */
@@ -209,7 +245,9 @@
 }
 
 .mobileDropdownLink {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding: 1rem 1.5rem;
   text-decoration: none;
   color: #333333;
@@ -218,11 +256,51 @@
   text-transform: none;
   border-bottom: 1px solid #e5e7eb;
   padding-left: 2.5rem;
+  width: 100%;
+  background: none;
+  border: none;
+  border-bottom: 1px solid #e5e7eb;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
 }
 
 .mobileDropdownLink:hover {
   color: #ab4399;
   background-color: #f3f4f6;
+}
+
+.mobileArrowIcon {
+  margin-left: auto;
+  font-size: 0.8rem;
+  color: #6b7280;
+  transition: transform 0.3s ease;
+}
+
+.mobileNestedDropdownMenu {
+  display: block;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  background-color: #f0f0f0;
+  width: 100%;
+}
+
+.mobileNestedDropdownLink {
+  display: block;
+  padding: 1rem 1.5rem;
+  text-decoration: none;
+  color: #333333;
+  font-weight: 500;
+  font-size: 0.9rem;
+  text-transform: none;
+  border-bottom: 1px solid #e5e7eb;
+  padding-left: 3.5rem;
+}
+
+.mobileNestedDropdownLink:hover {
+  color: #ab4399;
+  background-color: #e5e7eb;
 }
 
 .rightActions {

@@ -244,6 +244,19 @@
     min-width: 44px; /* Accessibility: minimum touch target */
     min-height: 44px; /* Accessibility: minimum touch target */
   }
+
+  /* Reorder sections on mobile: Locations first, Partners second, Follow Us last */
+  .locationsSection {
+    order: 1;
+  }
+
+  .partnersSection {
+    order: 2;
+  }
+
+  .socialSection {
+    order: 3;
+  }
 }
 
 

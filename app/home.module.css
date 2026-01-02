@@ -280,12 +280,18 @@
   .FeaturesContainer {
     grid-template-columns: 1fr;
     gap: 40px;
+    width: 100%;
   }
 
   .FeatureCard {
+    width: 100% !important;
     min-height: auto;
     padding: 20px;
     max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
   }
 
   .FeatureTitle {
@@ -472,12 +478,18 @@
   .FeaturesContainer {
     grid-template-columns: 1fr;
     gap: 50px;
+    width: 100%;
   }
 
   .FeatureCard {
+    width: 100% !important;
     min-height: auto;
     padding: 25px;
     max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
   }
 
   .PatientImage {
@@ -802,7 +814,7 @@
   text-transform: uppercase;
   cursor: pointer;
   transition: background-color 0.3s;
-  align-self: flex-start;
+  align-self: center;
 }
 
 .LearnMoreButton:hover {
@@ -2711,14 +2723,13 @@
 
   .BannerWrapper::before {
     content: "";
-    background: url("https://www.gentledental.com/sites/default/files/styles/convert_image/public/2020-06/gentle-dental-home-page-hero-m-banner.jpg.webp?itok=Fkq5LTet") no-repeat center center;
-    background-size: cover;
-    width: 100%;
-    height: 50vh;
-    min-height: 250px;
-    max-height: 400px;
-    display: block;
+    background: url(https://www.gentledental.com/sites/default/files/styles/convert_image/public/2020-06/gentle-dental-home-page-hero-m-banner.jpg.webp?itok=Fkq5LTet) center / cover no-repeat;
     flex-shrink: 0;
+    width: 100%;
+    height: 35vh;
+    /* min-height: 77px; */
+    /* max-height: 400px; */
+    display: block;
   }
 
   .BannerVideo {
@@ -3222,5 +3233,9 @@
 
   .FeatureDescription {
     display: none;
+  }
+
+  .ViewAllServicesButton{
+    align-self: center;
   }
 }

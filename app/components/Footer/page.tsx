@@ -6,7 +6,7 @@ export default function Footer() {
   return (
     <footer className={styles.footer} role="contentinfo" aria-label="Site footer">
       <div className={styles.footerContent}>
-        <nav className={styles.footerSection} aria-label="Footer navigation">
+        <nav className={`${styles.footerSection} ${styles.locationsSection}`} aria-label="Footer navigation">
           <h3 className={styles.sectionTitle}>Locations</h3>
           <ul className={styles.linkList} role="list">
             <li role="listitem">
@@ -37,7 +37,7 @@ export default function Footer() {
           </ul>
         </nav>
 
-        <div className={styles.footerSection} aria-label="Partners and associations">
+        <div className={`${styles.footerSection} ${styles.partnersSection}`} aria-label="Partners and associations">
           <h3 className={styles.sectionTitle}>Partners and Associations</h3>
           <div className={styles.partnerLogos} role="list" aria-label="Partner logos">
             <div className={styles.logoWrapper} role="listitem">
@@ -76,7 +76,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className={styles.footerSection} aria-label="Social media links">
+        <div className={`${styles.footerSection} ${styles.socialSection}`} aria-label="Social media links">
           <h3 className={styles.sectionTitle}>Follow Us</h3>
           <div className={styles.socialIcons} role="list" aria-label="Social media">
             <a
@@ -144,7 +144,7 @@ export default function Footer() {
       <div className={styles.footerBottom}>
         <div className={styles.bottomLeft}>
           <p className={styles.copyright}>
-            ©2025 Gentle Dental of New England – All Rights Reserved.
+            ©{new Date().getFullYear()} Gentle Dental of New England - All Rights Reserved.
           </p>
           <p className={styles.disclaimer}>
             Gentle Dental is a 42 North Dental Care, PLLC practice and is owned

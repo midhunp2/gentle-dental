@@ -330,6 +330,10 @@ export const NavbarQuery = gql`
         children {
           title
           url
+          children {
+            title
+            url
+          }
         }
       }
     }

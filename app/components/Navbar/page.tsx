@@ -18,6 +18,10 @@ interface MenuItem {
   children?: Array<{
     title: string;
     url: string;
+    children?: Array<{
+      title: string;
+      url: string;
+    }>;
   }>;
 }
 
@@ -50,6 +54,8 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [openDropdowns, setOpenDropdowns] = useState<Record<string, boolean>>({});
   const [openMobileDropdowns, setOpenMobileDropdowns] = useState<Record<string, boolean>>({});
+  const [openNestedDropdowns, setOpenNestedDropdowns] = useState<Record<string, boolean>>({});
+  const [openMobileNestedDropdowns, setOpenMobileNestedDropdowns] = useState<Record<string, boolean>>({});
   const [localSearchQuery, setLocalSearchQuery] = useState("");
   const [menuData, setMenuData] = useState<MenuData | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -213,6 +219,22 @@ export default function Navbar() {
     }));
   };
 
+  const toggleNestedDropdown = (parentTitle: string, childTitle: string) => {
+    const key = `${parentTitle}-${childTitle}`;
+    setOpenNestedDropdowns((prev) => ({
+      ...prev,
+      [key]: !prev[key],
+    }));
+  };
+
+  const toggleMobileNestedDropdown = (parentTitle: string, childTitle: string) => {
+    const key = `${parentTitle}-${childTitle}`;
+    setOpenMobileNestedDropdowns((prev) => ({
+      ...prev,
+      [key]: !prev[key],
+    }));
+  };
+
   const getMenuUrl = (item: MenuItem): string => {
     return item.route?.url || "#";
   };
@@ -287,18 +309,48 @@ export default function Navbar() {
                         onMouseEnter={() => setOpenDropdowns((prev) => ({ ...prev, [itemTitle]: true }))}
                         onMouseLeave={() => setOpenDropdowns((prev) => ({ ...prev, [itemTitle]: false }))}
                       >
-                        {item.children?.map((child, childIndex) => (
-                          <li key={childIndex} role="none">
-                            <Link
-                              href={child.url}
-                              className={styles.dropdownLink}
-                              onClick={() => setOpenDropdowns((prev) => ({ ...prev, [itemTitle]: false }))}
-                              role="menuitem"
+                        {item.children?.map((child, childIndex) => {
+                          const hasNestedChildren = child.children && child.children.length > 0;
+
+                          return (
+                            <li 
+                              key={childIndex} 
+                              role="none"
+                              className={hasNestedChildren ? styles.nestedDropdownContainer : ""}
                             >
-                              {child.title}
-                            </Link>
-                          </li>
-                        ))}
+                              <Link
+                                href={child.url}
+                                className={styles.dropdownLink}
+                                onClick={() => setOpenDropdowns((prev) => ({ ...prev, [itemTitle]: false }))}
+                                role="menuitem"
+                              >
+                                {child.title}
+                              </Link>
+                              {hasNestedChildren && (
+                                <ul
+                                  className={styles.nestedChildrenList}
+                                  role="menu"
+                                  aria-label={`${child.title} submenu`}
+                                >
+                                  {child.children?.map((nestedChild, nestedIndex) => (
+                                    <li key={nestedIndex} role="none">
+                                      <Link
+                                        href={nestedChild.url}
+                                        className={styles.nestedDropdownLink}
+                                        onClick={() => {
+                                          setOpenDropdowns((prev) => ({ ...prev, [itemTitle]: false }));
+                                        }}
+                                        role="menuitem"
+                                      >
+                                        {nestedChild.title}
+                                      </Link>
+                                    </li>
+                                  ))}
+                                </ul>
+                              )}
+                            </li>
+                          );
+                        })}
                       </ul>
                     )}
                   </li>
@@ -539,21 +591,64 @@ export default function Navbar() {
                         </button>
                         {isMobileDropdownOpen && (
                           <ul className={styles.mobileDropdownMenu} role="menu" aria-label={`${itemTitle} submenu`}>
-                            {item.children?.map((child, childIndex) => (
-                              <li key={childIndex} role="none">
-                                <Link
-                                  href={child.url}
-                                  className={styles.mobileDropdownLink}
-                                  onClick={() => {
-                                    setOpenMobileDropdowns((prev) => ({ ...prev, [itemTitle]: false }));
-                                    handleCloseMenu();
-                                  }}
-                                  role="menuitem"
-                                >
-                                  {child.title}
-                                </Link>
-                              </li>
-                            ))}
+                            {item.children?.map((child, childIndex) => {
+                              const hasNestedChildren = child.children && child.children.length > 0;
+                              const nestedKey = `${itemTitle}-${child.title}`;
+                              const isNestedMobileDropdownOpen = openMobileNestedDropdowns[nestedKey] || false;
+
+                              return (
+                                <li key={childIndex} role="none">
+                                  {hasNestedChildren ? (
+                                    <>
+                                      <button
+                                        className={styles.mobileDropdownLink}
+                                        onClick={() => toggleMobileNestedDropdown(itemTitle, child.title)}
+                                        aria-expanded={isNestedMobileDropdownOpen}
+                                        aria-haspopup="true"
+                                        role="menuitem"
+                                      >
+                                        {child.title}
+                                        <span className={styles.mobileArrowIcon}>
+                                          {isNestedMobileDropdownOpen ? "▼" : "▶"}
+                                        </span>
+                                      </button>
+                                      {isNestedMobileDropdownOpen && (
+                                        <ul className={styles.mobileNestedDropdownMenu} role="menu" aria-label={`${child.title} submenu`}>
+                                          {child.children?.map((nestedChild, nestedIndex) => (
+                                            <li key={nestedIndex} role="none">
+                                              <Link
+                                                href={nestedChild.url}
+                                                className={styles.mobileNestedDropdownLink}
+                                                onClick={() => {
+                                                  setOpenMobileDropdowns((prev) => ({ ...prev, [itemTitle]: false }));
+                                                  setOpenMobileNestedDropdowns((prev) => ({ ...prev, [nestedKey]: false }));
+                                                  handleCloseMenu();
+                                                }}
+                                                role="menuitem"
+                                              >
+                                                {nestedChild.title}
+                                              </Link>
+                                            </li>
+                                          ))}
+                                        </ul>
+                                      )}
+                                    </>
+                                  ) : (
+                                    <Link
+                                      href={child.url}
+                                      className={styles.mobileDropdownLink}
+                                      onClick={() => {
+                                        setOpenMobileDropdowns((prev) => ({ ...prev, [itemTitle]: false }));
+                                        handleCloseMenu();
+                                      }}
+                                      role="menuitem"
+                                    >
+                                      {child.title}
+                                    </Link>
+                                  )}
+                                </li>
+                              );
+                            })}
                           </ul>
                         )}
                       </div>
